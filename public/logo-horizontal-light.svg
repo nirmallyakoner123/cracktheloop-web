@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="100%" height="100%">
+  <defs>
+    <linearGradient id="lightHorizGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6610f2" />
+      <stop offset="50%" stop-color="#0d6efd" />
+      <stop offset="100%" stop-color="#0dcaf0" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="200" fill="none"/>
+  <g transform="translate(40, 30) scale(0.32)">
+    <path d="M 236 100 A 136 136 0 1 0 372 236 A 136 136 0 0 0 340 145" fill="none" stroke="url(#lightHorizGrad)" stroke-width="52" stroke-linecap="round"/>
+    <path d="M 190 280 L 390 80 M 390 80 L 290 80 M 390 80 L 390 180" fill="none" stroke="url(#lightHorizGrad)" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="210" y="105" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="54" font-weight="800" letter-spacing="1.5" fill="#0f172a">CRACKTHELOOP</text>
+  <text x="212" y="145" font-family="system-ui, -apple-system, BlinkMacSystemFont, sans-serif" font-size="24" font-weight="500" letter-spacing="0.5" fill="#64748b">AI Interview Copilot</text>
+</svg>

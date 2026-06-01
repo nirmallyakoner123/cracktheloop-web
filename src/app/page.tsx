@@ -38,12 +38,11 @@ export default function Home() {
     setTimeout(() => {
       setSimState("answering");
       
-      // Simulate token-by-token LLM output
       const fullAnswer = sampleAnswers[question];
       let currentLength = 0;
       const interval = setInterval(() => {
         currentLength += 8;
-        if (currentLength >= fullAnswer.len) {
+        if (currentLength >= fullAnswer.length) {
           setSimAnswer(fullAnswer);
           setSimState("done");
           clearInterval(interval);
@@ -66,25 +65,24 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[#060913] text-slate-100 flex flex-col relative overflow-hidden pb-16">
+    <main className="min-h-screen bg-[#0B0D19] text-slate-100 flex flex-col relative overflow-hidden pb-16">
       
-      {/* Background Radial Glows */}
-      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-sky-500/10 bg-blur-glow"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-500/10 bg-blur-glow"></div>
-
+      {/* Background Radial Glows in official accent colors */}
+      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#6610F2]/10 bg-blur-glow"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#0D6EFD]/10 bg-blur-glow"></div>
+ 
       {/* Header / Navbar */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center relative z-20">
         <div className="flex items-center gap-2">
-          <span className="w-3.5 h-3.5 rounded-full bg-gradient-to-r from-sky-400 to-indigo-500"></span>
-          <span className="text-lg font-bold tracking-wider text-white">CRACKTHELOOP</span>
+          <img src="/logo-horizontal-dark.svg" className="h-9 w-auto select-none" alt="CrackTheLoop Logo" />
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6 font-semibold">
           <a href="#features" className="text-sm text-slate-400 hover:text-white transition">Features</a>
           <a href="#simulator" className="text-sm text-slate-400 hover:text-white transition">Interactive Demo</a>
           <a href="#pricing" className="text-sm text-slate-400 hover:text-white transition">Pricing</a>
           <a 
             href="#dashboard" 
-            className="text-xs px-4 py-2 bg-gradient-to-r from-sky-400 to-indigo-500 rounded-full font-semibold hover:brightness-110 transition active:scale-95 shadow-md shadow-sky-500/20"
+            className="text-xs px-5 py-2.5 bg-gradient-to-r from-[#6610F2] via-[#0D6EFD] to-[#0DCAF0] rounded-full font-bold hover:brightness-110 transition active:scale-95 shadow-md shadow-[#0D6EFD]/25"
           >
             Portal Dashboard
           </a>

@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #060913;
+  --background: #0B0D19;
   --foreground: #f8fafc;
-  --card: #0c1125;
+  --card: #0e1124;
   --card-border: rgba(255, 255, 255, 0.08);
 }
 
@@ -15,7 +15,7 @@
 html, body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
   scroll-behavior: smooth;
   margin: 0;
   padding: 0;
@@ -32,18 +32,18 @@ html, body {
 
 .glow-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: 0 10px 40px rgba(56, 189, 248, 0.1);
+  border-color: rgba(102, 16, 242, 0.4);
+  box-shadow: 0 10px 40px rgba(102, 16, 242, 0.1);
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+  background: linear-gradient(135deg, #6610f2 0%, #0d6efd 50%, #0dcaf0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-emerald {
-  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  background: linear-gradient(135deg, #0dca00 0%, #0dcaf0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
