@@ -1,15 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/db";
+import { User } from "@/models/User";
+import jwt from "jsonwebtoken";
+
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "cracktheloop_secret_auth_key_2026_z8y";
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { provider, prompt, apiKey, role, jobDescription, candidateResume } = body;
+    const { provider, prompt, apiKey, role, jobDescription, candidateResume, token } = body;
 
-    if (!apiKey) {
+    const authHeader = req.headers.get("authorization");
+    const jwtToken = token || (authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null);
+
+    if (!jwtToken) {
+      return NextResponse.json(
+        { error: "Authentication token is required to make Copilot requests" },
+        { status: 401 }
+      );
+    }
+
+    let decoded: any;
+    try {
+      decoded = jwt.verify(jwtToken, NEXTAUTH_SECRET);
+    } catch (err) {
+      return NextResponse.json({ error: "Invalid or expired session token" }, { status: 401 });
+    }
+
+    await connectToDatabase();
+    const user = await User.findById(decoded.user_id);
+
+    if (!user) {
+      return NextResponse.json({ error: "User account not found" }, { status: 404 });
+    }
+
+    if (!user.is_subscribed && user.subscription_tier !== "trial") {
+      return NextResponse.json(
+        { error: "Active subscription or trial required to run AI Copilot" },
+        { status: 402 }
+      );
+    }
+
+    if (user.subscription_tier === "trial") {
+      if (user.trial_expires_at && new Date() > user.trial_expires_at) {
+        return NextResponse.json(
+          { error: "Your 7-day Free Trial has expired. Please purchase a plan to continue." },
+          { status: 402 }
+        );
+      }
+    }
+
+    if ((user.credits || 0) < 10) {
+      return NextResponse.json(
+        { error: "Insufficient credits. At least 10 credits are required to run AI Copilot." },
+        { status: 402 }
+      );
+    }
+
+    // Use server key if available and no client key is provided
+    const serverOpenAIKey = process.env.OPENAI_API_KEY;
+    const useServerKeys = !!serverOpenAIKey && (!apiKey || apiKey.trim() === "" || apiKey === "server");
+    const finalApiKey = useServerKeys ? serverOpenAIKey : apiKey;
+
+    if (!finalApiKey) {
       return NextResponse.json({ error: "API Key is required" }, { status: 400 });
     }
 
-    const providerLower = provider.toLowerCase();
+    const providerLower = useServerKeys ? "openai" : provider.toLowerCase();
 
     // Construct dynamic system prompt
     const roleLower = role.toLowerCase();
@@ -57,7 +114,7 @@ CRITICAL RULES:
     switch (providerLower) {
       case "groq":
         url = "https://api.groq.com/v1/chat/completions";
-        headers["Authorization"] = `Bearer ${apiKey}`;
+        headers["Authorization"] = `Bearer ${finalApiKey}`;
         reqBody = {
           model: "llama-3.1-8b-instant",
           messages: [
@@ -69,7 +126,7 @@ CRITICAL RULES:
         break;
       case "openai":
         url = "https://api.openai.com/v1/chat/completions";
-        headers["Authorization"] = `Bearer ${apiKey}`;
+        headers["Authorization"] = `Bearer ${finalApiKey}`;
         reqBody = {
           model: "gpt-4o-mini",
           messages: [
@@ -81,7 +138,7 @@ CRITICAL RULES:
         break;
       case "xai":
         url = "https://api.x.ai/v1/chat/completions";
-        headers["Authorization"] = `Bearer ${apiKey}`;
+        headers["Authorization"] = `Bearer ${finalApiKey}`;
         reqBody = {
           model: "grok-beta",
           messages: [
@@ -93,7 +150,7 @@ CRITICAL RULES:
         break;
       case "anthropic":
         url = "https://api.anthropic.com/v1/messages";
-        headers["x-api-key"] = apiKey;
+        headers["x-api-key"] = finalApiKey;
         headers["anthropic-version"] = "2023-06-01";
         reqBody = {
           model: "claude-3-5-haiku-20241022",
@@ -106,7 +163,7 @@ CRITICAL RULES:
         };
         break;
       case "gemini":
-        url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key=${apiKey}`;
+        url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key=${finalApiKey}`;
         reqBody = {
           contents: [
             {

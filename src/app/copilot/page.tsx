@@ -18,13 +18,24 @@ import {
   Lock,
   Unlock,
   Sparkles,
-  Home
+  Home,
+  History,
+  LogOut,
+  User,
+  Save,
+  Loader2
 } from "lucide-react";
 import mammoth from "mammoth";
 
 interface STTResult {
   text: string;
   is_final: boolean;
+}
+
+interface ITranscriptTurn {
+  sender: "interviewer" | "candidate" | "copilot";
+  text: string;
+  timestamp: Date;
 }
 
 export default function CopilotPage() {
@@ -85,6 +96,22 @@ export default function CopilotPage() {
   const hudRef = useRef<HTMLDivElement | null>(null);
   const dragStartRef = useRef<{ x: number; y: number } | null>(null);
 
+  // Conversation history & sliding drawer
+  const [history, setHistory] = useState<ITranscriptTurn[]>([]);
+  const [showHistoryDrawer, setShowHistoryDrawer] = useState(false);
+
+  // Auth User state
+  const [user, setUser] = useState<{ email: string; credits: number; is_subscribed: boolean } | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  // Login Modal state
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [signupName, setSignupName] = useState("");
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [loadingLogin, setLoadingLogin] = useState(false);
+
   // Load configuration from localStorage
   useEffect(() => {
     setDeepgramKey(localStorage.getItem("ctl_deepgram_key") || "");
@@ -95,7 +122,51 @@ export default function CopilotPage() {
     setJobDescription(localStorage.getItem("ctl_job_description") || "");
     setCandidateResume(localStorage.getItem("ctl_candidate_resume") || "");
     setResumeFileName(localStorage.getItem("ctl_resume_file_name") || "");
+
+    const storedToken = localStorage.getItem("ctl_token");
+    const storedUser = localStorage.getItem("ctl_user");
+    if (storedToken && storedUser) {
+      setToken(storedToken);
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
+
+  // Synchronize with backend profile to load premium config keys
+  useEffect(() => {
+    if (isManualProvider) {
+      setDeepgramKey(localStorage.getItem("ctl_deepgram_key") || "");
+      setLlmKey(localStorage.getItem("ctl_llm_key") || "");
+      setDeepgramKeyStatus((localStorage.getItem("ctl_deepgram_key") || "").trim().startsWith("dg_") ? 'verified' : 'idle');
+    } else {
+      // Fetch from server
+      if (token) {
+        fetch("/api/auth/me", {
+          headers: { "Authorization": `Bearer ${token}` }
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.config?.deepgram_api_key) {
+              setDeepgramKey(data.config.deepgram_api_key);
+              setDeepgramKeyStatus('verified');
+              setLlmKey("server");
+              setLlmProviderStatus('verified');
+              setActiveLlmProvider("openai");
+            } else {
+              setDeepgramKey("");
+              setDeepgramKeyStatus('idle');
+            }
+            if (data.user) {
+              setUser(data.user);
+              localStorage.setItem("ctl_user", JSON.stringify(data.user));
+            }
+          })
+          .catch(() => {});
+      } else {
+        setDeepgramKey("");
+        setDeepgramKeyStatus('idle');
+      }
+    }
+  }, [isManualProvider, token]);
 
   // Save configurations on changes
   useEffect(() => {
@@ -274,18 +345,18 @@ export default function CopilotPage() {
 
       if (micHasAudio) {
         const micSource = audioCtx.createMediaStreamSource(micStream!);
-        micSource.connect(merger, 0, 0);
+        micSource.connect(merger, 0, 0); // Microphone to input channel 0 (Left)
         micConnected = true;
       }
 
       if (systemHasAudio) {
         const systemSource = audioCtx.createMediaStreamSource(systemStream!);
-        systemSource.connect(merger, 0, 1);
+        systemSource.connect(merger, 0, 1); // System Loopback to input channel 1 (Right)
         systemConnected = true;
       }
 
-      // Processor node to downsample to 16kHz mono PCM
-      const processor = audioCtx.createScriptProcessor(4096, 2, 1);
+      // Processor node to downsample to 16kHz stereo (2 input, 2 output) PCM
+      const processor = audioCtx.createScriptProcessor(4096, 2, 2);
       processorRef.current = processor;
 
       // Analyser node for rendering waveform on canvas
@@ -302,19 +373,19 @@ export default function CopilotPage() {
       processor.connect(analyser);
       analyser.connect(audioCtx.destination); // Required to pull audio through script processor
 
-      // Ensure AudioContext is fully running (bypass browser suspension policies)
+      // Ensure AudioContext is fully running
       if (audioCtx.state === "suspended") {
         await audioCtx.resume();
       }
 
-      // Connect WebSocket to Deepgram
-      const dgUrl = "wss://api.deepgram.com/v1/listen?model=nova-3&encoding=linear16&sample_rate=16000&channels=1&interim_results=true&punctuate=true&endpointing=300";
-      console.log("[STT] Connecting to Deepgram WebSocket...");
+      // Connect WebSocket to Deepgram with channels=2 and multichannel=true
+      const dgUrl = "wss://api.deepgram.com/v1/listen?model=nova-3&encoding=linear16&sample_rate=16000&channels=2&multichannel=true&interim_results=true&punctuate=true&endpointing=300";
+      console.log("[STT] Connecting to Deepgram Multichannel WebSocket...");
       const ws = new WebSocket(dgUrl, ["token", deepgramKey.trim()]);
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log("[STT] Deepgram WebSocket Connected Successfully!");
+        console.log("[STT] Deepgram Multichannel WebSocket Connected!");
         setStatus("Listening...");
         setIsCapturing(true);
       };
@@ -337,9 +408,11 @@ export default function CopilotPage() {
           const cleanText = text.trim();
 
           if (!cleanText) return;
-          console.log(`[STT EVENT] Text received: "${cleanText}" | is_final: ${is_final}`);
 
-          // Postpone debounce timeouts on active speech
+          // channel_index[0]: 0 = candidate (Mic), 1 = interviewer (System loopback)
+          const channelIndex = json.channel_index ? json.channel_index[0] : 0;
+          console.log(`[STT EVENT] Ch ${channelIndex}: "${cleanText}" | is_final: ${is_final}`);
+
           if (voiceDebounceTimeoutRef.current) {
             clearTimeout(voiceDebounceTimeoutRef.current);
             voiceDebounceTimeoutRef.current = null;
@@ -350,19 +423,28 @@ export default function CopilotPage() {
           }
 
           if (is_final) {
-            const separator = voiceBufferRef.current ? " " : "";
-            voiceBufferRef.current = voiceBufferRef.current + separator + cleanText;
-            setTranscript(voiceBufferRef.current);
+            // Label sender for transcript history log
+            const senderName = channelIndex === 0 ? "candidate" : "interviewer";
+            const label = channelIndex === 0 ? "You: " : "Interviewer: ";
+
+            // Set finalized view text
+            setTranscript(label + cleanText);
             setInterimTranscript("");
 
-            // Schedule the 300ms speech pause debounce timer
-            voiceDebounceTimeoutRef.current = setTimeout(() => {
-              const fullQuery = voiceBufferRef.current.trim();
+            // Add turn to conversational history log
+            setHistory((prev) => [
+              ...prev,
+              { sender: senderName, text: cleanText, timestamp: new Date() }
+            ]);
+
+            // ONLY trigger LLM if speaker is the Interviewer (Channel 1)
+            if (channelIndex === 1) {
+              const fullQuery = cleanText;
               const wordCount = fullQuery.split(/\s+/).filter(Boolean).length;
               const isLikelyQuestion = 
                 fullQuery.endsWith("?") || 
-                wordCount >= 5 || 
-                (fullQuery.length >= 18 && (
+                wordCount >= 4 || 
+                (fullQuery.length >= 15 && (
                   fullQuery.toLowerCase().includes("describe") ||
                   fullQuery.toLowerCase().includes("explain") ||
                   fullQuery.toLowerCase().includes("tell me") ||
@@ -371,54 +453,45 @@ export default function CopilotPage() {
                   fullQuery.toLowerCase().includes("why")
                 ));
 
-              console.log(`[DEBOUNCE] 0.3s silence delay met. Firing query to LLM: "${fullQuery}"`);
               if (isLikelyQuestion) {
                 triggerLLM(fullQuery);
               } else {
-                console.log(`[DEBOUNCE] Ignored non-question/incomplete query: "${fullQuery}"`);
+                console.log(`[STT INTERVIEWER] Ignored non-question turn: "${fullQuery}"`);
               }
-              voiceDebounceTimeoutRef.current = null;
-
-              // Schedule conversational turn-completion timer to clear speech buffer
-              voiceSegmentTimeoutRef.current = setTimeout(() => {
-                console.log("[DEBOUNCE] 6s silence met. Clearing voice buffer queue.");
-                voiceBufferRef.current = "";
-                voiceSegmentTimeoutRef.current = null;
-              }, 6000);
-            }, 300);
-
+            } else {
+              console.log("[STT CANDIDATE] Candidate voice transcript recorded silently. Skipping LLM call.");
+            }
           } else {
-            setInterimTranscript(cleanText);
+            const label = channelIndex === 0 ? "You: " : "Interviewer: ";
+            setInterimTranscript(label + cleanText);
           }
         } catch (err) {
           console.error("[STT] Error parsing WebSocket message:", err);
         }
       };
 
-      // Audio Processing loop
+      // Audio Processing loop (keeping microphone on Left, system audio on Right)
       processor.onaudioprocess = (e) => {
         if (ws.readyState !== WebSocket.OPEN) return;
 
-        const left = e.inputBuffer.getChannelData(0);
-        const right = e.inputBuffer.getChannelData(1);
+        const left = e.inputBuffer.getChannelData(0); // Mic
+        const right = e.inputBuffer.getChannelData(1); // System Speaker Loopback
 
-        // Mix stereo input into mono Float32Array
-        const mono = new Float32Array(left.length);
-        for (let i = 0; i < left.length; i++) {
-          mono[i] = (left[i] + right[i]) / 2;
+        // Downsample each channel independently
+        const resampledLeft = downsample(left, audioCtx.sampleRate, 16000);
+        const resampledRight = downsample(right, audioCtx.sampleRate, 16000);
+
+        // Interleave downsampled channels for 2-channel linear16 PCM
+        const interleaved = new Float32Array(resampledLeft.length * 2);
+        for (let i = 0; i < resampledLeft.length; i++) {
+          interleaved[i * 2] = resampledLeft[i];          // Left channel = Candidate Mic
+          interleaved[i * 2 + 1] = resampledRight[i];      // Right channel = Interviewer Speaker
         }
 
-        // Resample from AudioContext rate (typically 44.1kHz/48kHz) to 16kHz
-        const resampled = downsample(mono, audioCtx.sampleRate, 16000);
-
-        // Convert to 16-bit signed PCM
-        const pcmBytes = convertFloat32To16BitPCM(resampled);
-
-        // Send over WebSocket to Deepgram
+        const pcmBytes = convertFloat32To16BitPCM(interleaved);
         ws.send(pcmBytes);
       };
 
-      // Start rendering waveform on canvas
       startWaveformRender(analyser);
 
     } catch (err: any) {
@@ -432,7 +505,6 @@ export default function CopilotPage() {
   function stopCaptureEngine() {
     console.log("[CAPTURE] Stopping audio engine...");
     
-    // Stop all media tracks
     if (micStreamRef.current) {
       micStreamRef.current.getTracks().forEach((track) => track.stop());
       micStreamRef.current = null;
@@ -442,7 +514,6 @@ export default function CopilotPage() {
       systemStreamRef.current = null;
     }
 
-    // Disconnect Web Audio nodes
     if (processorRef.current) {
       processorRef.current.disconnect();
       processorRef.current = null;
@@ -452,7 +523,6 @@ export default function CopilotPage() {
       audioContextRef.current = null;
     }
 
-    // Close WebSocket
     if (wsRef.current) {
       if (wsRef.current.readyState === WebSocket.OPEN || wsRef.current.readyState === WebSocket.CONNECTING) {
         wsRef.current.close();
@@ -460,13 +530,11 @@ export default function CopilotPage() {
       wsRef.current = null;
     }
 
-    // Cancel animation frame
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
 
-    // Clear timers
     if (voiceDebounceTimeoutRef.current) {
       clearTimeout(voiceDebounceTimeoutRef.current);
       voiceDebounceTimeoutRef.current = null;
@@ -482,8 +550,10 @@ export default function CopilotPage() {
 
   // Trigger stateless CORS proxy completion stream
   async function triggerLLM(promptText: string) {
-    if (!llmKey) {
-      setStatus(`${activeLlmProvider.toUpperCase()} Key missing`);
+    const authHeaderToken = localStorage.getItem("ctl_token");
+    if (!authHeaderToken) {
+      setStatus("Error: Authentication Required");
+      alert("Please log in to authorize Copilot completions and credit checks.");
       return;
     }
 
@@ -491,7 +561,6 @@ export default function CopilotPage() {
     setStatus("Streaming Copilot...");
     speechStartRef.current = Date.now();
 
-    // Increment request ID to cancel older streams
     const currentRequestId = activeRequestIdRef.current + 1;
     activeRequestIdRef.current = currentRequestId;
 
@@ -500,6 +569,7 @@ export default function CopilotPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${authHeaderToken}`,
         },
         body: JSON.stringify({
           provider: activeLlmProvider,
@@ -523,9 +593,9 @@ export default function CopilotPage() {
 
       const decoder = new TextDecoder();
       let buffer = "";
+      let finalAnswer = "";
 
       while (true) {
-        // Stop reading and abort stream if a newer request has started
         if (activeRequestIdRef.current !== currentRequestId) {
           console.log(`[LLM] Aborted older completion stream ${currentRequestId}`);
           break;
@@ -568,9 +638,9 @@ export default function CopilotPage() {
               }
 
               if (token) {
-                setAnswer((prev) => prev + token);
+                finalAnswer += token;
+                setAnswer(finalAnswer);
                 
-                // Calculate latency based on first streamed token
                 if (speechStartRef.current) {
                   const delta = (Date.now() - speechStartRef.current) / 1000;
                   setLatency(Number(delta.toFixed(2)));
@@ -584,6 +654,22 @@ export default function CopilotPage() {
       }
 
       setStatus("Copilot ready");
+
+      // Once response is fully compiled, save it into our history log
+      if (finalAnswer) {
+        setHistory((prev) => [
+          ...prev,
+          { sender: "copilot", text: finalAnswer, timestamp: new Date() }
+        ]);
+
+        // Deduct 1 credit locally for instant updates
+        if (user) {
+          const updatedUser = { ...user, credits: Math.max(0, user.credits - 1) };
+          setUser(updatedUser);
+          localStorage.setItem("ctl_user", JSON.stringify(updatedUser));
+          document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(updatedUser))}; path=/; max-age=604800; SameSite=Lax`;
+        }
+      }
     } catch (err: any) {
       console.error(err);
       setStatus(`LLM Error: ${err.message || err}`);
@@ -612,7 +698,6 @@ export default function CopilotPage() {
 
       ctx.lineWidth = 2.5;
       
-      // Select visual gradient matching active provider
       const grad = ctx.createLinearGradient(0, 0, canvas.width, 0);
       grad.addColorStop(0, "#6610F2"); // Purple
       grad.addColorStop(0.5, "#0D6EFD"); // Blue
@@ -681,6 +766,7 @@ export default function CopilotPage() {
       clearTimeout(voiceSegmentTimeoutRef.current);
       voiceSegmentTimeoutRef.current = null;
     }
+    setHistory([]);
     setStatus(isCapturing ? "Console Cleared (Listening)" : "Console Cleared");
   }
 
@@ -745,6 +831,89 @@ export default function CopilotPage() {
     }
   }
 
+  // Save conversation session to MongoDB
+  async function saveInterviewSession() {
+    if (history.length === 0) {
+      alert("No conversation history recorded yet.");
+      return;
+    }
+
+    const savedToken = localStorage.getItem("ctl_token");
+    if (!savedToken) {
+      alert("You must be logged in to save your interview sessions.");
+      return;
+    }
+
+    setStatus("Saving session...");
+    try {
+      const res = await fetch("/api/interviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${savedToken}`
+        },
+        body: JSON.stringify({
+          role: interviewRole,
+          company: "General Interview Session",
+          transcript: history.map(t => ({
+            sender: t.sender,
+            text: t.text,
+            timestamp: t.timestamp
+          }))
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to save session");
+
+      alert("Interview session transcript saved successfully!");
+      setStatus("Session Saved");
+    } catch (err: any) {
+      console.error(err);
+      alert(`Save failed: ${err.message || err}`);
+      setStatus("Save Error");
+    }
+  }
+
+  async function handlePasswordAuth() {
+    setLoadingLogin(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: loginEmail,
+          password: loginPassword,
+          name: authMode === "signup" ? signupName : undefined,
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || data.message || "Authentication failed");
+      
+      localStorage.setItem("ctl_token", data.token);
+      localStorage.setItem("ctl_user", JSON.stringify(data.user));
+      document.cookie = `ctl_token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
+      document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(data.user))}; path=/; max-age=604800; SameSite=Lax`;
+      setToken(data.token);
+      setUser(data.user);
+      setShowLoginModal(false);
+      alert(authMode === "signup" ? "Account created and logged in!" : "Signed in successfully!");
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setLoadingLogin(false);
+    }
+  }
+
+  // Handle Logout
+  function handleLogout() {
+    localStorage.removeItem("ctl_token");
+    localStorage.removeItem("ctl_user");
+    setToken(null);
+    setUser(null);
+    alert("Logged out successfully.");
+  }
+
   const renderProviderLogo = (provider: string) => {
     const size = "w-4 h-4";
     switch (provider) {
@@ -789,7 +958,7 @@ export default function CopilotPage() {
     <div className="w-screen h-screen flex flex-col justify-center items-center bg-transparent p-2 relative overflow-hidden select-none">
       
       {/* Background Radial Glows */}
-      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#6610F2]/5 bg-blur-glow"></div>
+      <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#6610F2]/5 bg-blur-glow text-slate-100"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#0D6EFD]/5 bg-blur-glow"></div>
 
       {/* Floating overlay hud card (rendered on toggle overlay) */}
@@ -880,6 +1049,26 @@ export default function CopilotPage() {
 
               {!isLocked && (
                 <button
+                  onClick={() => setShowHistoryDrawer(true)}
+                  className="text-[11px] px-2.5 py-1 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-black border border-sky-500/25 rounded-lg transition active:scale-95 cursor-pointer flex items-center gap-1"
+                >
+                  <History className="w-3.5 h-3.5" />
+                  History
+                </button>
+              )}
+
+              {!isLocked && (
+                <button
+                  onClick={saveInterviewSession}
+                  className="text-[11px] px-2.5 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 font-black border border-emerald-500/25 rounded-lg transition active:scale-95 cursor-pointer flex items-center gap-1"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  Save Session
+                </button>
+              )}
+
+              {!isLocked && (
+                <button
                   onClick={handleClearChat}
                   className="text-[11px] px-2 py-1 bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 font-black border border-rose-500/25 rounded-lg transition active:scale-95 cursor-pointer"
                 >
@@ -928,7 +1117,7 @@ export default function CopilotPage() {
           <div className="flex flex-col gap-1 z-10">
             <span className="text-[10px] text-white/50 font-black uppercase tracking-widest flex items-center gap-1.5 px-1">
               <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse"></span>
-              Interviewer Speech (Live STT Feed)
+              Live Audio Transcription Feed
             </span>
             <div className="text-[14px] text-white/90 bg-slate-950/45 p-3.5 rounded-2xl border border-white/5 h-[90px] overflow-y-auto leading-relaxed scrollbar-thin shadow-inner select-text pointer-events-auto">
               {transcript || interimTranscript ? (
@@ -1015,11 +1204,50 @@ export default function CopilotPage() {
                 <p className="text-xs text-white/40 mt-0.5 font-medium">Anti-Share Stealth Browser Audio Copilot</p>
               </div>
             </div>
+            
+            {/* Authenticated user status vs Login controls */}
             <div className="flex items-center gap-2 relative z-20">
+              {user ? (
+                <div className="flex items-center gap-3 bg-white/5 border border-white/10 pl-3.5 pr-1.5 py-1 rounded-full text-xs font-bold shadow-sm">
+                  <span className="text-slate-300 font-medium truncate max-w-[120px]">{user.email}</span>
+                  <span className="bg-sky-500/20 text-sky-400 px-2 py-0.5 rounded-full text-[10px]">
+                    {user.credits} credits
+                  </span>
+                  <button 
+                    onClick={handleLogout}
+                    title="Log Out"
+                    className="p-1 bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 rounded-full transition cursor-pointer border border-white/10"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setLoginEmail("");
+                    setLoginPassword("");
+                    setSignupName("");
+                    setAuthMode("signin");
+                    setShowLoginModal(true);
+                  }}
+                  className="bg-sky-500 hover:bg-sky-600 border border-sky-400/20 px-4 py-1.5 rounded-full text-xs font-black transition active:scale-95 cursor-pointer uppercase tracking-wider"
+                >
+                  <User className="w-3.5 h-3.5 inline mr-1" />
+                  Sign In
+                </button>
+              )}
+              
               <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs font-bold shadow-sm">
                 <span className={`w-2.5 h-2.5 rounded-full ${isCapturing ? "bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" : "bg-white/20"}`}></span>
                 <span className="text-white/80 font-bold uppercase tracking-wider">{status}</span>
               </div>
+              <a
+                href="/dashboard"
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-350 flex justify-center items-center border border-white/10 font-black transition active:scale-90 cursor-pointer"
+                title="Go to User Dashboard"
+              >
+                <Layers className="w-4 h-4" />
+              </a>
               <a
                 href="/"
                 className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-slate-350 flex justify-center items-center border border-white/10 font-black transition active:scale-90 cursor-pointer"
@@ -1029,83 +1257,112 @@ export default function CopilotPage() {
               </a>
             </div>
           </div>
+          {/* Credits Warning Banner */}
+          {user && (user.credits || 0) < 10 && (
+            <div className="bg-rose-500/10 border border-rose-500/20 px-4 py-3.5 rounded-2xl relative z-10 text-xs text-rose-400 font-bold text-center">
+              ⚠️ Insufficient Fuel: You need at least 10 credits to run the AI Copilot. Your current balance is {user.credits} credits. Please purchase a plan or refill on the account dashboard.
+            </div>
+          )}
 
           {/* Credentials Inputs (Double Columns) */}
-          <div className="grid grid-cols-2 gap-4 bg-white/5 border border-white/5 p-4 rounded-2xl relative z-10">
-            {/* Deepgram Column */}
-            <div className="flex flex-col gap-1.5">
-              <div className="flex justify-between items-center">
-                <label className="text-[11px] text-white/50 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  🎤 Deepgram API Key
-                  {deepgramKeyStatus === "verified" && (
-                    <span className="text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-wider badge-deepgram">
-                      ✅ Key Configured
-                    </span>
-                  )}
-                </label>
-                {deepgramKey && <span className="text-[9px] text-emerald-400 font-bold">✓ Saved</span>}
-              </div>
-              <input
-                type="password"
-                value={deepgramKey}
-                onChange={(e) => setDeepgramKey(e.target.value)}
-                placeholder="dg_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                className={`w-full bg-[#090e1a]/85 border ${
-                  deepgramKeyStatus === "verified" ? "border-deepgram" : "border-white/10"
-                } px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-deepgram transition placeholder-white/10 text-white/90`}
-              />
-            </div>
-
-            {/* Universal LLM Column */}
-            <div className="flex flex-col gap-1.5">
-              <div className="flex justify-between items-center">
-                <label className="text-[11px] text-white/50 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                  {renderProviderLogo(activeLlmProvider)}
-                  <span className={`text-gradient-${activeLlmProvider} font-black`}>LLM Key ({activeLlmProvider.toUpperCase()})</span>
-                  {llmProviderStatus === "verified" && (
-                    <span className={`text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-wider badge-${activeLlmProvider}`}>
-                      ✅ Key Configured
-                    </span>
-                  )}
-                </label>
-
-                {/* Manual Override controls */}
-                <div className="flex items-center gap-2">
-                  <label className="text-[10px] text-slate-500 flex items-center gap-1 cursor-pointer select-none">
-                    <input 
-                      type="checkbox"
-                      checked={isManualProvider}
-                      onChange={(e) => setIsManualProvider(e.target.checked)}
-                      className="rounded bg-[#0d1326] border-white/10 text-sky-400 accent-sky-400 cursor-pointer"
-                    />
-                    Manual
+          {isManualProvider ? (
+            <div className="grid grid-cols-2 gap-4 bg-white/5 border border-white/5 p-4 rounded-2xl relative z-10">
+              {/* Deepgram Column */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-[11px] text-white/50 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    🎤 Deepgram API Key
+                    {deepgramKeyStatus === "verified" && (
+                      <span className="text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-wider badge-deepgram">
+                        ✅ Key Configured
+                      </span>
+                    )}
                   </label>
-                  {isManualProvider && (
-                    <select
-                      value={activeLlmProvider}
-                      onChange={(e) => setActiveLlmProvider(e.target.value)}
-                      className="bg-[#0b0f1c] border border-white/10 rounded px-1.5 py-0.5 text-[10px] text-slate-355 focus:outline-none focus:border-sky-455 cursor-pointer"
-                    >
-                      <option value="groq">Groq</option>
-                      <option value="openai">OpenAI</option>
-                      <option value="anthropic">Claude</option>
-                      <option value="gemini">Gemini</option>
-                      <option value="xai">Grok (xAI)</option>
-                    </select>
-                  )}
+                  {deepgramKey && <span className="text-[9px] text-emerald-400 font-bold">✓ Saved</span>}
+                </div>
+                <input
+                  type="password"
+                  value={deepgramKey}
+                  onChange={(e) => setDeepgramKey(e.target.value)}
+                  placeholder="dg_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                  className={`w-full bg-[#090e1a]/85 border ${
+                    deepgramKeyStatus === "verified" ? "border-deepgram" : "border-white/10"
+                  } px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-deepgram transition placeholder-white/10 text-white/90`}
+                />
+              </div>
+
+              {/* Universal LLM Column */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-[11px] text-white/50 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                    {renderProviderLogo(activeLlmProvider)}
+                    <span className={`text-gradient-${activeLlmProvider} font-black`}>LLM Key ({activeLlmProvider.toUpperCase()})</span>
+                    {llmProviderStatus === "verified" && (
+                      <span className={`text-[9px] px-2 py-0.5 rounded font-black uppercase tracking-wider badge-${activeLlmProvider}`}>
+                        ✅ Key Configured
+                      </span>
+                    )}
+                  </label>
+
+                  {/* Manual Override controls */}
+                  <div className="flex items-center gap-2">
+                    <label className="text-[10px] text-slate-500 flex items-center gap-1 cursor-pointer select-none">
+                      <input 
+                        type="checkbox"
+                        checked={isManualProvider}
+                        onChange={(e) => setIsManualProvider(e.target.checked)}
+                        className="rounded bg-[#0d1326] border-white/10 text-sky-400 accent-sky-400 cursor-pointer"
+                      />
+                      Manual
+                    </label>
+                    {isManualProvider && (
+                      <select
+                        value={activeLlmProvider}
+                        onChange={(e) => setActiveLlmProvider(e.target.value)}
+                        className="bg-[#0b0f1c] border border-white/10 rounded px-1.5 py-0.5 text-[10px] text-slate-355 focus:outline-none focus:border-sky-455 cursor-pointer"
+                      >
+                        <option value="groq">Groq</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="anthropic">Claude</option>
+                        <option value="gemini">Gemini</option>
+                        <option value="xai">Grok (xAI)</option>
+                      </select>
+                    )}
+                  </div>
+                </div>
+                <input
+                  type="password"
+                  value={llmKey}
+                  onChange={(e) => setLlmKey(e.target.value)}
+                  placeholder="Paste any Groq, OpenAI, Claude, Gemini or Grok key..."
+                  className={`w-full bg-[#090e1a]/85 border ${
+                    llmProviderStatus === "verified" ? `border-${activeLlmProvider}` : "border-white/10"
+                  } px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-${activeLlmProvider} transition placeholder-white/10 text-white/90`}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-between items-center bg-sky-500/5 border border-sky-500/20 p-4 rounded-2xl relative z-10 text-xs">
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-5 h-5 text-sky-400 animate-pulse" />
+                <div>
+                  <p className="font-bold text-white uppercase tracking-wider text-[10px]">Premium Copilot Fuel Active</p>
+                  <p className="text-slate-400 mt-0.5 text-[10px]">Using system-managed Deepgram STT and OpenAI GPT-4o-mini.</p>
                 </div>
               </div>
-              <input
-                type="password"
-                value={llmKey}
-                onChange={(e) => setLlmKey(e.target.value)}
-                placeholder="Paste any Groq, OpenAI, Claude, Gemini or Grok key..."
-                className={`w-full bg-[#090e1a]/85 border ${
-                  llmProviderStatus === "verified" ? `border-${activeLlmProvider}` : "border-white/10"
-                } px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-${activeLlmProvider} transition placeholder-white/10 text-white/90`}
-              />
+              <div className="flex items-center gap-2">
+                <span className="text-[9px] bg-sky-500/10 text-sky-300 border border-sky-500/20 px-2.5 py-0.5 rounded-full font-black uppercase tracking-wider">
+                  Server Managed
+                </span>
+                <button
+                  onClick={() => setIsManualProvider(true)}
+                  className="text-[10px] text-slate-400 hover:text-white transition underline cursor-pointer bg-transparent border-none font-bold"
+                >
+                  Use Custom Keys
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Pre-Interview Context Setup Widget */}
           <div className="flex flex-col gap-3 bg-white/5 border border-white/5 p-4 rounded-2xl relative z-10">
@@ -1240,11 +1497,11 @@ export default function CopilotPage() {
           <div className="flex gap-4 relative z-10">
             <button
               onClick={handleToggleOverlay}
-              disabled={!interviewRole.trim() || !deepgramKey.trim() || !llmKey.trim()}
+              disabled={!interviewRole.trim() || !deepgramKey.trim() || !llmKey.trim() || !token}
               className={`w-full py-3 bg-gradient-to-r from-${activeLlmProvider === "openai" ? "emerald-400 to-teal-500" : activeLlmProvider === "anthropic" ? "amber-500 to-orange-600" : activeLlmProvider === "gemini" ? "blue-500 to-indigo-600" : activeLlmProvider === "groq" ? "teal-400 to-cyan-500" : "slate-400 to-slate-600"} hover:brightness-110 text-white rounded-xl font-black text-xs transition active:scale-98 flex justify-center items-center gap-2 cursor-pointer shadow-lg tracking-wider uppercase disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               <Maximize2 className="w-4 h-4" />
-              Launch Web Stealth Overlay
+              {!token ? "Sign In Required to Launch Overlay" : "Launch Web Stealth Overlay"}
             </button>
           </div>
 
@@ -1255,6 +1512,137 @@ export default function CopilotPage() {
               Web Audio Sandbox: EXCLUSIVE
             </span>
             <span className="font-bold tracking-wider">SECURE CLIENT SESSIONS</span>
+          </div>
+        </div>
+      )}
+
+      {/* History Slide Drawer Panel */}
+      {showHistoryDrawer && (
+        <div className="fixed top-0 right-0 w-[350px] h-full bg-[#0c1125]/98 border-l border-white/10 shadow-2xl z-[150] p-5 flex flex-col gap-4 animate-slide-in text-white">
+          <div className="flex justify-between items-center border-b border-white/10 pb-3">
+            <h3 className="font-black flex items-center gap-2 text-xs text-sky-400 uppercase tracking-widest">
+              <History className="w-4 h-4" />
+              Conversation History
+            </h3>
+            <button
+              onClick={() => setShowHistoryDrawer(false)}
+              className="text-slate-400 hover:text-white transition cursor-pointer font-bold"
+            >
+              ✕
+            </button>
+          </div>
+          <div className="flex-1 overflow-y-auto flex flex-col gap-3.5 pr-1 scrollbar-thin">
+            {history.length === 0 ? (
+              <p className="text-slate-500 italic text-xs text-center mt-10">No conversation history yet.</p>
+            ) : (
+              history.map((turn, index) => (
+                <div key={index} className="flex flex-col gap-1">
+                  <div className="flex justify-between items-center">
+                    <span className={`text-[9px] font-black uppercase tracking-wider ${
+                      turn.sender === "interviewer" ? "text-sky-400" :
+                      turn.sender === "candidate" ? "text-purple-400" :
+                      "text-emerald-400"
+                    }`}>
+                      {turn.sender === "interviewer" ? "🗣️ Interviewer" :
+                       turn.sender === "candidate" ? "🎙️ You" :
+                       "🤖 Copilot"}
+                    </span>
+                    <span className="text-[8px] text-slate-500 font-semibold">
+                      {new Date(turn.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-200 bg-slate-950/45 px-3 py-2 rounded-xl border border-white/5 leading-relaxed font-medium select-text">
+                    {turn.text}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Password Authentication Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-md flex justify-center items-center z-[200] p-6 animate-fade-in">
+          <div className="w-[360px] bg-[#0c1125] border border-white/10 rounded-2xl p-6 flex flex-col gap-6 shadow-2xl relative">
+            <button 
+              onClick={() => setShowLoginModal(false)}
+              className="text-slate-400 hover:text-white transition cursor-pointer font-bold absolute top-4 right-4"
+            >
+              ✕
+            </button>
+            
+            {/* Header / Tabs */}
+            <div className="flex flex-col gap-3">
+              <div className="text-center">
+                <h3 className="text-lg font-black text-white flex items-center justify-center gap-2">
+                  <Shield className="w-5 h-5 text-sky-400" />
+                  {authMode === "signup" ? "Create Account" : "Sign In"}
+                </h3>
+              </div>
+              <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
+                <button
+                  type="button"
+                  onClick={() => setAuthMode("signin")}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    authMode === "signin" ? "bg-sky-500 text-white" : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAuthMode("signup")}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                    authMode === "signup" ? "bg-sky-500 text-white" : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              {authMode === "signup" && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-[10px] text-white/50 font-bold uppercase tracking-wider">Full Name</label>
+                  <input
+                    type="text"
+                    value={signupName}
+                    onChange={(e) => setSignupName(e.target.value)}
+                    placeholder="John Doe"
+                    className="w-full bg-[#050811] border border-white/10 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-sky-400"
+                  />
+                </div>
+              )}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] text-white/50 font-bold uppercase tracking-wider">Email Address</label>
+                <input
+                  type="email"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full bg-[#050811] border border-white/10 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-sky-400"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] text-white/50 font-bold uppercase tracking-wider">Password</label>
+                <input
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-[#050811] border border-white/10 px-3.5 py-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-sky-400"
+                />
+              </div>
+              <button
+                onClick={handlePasswordAuth}
+                disabled={loadingLogin || !loginEmail.includes("@") || loginPassword.length < 6 || (authMode === "signup" && !signupName.trim())}
+                className="w-full py-3 bg-gradient-to-r from-sky-400 to-indigo-500 rounded-xl font-bold text-xs text-white uppercase tracking-wider shadow-md cursor-pointer disabled:opacity-50 flex items-center justify-center gap-1.5"
+              >
+                {loadingLogin ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : authMode === "signup" ? "Register & Enter" : "Access Copilot"}
+              </button>
+            </div>
           </div>
         </div>
       )}
