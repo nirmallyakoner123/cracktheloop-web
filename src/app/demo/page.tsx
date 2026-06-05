@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import {
   Shield,
   Sparkles,
@@ -583,26 +584,24 @@ export default function DemoPage() {
             Deploy the live copilot straight inside your browser or grab our native Windows desktop client installer.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a
+            <Link
               href="/copilot"
-              className="px-6 py-3.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:brightness-110 text-white rounded-xl font-bold text-xs transition active:scale-95 flex items-center gap-1.5 shadow-sm"
+              className="px-6 py-3.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:brightness-110 text-white rounded-xl font-bold text-xs transition active:scale-95 flex items-center gap-1.5 shadow-sm text-center"
             >
               Launch Browser Copilot <Globe className="w-4 h-4" />
-            </a>
-            <a
-              href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 rounded-xl font-bold text-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer"
+            </Link>
+            <Link
+              href="/dashboard/account"
+              className="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 rounded-xl font-bold text-xs transition active:scale-95 flex items-center gap-1.5 cursor-pointer text-center"
             >
               Download Desktop App
-            </a>
-            <a
+            </Link>
+            <Link
               href="/pricing"
-              className="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 rounded-xl font-bold text-xs transition active:scale-95 cursor-pointer"
+              className="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 rounded-xl font-bold text-xs transition active:scale-95 cursor-pointer text-center"
             >
               Get License Key
-            </a>
+            </Link>
           </div>
         </div>
       </section>

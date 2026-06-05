@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { 
   History, 
   Loader2, 
@@ -112,12 +113,12 @@ export default function InterviewsListPage() {
                 <p className="text-slate-500 text-xs max-w-sm leading-relaxed font-medium mt-0.5">
                   Activate the Web Copilot HUD or Desktop app during your live interview sessions, and click "Save Session" to compile your transcripts here.
                 </p>
-                <a
+                <Link
                   href="/copilot"
-                  className="mt-2 px-5 py-2.5 bg-[#E8503A] hover:bg-[#F06B57] rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-md shadow-[#E8503A]/10 hover:brightness-110 transition active:scale-95 cursor-pointer"
+                  className="mt-2 px-5 py-2.5 bg-[#E8503A] hover:bg-[#F06B57] rounded-xl font-bold text-xs uppercase tracking-wider text-white shadow-md shadow-[#E8503A]/10 hover:brightness-110 transition active:scale-95 cursor-pointer text-center"
                 >
                   Open Copilot HUD
-                </a>
+                </Link>
               </>
             )}
           </div>

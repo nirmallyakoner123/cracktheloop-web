@@ -118,12 +118,20 @@ export async function POST(request: Request) {
       let referredByCode: string | null = null;
       if (referralCode && referralCode.trim()) {
         const referrer = await User.findOne({ referral_code: referralCode.trim() });
-        if (referrer) {
-          referredByCode = referralCode.trim();
-          console.log(`[AUTH] New user ${email} referred by ${referrer.email} (code: ${referredByCode})`);
-        } else {
-          console.warn(`[AUTH] Referral code "${referralCode.trim()}" not found.`);
+        if (!referrer) {
+          return NextResponse.json(
+            { error: "invalid_referral", message: "The referral code you entered is invalid" },
+            { status: 400, headers: corsHeaders }
+          );
         }
+        if (referrer.email === email) {
+          return NextResponse.json(
+            { error: "invalid_referral", message: "You cannot refer yourself." },
+            { status: 400, headers: corsHeaders }
+          );
+        }
+        referredByCode = referralCode.trim();
+        console.log(`[AUTH] New user ${email} referred by ${referrer.email} (code: ${referredByCode})`);
       }
 
       user = new User({

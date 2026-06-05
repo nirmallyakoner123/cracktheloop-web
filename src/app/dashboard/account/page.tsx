@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   Shield,
   Sparkles,
@@ -214,13 +215,13 @@ function AccountDetailsContent() {
               Tier: {normalizeTier(user?.subscription_tier)}
             </span>
           </div>
-          <a
+          <Link
             href="/pricing"
             className="text-[10px] text-(--accent) hover:text-(--accent-bright) font-bold uppercase tracking-wider flex items-center gap-1 hover:gap-1.5 transition-all mt-4 w-fit"
           >
             {user?.is_subscribed ? "Upgrade / Change Plan" : "Purchase Plan"}{" "}
             <ArrowRight className="w-3.5 h-3.5" />
-          </a>
+          </Link>
         </div>
 
         {/* Copilot Fuel (Credits) */}
@@ -480,17 +481,15 @@ function AccountDetailsContent() {
 
           <div className="flex flex-wrap gap-3 w-full md:w-auto">
             <a
-              href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/downloads/cracktheloop-desktop_0.1.0_x64-setup.exe"
+              download
               className="px-5 py-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-800 shadow-xs transition active:scale-95 flex items-center gap-2 cursor-pointer justify-center flex-1 md:flex-none text-center"
             >
-              Download for Windows (.msi / .exe)
+              Download for Windows (.exe)
             </a>
             <a
-              href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/downloads/cracktheloop-desktop_0.1.0_aarch64.dmg"
+              download
               className="px-5 py-3 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl font-bold text-xs uppercase tracking-wider text-slate-800 shadow-xs transition active:scale-95 flex items-center gap-2 cursor-pointer justify-center flex-1 md:flex-none text-center"
             >
               Download for macOS (.dmg)
@@ -518,12 +517,12 @@ function AccountDetailsContent() {
             </p>
           </div>
 
-          <a
+          <Link
             href="/pricing"
             className="px-5 py-3 bg-[#E8503A] hover:bg-[#F06B57] text-white rounded-xl font-bold text-xs uppercase tracking-wider shadow-md shadow-[#E8503A]/10 hover:shadow-lg transition active:scale-95 flex items-center gap-2 cursor-pointer w-full md:w-auto text-center justify-center"
           >
             Upgrade Hub <ExternalLink className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
       </section>
 
