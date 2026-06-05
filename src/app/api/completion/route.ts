@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import { User } from "@/models/User";
+import { TokenUsage } from "@/models/TokenUsage";
 import jwt from "jsonwebtoken";
 
 const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "cracktheloop_secret_auth_key_2026_z8y";
@@ -8,7 +9,8 @@ const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET || "cracktheloop_secret_auth
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { provider, prompt, apiKey, role, jobDescription, candidateResume, token, history, sessionId } = body;
+    const { provider, prompt, apiKey, role, jobDescription, candidateResume, token, history, sessionId, requestType, request_type, previousAnswer } = body;
+    const finalRequestType = requestType || request_type || "normal";
 
     if (!role || !role.trim()) {
       return NextResponse.json(
@@ -101,7 +103,17 @@ CRITICAL RULES:
 1. STEALTH: NEVER mention the name 'CrackTheLoop', 'copilot', 'software', or 'overlay'. Be a quiet inner technical voice.
 2. FORMAL VERBATIM RESPONSE: Write your response strictly as a highly formal, professional, first-person candidate answer. Avoid any casual terms or conversational fluff.
 3. NO META-LANGUAGE: Do NOT start with any conversational preambles, greetings, or meta-introductions. Start directly with the technical answer.
-4. RESPONSE FORMAT: Provide a structured, technically deep, yet concise response. Do not use robotic absolute brevity (do not restrict to 25 words or just 1 short bullet point). Make it a natural, professional first-person explanation (typically 2-4 clear sentences or a structured explanation/bullet points) with a genuine human/senior developer touch. Analyze the question thoroughly and explain details where necessary to show deep competence.
+4. RESPONSE FORMAT & LENGTH CONTROL: Tailor the response length and detail level dynamically to the interviewer's query:
+   - If the interviewer's question is direct, short, or simply asks 'what is X?' or is a brief check-in, provide a minimal, highly concise, but technically complete first-person response (typically 2-3 precise sentences) to allow for quick and natural verbal delivery.
+   - If the question is complex or asks you to explain, elaborate, compare, or describe something in detail, provide a detailed, well-structured explanation with bullet points and code examples where appropriate to demonstrate deep domain competence.
+   - Start directly with the technical answer.
+
+KNOWLEDGE BASE INTEGRATION RULES & GUIDELINES:
+- PRIORITIZE KNOWLEDGE BASE: You MUST heavily prioritize context from the candidate's uploaded resume (CANDIDATE'S ACTUAL EXPERIENCE) and target job details (TARGET JOB DETAILS).
+- PROJECT & CONTEXT-DRIVEN ANSWERS: If the interviewer asks questions about technical topics (such as backend/frontend architecture, security, authentication, authorization, RBAC, database handling, deployments, scalability, multithreading, or bandwidth optimization), and the question can be related to a company, project, or domain mentioned in the candidate's resume or job details, you must naturally connect your answer to that specific project, company, or domain.
+- USE NATURAL DETAILS: Reference the actual company names, project names, tools, technologies, and responsibilities provided in the resume and job details. Incorporate them fluidly so the response sounds realistic and highly authentic.
+- NO HALLUCINATION: Under no circumstances should you invent or hallucinate fake company names, project names, proprietary tools, or specific responsibilities that are not explicitly present in the provided context. If certain details are missing, provide a general but realistic technical response based on the candidate's actual skills/stack, without making up false facts.
+- CANDIDATE PERSPECTIVE: Maintain the first-person perspective ("I", "we", "in my project X at company Y") to make it sound like a genuine reflection of the candidate's personal experience. Keep answers structured, concise, confident, and professional.
 `;
 
     if (jobDescription && jobDescription.trim()) {
@@ -123,7 +135,38 @@ CRITICAL RULES:
       sysPrompt += historyText;
     }
 
-    console.log(`[COMPLETION API] Processing request for Role: "${role}"`);
+    // Construct final user prompt based on requestType
+    let finalPrompt = prompt;
+    if (finalRequestType === "regeneration") {
+      finalPrompt = `The candidate was not fully satisfied with the previous answer. Please regenerate a significantly better, more accurate, and more useful response. 
+      
+Below is the interviewer's question:
+"${prompt}"
+
+Below is the previous answer that was generated:
+"${previousAnswer || ''}"
+
+Make sure your new response is distinct, addresses any likely gaps in the previous answer, and provides a highly polished explanation that satisfies the interviewer. Present the improved response strictly in the first-person perspective as the candidate.`;
+    } else if (finalRequestType === "screen_capture") {
+      finalPrompt = `Analyze the following screen content extracted from the candidate's display capture:
+"""
+${prompt}
+"""
+
+Please identify the type of content and output the appropriate guidance:
+- If it is a coding/DSA problem (e.g. from LeetCode, HackerRank, etc.):
+  - Provide a clear explanation of the optimal approach and the time/space complexities.
+  - Write clean, correct, and compilation-ready code in the target language (or Python/TypeScript if not specified).
+  - Briefly discuss edge cases.
+- If it is a set of interview questions or a single question:
+  - Provide complete, professional answers starting with the most prominent question.
+- If it is a math calculation or logic puzzle:
+  - Break down the calculation steps and show the final result.
+- For any other screen-based content:
+  - Extract the core task or question and provide a helpful, accurate, first-person candidate response.`;
+    }
+
+    console.log(`[COMPLETION API] Processing request for Role: "${role}" | RequestType: "${finalRequestType}"`);
     console.log(`[COMPLETION API] Job Description injected: ${jobDescription ? `Yes (${jobDescription.trim().length} chars)` : "No"}`);
     console.log(`[COMPLETION API] Candidate Resume injected: ${candidateResume ? `Yes (${candidateResume.trim().length} chars)` : "No"}`);
     console.log(`[COMPLETION API] Conversation History injected: ${history && Array.isArray(history) ? `Yes (${history.length} turns)` : "No"}`);
@@ -144,7 +187,7 @@ CRITICAL RULES:
           model: "llama-3.1-8b-instant",
           messages: [
             { role: "system", content: sysPrompt },
-            { role: "user", content: prompt },
+            { role: "user", content: finalPrompt },
           ],
           stream: true,
         };
@@ -156,7 +199,7 @@ CRITICAL RULES:
           model: "gpt-5.4-mini",
           messages: [
             { role: "system", content: sysPrompt },
-            { role: "user", content: prompt },
+            { role: "user", content: finalPrompt },
           ],
           stream: true,
         };
@@ -168,7 +211,7 @@ CRITICAL RULES:
           model: "grok-beta",
           messages: [
             { role: "system", content: sysPrompt },
-            { role: "user", content: prompt },
+            { role: "user", content: finalPrompt },
           ],
           stream: true,
         };
@@ -181,7 +224,7 @@ CRITICAL RULES:
           model: "claude-3-5-haiku-20241022",
           system: sysPrompt,
           messages: [
-            { role: "user", content: prompt },
+            { role: "user", content: finalPrompt },
           ],
           max_tokens: 150,
           stream: true,
@@ -192,7 +235,7 @@ CRITICAL RULES:
         reqBody = {
           contents: [
             {
-              parts: [{ text: prompt }],
+              parts: [{ text: finalPrompt }],
             },
           ],
           systemInstruction: {
@@ -261,8 +304,9 @@ CRITICAL RULES:
           controller.close();
 
           // Stream completed! Calculate tokens and save to database
-          const inputTokens = Math.ceil((sysPrompt.length + prompt.length) / 3.8);
+          const inputTokens = Math.ceil((sysPrompt.length + finalPrompt.length) / 3.8);
           const outputTokens = Math.ceil(responseText.length / 3.8);
+          const totalTokens = inputTokens + outputTokens;
 
           // Determine pricing (Standard rates as of 2026)
           let inputPricePerM = 0.15;
@@ -282,21 +326,30 @@ CRITICAL RULES:
           const cost = ((inputTokens * inputPricePerM) + (outputTokens * outputPricePerM)) / 1000000;
 
           // Save TokenUsage
-          if (sessionId) {
-            try {
-              const { TokenUsage } = await import("@/models/TokenUsage");
-              await TokenUsage.create({
-                user_id: user._id,
-                session_id: sessionId,
-                model_name: modelName,
-                input_tokens: inputTokens,
-                output_tokens: outputTokens,
-                cost: cost,
-              });
-              console.log(`[TOKEN USAGE] Logged for session ${sessionId}: model=${modelName}, input=${inputTokens}, output=${outputTokens}, cost=$${cost.toFixed(6)}`);
-            } catch (dbErr) {
-              console.error("[TOKEN USAGE ERROR] Failed to save token usage:", dbErr);
-            }
+          try {
+            await TokenUsage.create({
+              user_id: user._id,
+              session_id: sessionId || "none",
+              model_name: modelName,
+              input_tokens: inputTokens,
+              output_tokens: outputTokens,
+              prompt_tokens: inputTokens,
+              completion_tokens: outputTokens,
+              total_tokens: totalTokens,
+              cost: cost,
+              request_type: finalRequestType,
+              metadata: {
+                role,
+                has_job_description: !!jobDescription,
+                has_candidate_resume: !!candidateResume,
+                history_turns: history ? history.length : 0,
+                provider: providerLower,
+                use_server_keys: useServerKeys
+              }
+            });
+            console.log(`[TOKEN USAGE] Logged for user ${user.email} (session: ${sessionId || "none"}): model=${modelName}, request_type=${finalRequestType}, input=${inputTokens}, output=${outputTokens}, cost=$${cost.toFixed(6)}`);
+          } catch (dbErr) {
+            console.error("[TOKEN USAGE ERROR] Failed to save token usage:", dbErr);
           }
         } catch (err) {
           controller.error(err);

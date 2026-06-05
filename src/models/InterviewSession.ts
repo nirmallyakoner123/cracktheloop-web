@@ -26,6 +26,8 @@ export interface IInterviewSession extends Document {
   total_output_tokens?: number;
   total_cost?: number;
   token_usages?: mongoose.Types.ObjectId[];
+  total_time?: number;
+  total_stt_on_time?: number;
   created_at: Date;
   updated_at: Date;
 }
@@ -129,6 +131,14 @@ const InterviewSessionSchema = new Schema<IInterviewSession>(
         ref: "TokenUsage"
       }],
       default: [],
+    },
+    total_time: {
+      type: Number,
+      default: 0,
+    },
+    total_stt_on_time: {
+      type: Number,
+      default: 0,
     },
   },
   {

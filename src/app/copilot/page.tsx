@@ -90,6 +90,9 @@ export default function CopilotPage() {
   const voiceDebounceTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const voiceSegmentTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const lastPromptRef = useRef("");
+  const lastRequestTypeRef = useRef<'normal' | 'screen_capture'>('normal');
+
   // Draggable HUD coordinates
   const [hudPosition, setHudPosition] = useState({ x: 20, y: 20 });
   const hudRef = useRef<HTMLDivElement | null>(null);
@@ -109,6 +112,9 @@ export default function CopilotPage() {
   }, [history]);
 
   const lastSavedHistoryLengthRef = useRef(0);
+  const sessionStartRef = useRef<number | null>(null);
+  const sttStartRef = useRef<number | null>(null);
+  const accumulatedSttTimeRef = useRef<number>(0);
 
   const [sessionId, setSessionId] = useState("");
   const sessionIdRef = useRef(sessionId);
@@ -129,6 +135,9 @@ export default function CopilotPage() {
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (historyRef.current.length > 0 && historyRef.current.length !== lastSavedHistoryLengthRef.current && tokenRef.current) {
+        const totalTime = sessionStartRef.current ? Math.round((Date.now() - sessionStartRef.current) / 1000) : 0;
+        const totalSttOnTime = Math.round(accumulatedSttTimeRef.current + (sttStartRef.current ? (Date.now() - sttStartRef.current) / 1000 : 0));
+        
         const body = JSON.stringify({
           role: interviewRoleRef.current,
           company: "General Interview Session",
@@ -137,7 +146,9 @@ export default function CopilotPage() {
             text: t.text,
             timestamp: t.timestamp
           })),
-          sessionId: sessionIdRef.current
+          sessionId: sessionIdRef.current,
+          totalTime,
+          totalSttOnTime
         });
 
         lastSavedHistoryLengthRef.current = historyRef.current.length;
@@ -304,7 +315,15 @@ export default function CopilotPage() {
       await saveInterviewSession();
       setHistory([]);
       lastSavedHistoryLengthRef.current = 0;
+      sessionStartRef.current = null;
+      accumulatedSttTimeRef.current = 0;
+      sttStartRef.current = null;
     }
+
+    if (!sessionStartRef.current) {
+      sessionStartRef.current = Date.now();
+    }
+    sttStartRef.current = Date.now();
 
     const newSessionId = typeof window !== 'undefined' && window.crypto && window.crypto.randomUUID
       ? window.crypto.randomUUID()
@@ -522,6 +541,11 @@ export default function CopilotPage() {
   async function stopCaptureEngine() {
     console.log("[CAPTURE] Stopping audio engine...");
 
+    if (sttStartRef.current) {
+      accumulatedSttTimeRef.current += (Date.now() - sttStartRef.current) / 1000;
+      sttStartRef.current = null;
+    }
+
     if (micStreamRef.current) {
       micStreamRef.current.getTracks().forEach((track) => track.stop());
       micStreamRef.current = null;
@@ -568,12 +592,21 @@ export default function CopilotPage() {
   }
 
   // Trigger stateless CORS proxy completion stream
-  async function triggerLLM(promptText: string) {
+  async function triggerLLM(
+    promptText: string,
+    requestType: 'normal' | 'screen_capture' | 'regeneration' = 'normal',
+    previousAnswer?: string
+  ) {
     const authHeaderToken = localStorage.getItem("ctl_token");
     if (!authHeaderToken) {
       setStatus("Error: Authentication Required");
       alert("Please log in to authorize Copilot completions and credit checks.");
       return;
+    }
+
+    if (requestType !== "regeneration") {
+      lastPromptRef.current = promptText;
+      lastRequestTypeRef.current = requestType as 'normal' | 'screen_capture';
     }
 
     setAnswer("");
@@ -599,6 +632,8 @@ export default function CopilotPage() {
           candidateResume: candidateResume || null,
           history: history.map(h => ({ sender: h.sender, text: h.text })),
           sessionId: sessionId || null,
+          requestType: requestType,
+          previousAnswer: previousAnswer || null,
         }),
       });
 
@@ -678,10 +713,23 @@ export default function CopilotPage() {
 
       // Once response is fully compiled, save it into our history log
       if (finalAnswer) {
-        setHistory((prev) => [
-          ...prev,
-          { sender: "copilot", text: finalAnswer, timestamp: new Date() }
-        ]);
+        if (requestType === "regeneration") {
+          setHistory((prev) => {
+            const nextHistory = [...prev];
+            for (let i = nextHistory.length - 1; i >= 0; i--) {
+              if (nextHistory[i].sender === "copilot") {
+                nextHistory[i] = { ...nextHistory[i], text: finalAnswer, timestamp: new Date() };
+                return nextHistory;
+              }
+            }
+            return [...nextHistory, { sender: "copilot", text: finalAnswer, timestamp: new Date() }];
+          });
+        } else {
+          setHistory((prev) => [
+            ...prev,
+            { sender: "copilot", text: finalAnswer, timestamp: new Date() }
+          ]);
+        }
 
         // Deduct 1 credit locally for instant updates
         if (user) {
@@ -695,6 +743,12 @@ export default function CopilotPage() {
       console.error(err);
       setStatus(`LLM Error: ${err.message || err}`);
     }
+  }
+
+  async function handleRegenerateResponse() {
+    if (!lastPromptRef.current) return;
+    setStatus("Streaming Copilot...");
+    await triggerLLM(lastPromptRef.current, "regeneration", answer);
   }
 
   // Draw Audio Waveform on Canvas
@@ -864,6 +918,9 @@ export default function CopilotPage() {
       return;
     }
 
+    const totalTime = sessionStartRef.current ? Math.round((Date.now() - sessionStartRef.current) / 1000) : 0;
+    const totalSttOnTime = Math.round(accumulatedSttTimeRef.current + (sttStartRef.current ? (Date.now() - sttStartRef.current) / 1000 : 0));
+
     lastSavedHistoryLengthRef.current = historyRef.current.length;
     setStatus("Saving session...");
     try {
@@ -881,7 +938,9 @@ export default function CopilotPage() {
             text: t.text,
             timestamp: t.timestamp
           })),
-          sessionId: sessionIdRef.current
+          sessionId: sessionIdRef.current,
+          totalTime,
+          totalSttOnTime
         })
       });
 
@@ -1161,11 +1220,22 @@ export default function CopilotPage() {
                   }`}></span>
                 AI Copilot Guidance
               </span>
-              {latency && (
-                <span className="text-[10px] text-slate-500 font-bold bg-slate-50 border border-slate-200 px-2.5 py-0.5 rounded-lg shadow-sm">
-                  Latency: {latency}s
-                </span>
-              )}
+              <div className="flex items-center gap-2 select-none pointer-events-auto">
+                {answer && status !== "Streaming Copilot..." && (
+                  <button
+                    onClick={handleRegenerateResponse}
+                    className="text-[10.5px] px-2.5 py-0.5 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-black border border-sky-500/35 rounded-lg transition active:scale-95 cursor-pointer flex items-center gap-1 shadow-sm"
+                    title="Regenerate last response with more detailed instructions"
+                  >
+                    🔁 Regenerate
+                  </button>
+                )}
+                {latency && (
+                  <span className="text-[10px] text-slate-400 font-bold bg-white/5 border border-white/5 px-2.5 py-0.5 rounded-lg shadow-sm">
+                    Latency: {latency}s
+                  </span>
+                )}
+              </div>
             </div>
             <div className={`flex-1 text-[16px] p-5 rounded-2xl border overflow-y-auto font-semibold leading-relaxed scrollbar-thin select-text pointer-events-auto ${
               activeLlmProvider === "openai" ? "bg-emerald-50/15 border-emerald-200 text-emerald-950" :

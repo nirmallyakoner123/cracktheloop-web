@@ -41,7 +41,7 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { role, company, transcript, sessionId } = body;
+    const { role, company, transcript, sessionId, totalTime, totalSttOnTime } = body;
 
     if (!role || !transcript || !Array.isArray(transcript) || transcript.length === 0) {
       return NextResponse.json({ error: "A non-empty transcript is required to save an interview session" }, { status: 400, headers: corsHeaders });
@@ -89,7 +89,9 @@ export async function POST(req: Request) {
 
     // Calculate duration of the interview
     let durationSeconds = 0;
-    if (transcript.length > 1) {
+    if (typeof totalTime === "number") {
+      durationSeconds = totalTime;
+    } else if (transcript.length > 1) {
       const timestamps = transcript.map((t: any) => new Date(t.timestamp).getTime()).filter((t: number) => !isNaN(t));
       if (timestamps.length > 1) {
         const minTime = Math.min(...timestamps);
@@ -105,6 +107,9 @@ export async function POST(req: Request) {
     if (durationMinutes > 10) {
       creditsToDeduct = 10 + Math.ceil(durationMinutes - 10);
     }
+
+    const finalTotalTime = Math.round(durationSeconds);
+    const finalTotalSttOnTime = typeof totalSttOnTime === "number" ? Math.round(totalSttOnTime) : finalTotalTime;
 
     const cleanTranscript = transcript.map((turn: any) => {
       let cleanSender = turn.sender;
@@ -145,6 +150,8 @@ export async function POST(req: Request) {
       existingSession.total_output_tokens = totalOutputTokens;
       existingSession.total_cost = totalCost;
       existingSession.token_usages = tokenUsagesIds;
+      existingSession.total_time = finalTotalTime;
+      existingSession.total_stt_on_time = finalTotalSttOnTime;
       
       await existingSession.save();
 
@@ -169,7 +176,9 @@ export async function POST(req: Request) {
         total_input_tokens: totalInputTokens,
         total_output_tokens: totalOutputTokens,
         total_cost: totalCost,
-        token_usages: tokenUsagesIds
+        token_usages: tokenUsagesIds,
+        total_time: finalTotalTime,
+        total_stt_on_time: finalTotalSttOnTime,
       };
       
       if (sessionId) {

@@ -6,7 +6,12 @@ export interface ITokenUsage extends Document {
   model_name: string;
   input_tokens: number;
   output_tokens: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
   cost: number;
+  request_type: string;
+  metadata?: any;
   created_at: Date;
 }
 
@@ -37,10 +42,35 @@ const TokenUsageSchema = new Schema<ITokenUsage>(
       required: true,
       default: 0,
     },
+    prompt_tokens: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    completion_tokens: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
+    total_tokens: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     cost: {
       type: Number,
       required: true,
       default: 0,
+    },
+    request_type: {
+      type: String,
+      required: true,
+      default: "normal",
+      index: true,
+    },
+    metadata: {
+      type: Schema.Types.Mixed,
+      required: false,
     },
   },
   {

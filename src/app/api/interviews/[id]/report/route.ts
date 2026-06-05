@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
 import { InterviewSession } from "@/models/InterviewSession";
 import { User } from "@/models/User";
+import { TokenUsage } from "@/models/TokenUsage";
 import { logCreditTransaction } from "@/lib/transactions";
 import jwt from "jsonwebtoken";
 
@@ -34,7 +35,7 @@ export async function POST(
     const decoded: any = jwt.verify(jwtToken, NEXTAUTH_SECRET);
     const { id } = await params;
 
-    // Force server-managed OpenAI key and gpt-4o-mini
+    // Force server-managed OpenAI key and gpt-4o
     const serverOpenAIKey = process.env.OPENAI_API_KEY;
     if (!serverOpenAIKey) {
       return NextResponse.json({ error: "Server API Key is not configured." }, { status: 500, headers: corsHeaders });
@@ -134,7 +135,7 @@ Generate the evaluation report.`;
         url = "https://api.openai.com/v1/chat/completions";
         headers["Authorization"] = `Bearer ${finalApiKey}`;
         reqBody = {
-          model: "gpt-4o-mini",
+          model: "gpt-4o",
           messages: [
             { role: "system", content: systemPrompt },
             { role: "user", content: userPrompt }
@@ -251,7 +252,80 @@ Generate the evaluation report.`;
     user.total_burn_credits = (user.total_burn_credits || 0) + 5;
     await user.save();
 
-    await logCreditTransaction(user._id, 5, "burn", "report_evaluation", "gpt-4o-mini");
+    // Parse token usage from the API response
+    let promptTokens = 0;
+    let completionTokens = 0;
+    let totalTokens = 0;
+    let modelName: string = providerLower;
+
+    if (result.usage) {
+      promptTokens = result.usage.prompt_tokens || result.usage.input_tokens || 0;
+      completionTokens = result.usage.completion_tokens || result.usage.output_tokens || 0;
+      totalTokens = result.usage.total_tokens || (promptTokens + completionTokens);
+    } else if (result.usageMetadata) {
+      promptTokens = result.usageMetadata.promptTokenCount || 0;
+      completionTokens = result.usageMetadata.candidatesTokenCount || 0;
+      totalTokens = promptTokens + completionTokens;
+    }
+
+    // Fallback estimation if no usage statistics are available from provider
+    if (promptTokens === 0) {
+      promptTokens = Math.ceil((systemPrompt.length + userPrompt.length) / 3.8);
+    }
+    if (completionTokens === 0) {
+      completionTokens = Math.ceil(textOutput.length / 3.8);
+    }
+    if (totalTokens === 0) {
+      totalTokens = promptTokens + completionTokens;
+    }
+
+    // Cost calculations (Standard rates as of 2026)
+    let inputPricePerM = 0.15;
+    let outputPricePerM = 0.60;
+
+    if (providerLower === "openai") {
+      modelName = "gpt-4o";
+      inputPricePerM = 2.50;
+      outputPricePerM = 10.00;
+    } else if (providerLower === "groq") {
+      modelName = "llama-3.1-8b-instant";
+      inputPricePerM = 0.15;
+      outputPricePerM = 0.60;
+    } else if (providerLower === "anthropic") {
+      modelName = "claude-3-5-haiku-20241022";
+      inputPricePerM = 0.80;
+      outputPricePerM = 4.00;
+    }
+
+    const aiCost = ((promptTokens * inputPricePerM) + (completionTokens * outputPricePerM)) / 1000000;
+
+    // Log TokenUsage to database
+    try {
+      await TokenUsage.create({
+        user_id: user._id,
+        session_id: id,
+        model_name: modelName,
+        input_tokens: promptTokens,
+        output_tokens: completionTokens,
+        prompt_tokens: promptTokens,
+        completion_tokens: completionTokens,
+        total_tokens: totalTokens,
+        cost: aiCost,
+        request_type: "report",
+        metadata: {
+          session_id: id,
+          role: session.role,
+          company: session.company,
+          transcript_length: session.transcript.length,
+          provider: providerLower
+        }
+      });
+      console.log(`[TOKEN USAGE] Logged for report: user=${user.email}, model=${modelName}, prompt_tokens=${promptTokens}, completion_tokens=${completionTokens}, cost=$${aiCost.toFixed(6)}`);
+    } catch (dbErr) {
+      console.error("[TOKEN USAGE ERROR] Failed to log report token usage:", dbErr);
+    }
+
+    await logCreditTransaction(user._id, 5, "burn", "report_evaluation", modelName);
 
     console.log(`[REPORT GENERATION] Compiled report for ${user.email}. Charged 5 credits. Remaining: ${user.credits}`);
 
