@@ -141,52 +141,35 @@ export default function Hero() {
             </h1>
 
             <p className="text-base md:text-lg leading-relaxed font-normal text-(--text-muted) max-w-xl">
-              Get AI-generated interview answers in real time - live during your Zoom, Teams, or Google Meet call. Completely undetectable. Free to try. Works for technical, behavioral, and system design rounds.
+              Get real-time AI guidance during your live <span className="font-semibold text-[#2D8CFF]">Zoom</span>, <span className="font-semibold text-[#5B5FC7]">Teams</span>, or <span className="font-semibold text-[#34A853]">Google Meet</span> sessions. Undetectable, free to try, and optimized for technical and behavioral rounds.
             </p>
 
             <div className="flex flex-col gap-4 mt-2">
               {/* Buttons Row */}
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center gap-6">
                 <Link href="/pricing" className="btn-primary-glow cursor-pointer !py-4 !px-8">
                   Try For Free
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-                <Link
-                  href="#platform-picker"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const el = document.getElementById("platform-picker");
-                    if (el) el.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="btn-secondary-pill cursor-pointer !py-4 !px-8"
-                >
-                  Get Our App
-                </Link>
-              </div>
 
-              {/* Helper & Referral Row */}
-              <div className="flex flex-wrap items-center gap-x-8 gap-y-2.5 pl-2 mt-1">
-                <div className="flex flex-col gap-1 text-sm font-medium text-slate-600">
-                  <span className="flex items-center gap-1.5">
+                <div className="flex flex-col gap-1 pl-1">
+                  <span className="flex items-center gap-1.5 text-sm font-semibold text-slate-600">
                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    No Credit Card Required
+                    No Credit Card Required · 15 Free Credits
                   </span>
-                  <span className="text-emerald-650 font-semibold pl-5.5">
-                    Free AI Interview Helper - No Card Needed
-                  </span>
+                  <Link
+                    href="#referral-program"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const el = document.getElementById("referral-program");
+                      if (el) el.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="text-sm text-indigo-650 hover:text-indigo-850 font-bold flex items-center gap-0.5 transition-all duration-300 hover:translate-x-0.5 select-none"
+                  >
+                    <span>🎁 Give 20%, Get 50% credits</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
-                <Link
-                  href="#referral-program"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    const el = document.getElementById("referral-program");
-                    if (el) el.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="text-sm text-indigo-650 hover:text-indigo-850 font-bold flex items-center gap-1 transition-all duration-300 hover:translate-x-0.5 select-none pt-0.5"
-                >
-                  <span>🎁 Give 20%, Get 50% credits</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
               </div>
             </div>
 
