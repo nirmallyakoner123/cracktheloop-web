@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import {
   Shield,
   Sparkles,
@@ -21,7 +22,6 @@ import {
 } from "lucide-react";
 import Navbar from "../components/landing/Navbar";
 import CtaFooter from "../components/landing/CtaFooter";
-import Link from "next/link";
 
 /* ─────────────────────────────────────────────
    PIPELINE DIAGRAM
@@ -586,7 +586,7 @@ export default function DemoPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <Link
               href="/copilot"
-              className="px-6 py-3.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:brightness-110 text-white rounded-xl font-bold text-xs transition active:scale-95 flex items-center gap-1.5 shadow-sm"
+              className="px-6 py-3.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:brightness-110 text-white rounded-xl font-bold text-xs transition active:scale-95 flex items-center gap-1.5 shadow-sm text-center"
             >
               Launch Browser Copilot <Globe className="w-4 h-4" />
             </Link>
@@ -600,7 +600,7 @@ export default function DemoPage() {
             </a>
             <Link
               href="/pricing"
-              className="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 rounded-xl font-bold text-xs transition active:scale-95 cursor-pointer"
+              className="px-6 py-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 rounded-xl font-bold text-xs transition active:scale-95 cursor-pointer text-center"
             >
               Get License Key
             </Link>

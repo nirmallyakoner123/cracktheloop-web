@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { connectToDatabase } from "@/lib/db";
+import { User } from "@/models/User";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2026-05-27.dahlia" as any,
@@ -18,10 +20,30 @@ export async function POST(request: Request) {
 
     console.log(`[STRIPE] Creating checkout session for ${email} with price ${priceId}`);
 
+    await connectToDatabase();
+    const dbUser = await User.findOne({ email });
+
+    // Retrieve or create Stripe customer to pre-fill billing details/name
+    let customer;
+    const existingCustomers = await stripe.customers.list({ email, limit: 1 });
+    if (existingCustomers.data.length > 0) {
+      customer = existingCustomers.data[0];
+      if (!customer.name && dbUser?.name) {
+        customer = await stripe.customers.update(customer.id, {
+          name: dbUser.name,
+        });
+      }
+    } else {
+      customer = await stripe.customers.create({
+        email,
+        name: dbUser?.name || undefined,
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "subscription",
-      customer_email: email,
+      customer: customer.id,
       line_items: [
         {
           price: priceId,
