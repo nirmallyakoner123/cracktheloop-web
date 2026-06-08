@@ -29,6 +29,7 @@ import {
   AlertOctagon
 } from "lucide-react";
 import Link from "next/link";
+import { WindowsIcon, AppleIcon } from "@/app/components/icons/BrandIcons";
 
 interface SessionData {
   _id: string;
@@ -487,17 +488,17 @@ function DashboardHomeContent() {
                     href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex-1 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <Download className="w-3.5 h-3.5 text-slate-400" /> Windows
+                    <WindowsIcon className="w-3.5 h-3.5 text-slate-500" /> Windows
                   </a>
                   <a
                     href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-1 cursor-pointer"
+                    className="flex-1 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    <Download className="w-3.5 h-3.5 text-slate-400" /> macOS
+                    <AppleIcon className="w-3.5 h-3.5 text-slate-500" /> macOS
                   </a>
                 </div>
               </div>

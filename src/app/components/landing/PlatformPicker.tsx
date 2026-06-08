@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, Monitor, Apple, Download, ArrowRight, Check, Sparkles } from "lucide-react";
+import { Globe, Download, ArrowRight, Check, Sparkles } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
 import Link from "next/link";
+import { WindowsIcon, AppleIcon } from "@/app/components/icons/BrandIcons";
 
 export default function PlatformPicker() {
   const [activePlatform, setActivePlatform] = useState<"web" | "windows" | "mac">("windows");
@@ -29,7 +30,7 @@ export default function PlatformPicker() {
     {
       id: "windows" as const,
       name: "Windows Desktop App",
-      icon: Monitor,
+      icon: WindowsIcon,
       tag: "Flagship Stealth",
       color: "bg-(--accent-soft) text-(--accent) border border-(--accent)/20",
       description: "Our flagship desktop application. Deep system-level security integration delivers 100% invisible stealth overlay and local-first privacy.",
@@ -46,7 +47,7 @@ export default function PlatformPicker() {
     {
       id: "mac" as const,
       name: "Mac Desktop App",
-      icon: Apple,
+      icon: AppleIcon,
       tag: "Native App",
       color: "bg-slate-100 text-slate-700 border border-slate-200",
       description: "Fully optimized for macOS. Natively compiled for Apple M1/M2/M3 chips and Intel processors with modern Metal graphics rendering.",

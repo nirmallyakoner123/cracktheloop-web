@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { motion, useScroll, useSpring } from "framer-motion";
-import { Sparkles, Menu, X, ChevronDown, ArrowRight, Download, Monitor, Apple } from "lucide-react";
+import { Sparkles, Menu, X, ChevronDown, ArrowRight, Download } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { WindowsIcon, AppleIcon } from "@/app/components/icons/BrandIcons";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -148,7 +149,7 @@ export default function Navbar() {
                   }}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 transition cursor-pointer text-xs font-bold text-slate-800"
                 >
-                  <Monitor className="w-3.5 h-3.5 text-slate-500" />
+                  <WindowsIcon className="w-3.5 h-3.5 text-slate-500" />
                   <span>Windows (.exe)</span>
                 </Link>
                 <Link
@@ -162,7 +163,7 @@ export default function Navbar() {
                   }}
                   className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 transition cursor-pointer text-xs font-bold text-slate-800"
                 >
-                  <Apple className="w-3.5 h-3.5 text-slate-500" />
+                  <AppleIcon className="w-3.5 h-3.5 text-slate-500" />
                   <span>macOS (.dmg)</span>
                 </Link>
               </div>
@@ -270,7 +271,7 @@ export default function Navbar() {
       {/* Sticky Scroll Progress Bar nested in a rounded wrapper to avoid corner clipping */}
       <div className="absolute inset-0 rounded-full overflow-hidden pointer-events-none">
         <motion.div
-          className="absolute bottom-0 left-0 right-0 h-[3px] bg-(--accent) origin-left z-50"
+          className="absolute bottom-0 left-0 right-0 h-[3px] bg-(--accent) origin-left z-20"
           style={{ scaleX }}
         />
       </div>
