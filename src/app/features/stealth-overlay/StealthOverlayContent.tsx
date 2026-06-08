@@ -44,11 +44,11 @@ export default function StealthOverlayContent() {
           Secure Stealth Shielding Active
         </div>
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-(--text-primary) leading-none max-w-3xl font-display" style={{ fontFamily: "var(--font-display)" }}>
-          Your Secret Weapon — <br />
+          Your Secret Weapon - <br />
           <span className="text-gradient-coral">Nobody Knows It's There</span>
         </h1>
         <p className="text-(--text-muted) text-base md:text-lg max-w-2xl leading-relaxed">
-          Our desktop overlay remains completely invisible to screen shares, screenshots, and recording software — visible only to you on your physical monitor.
+          Our desktop overlay remains completely invisible to screen shares, screenshots, and recording software - visible only to you on your physical monitor.
         </p>
       </section>
 
@@ -62,7 +62,7 @@ export default function StealthOverlayContent() {
               </h2>
               <p className="text-xs text-slate-500 mt-1">Adjust the slider to preview how the overlay appears on your screen versus what interviewers see.</p>
             </div>
-            
+
             {/* Opacity slider control */}
             <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 border border-slate-200 rounded-[12px]">
               <span className="text-xs font-bold text-slate-600">HUD Opacity:</span>
@@ -212,13 +212,13 @@ export default function StealthOverlayContent() {
           <p className="text-xs text-slate-600 leading-relaxed font-medium">
             Whether you use the web version or the downloadable desktop application, CrackTheLoop keeps your interview assistance safe and unseen.
           </p>
-          
+
           <div className="flex flex-col gap-3 text-xs text-slate-700">
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p className="font-bold text-slate-800 mb-1">Web Copilot (Zero Install)</p>
               <p className="text-[11px] text-slate-500">Perfect for browser-based coding tools. Operates in a floating sidebar layout on your browser.</p>
             </div>
-            
+
             <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
               <p className="font-bold text-slate-800 mb-1">Desktop App (Full Stealth)</p>
               <p className="text-[11px] text-slate-500">Excludes itself from system-wide video captures. Invisible overlay overlays any application or meeting window.</p>

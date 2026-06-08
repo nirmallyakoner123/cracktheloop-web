@@ -12,10 +12,10 @@ const features = [
   {
     id: 0,
     icon: FileText,
-    label: "Resume-Aware",
-    title: "Answers Pulled Directly From Your Resume",
-    desc: "The AI deep-reads your projects, metrics, and tech stack so every suggestion is 100% personalized — not generic internet filler.",
-    tag: "Personalization",
+    label: "Resume-Based AI Guidance",
+    title: "AI Interview Guidance Tailored to Your Resume",
+    desc: "The AI deep-reads your projects, metrics, and tech stack so every talking point is 100% personalized - not generic internet filler. Free with every plan.",
+    tag: "Personalized AI Guidance",
     preview: (
       <div className="w-full h-full flex flex-col gap-3">
         {/* App header */}
@@ -36,7 +36,7 @@ const features = [
           <span className="text-[9px] font-mono font-bold text-(--accent) uppercase tracking-widest">↳ Matched from your resume</span>
           <div className="flex items-start gap-2">
             <span className="text-(--accent) mt-0.5 shrink-0">✦</span>
-            <span className="text-[11px] text-slate-700 leading-snug">E-commerce dashboard redesign — React/Next.js</span>
+            <span className="text-[11px] text-slate-700 leading-snug">E-commerce dashboard redesign - React/Next.js</span>
           </div>
           <div className="flex items-start gap-2">
             <span className="text-(--accent) mt-0.5 shrink-0">✦</span>
@@ -54,10 +54,10 @@ const features = [
   {
     id: 1,
     icon: CheckCircle2,
-    label: "JD Alignment",
-    title: "Answers Matched to the Exact Job Description",
-    desc: "Extracts role requirements, mandatory keywords, and deliverables from the pasted JD — so every talking point hits what the interviewer wants.",
-    tag: "Keyword Matching",
+    label: "Job Description Keyword Match",
+    title: "AI Interview Guidance Matched to the Exact Job Description",
+    desc: "Extracts role requirements, mandatory ATS keywords, and deliverables from the pasted JD - so every talking point hits what the interviewer is scoring for. Included free.",
+    tag: "ATS Keyword Matching",
     preview: (
       <div className="w-full h-full flex flex-col gap-3">
         <div className="flex items-center justify-between mb-1">
@@ -92,10 +92,10 @@ const features = [
   {
     id: 2,
     icon: Mic,
-    label: "Live Transcription",
-    title: "Understands Questions the Moment They're Asked",
-    desc: "High-fidelity audio capture transcribes the interviewer in real time, detecting question intent and boundaries within milliseconds.",
-    tag: "Real-Time AI",
+    label: "Live Interview Transcription",
+    title: "Understands Questions the Moment They're Asked - Live",
+    desc: "Real-time audio capture transcribes the interviewer during your live sessions, detecting question intent within milliseconds. Works on Zoom, Teams, Meet, HireVue, and Karat.",
+    tag: "Real-Time AI Guidance",
     preview: (
       <div className="w-full h-full flex flex-col gap-3">
         <div className="flex items-center justify-between mb-1">
@@ -131,10 +131,10 @@ const features = [
   {
     id: 3,
     icon: Clock,
-    label: "Quick Answer",
-    title: "Instant 2-Line Answer When Time Is Short",
-    desc: "When the conversation is moving fast, get a crisp high-level response in under 2 seconds — no frameworks, just the essential point.",
-    tag: "Speed Mode",
+    label: "Quick AI Guidance",
+    title: "Free AI Interview Guidance - Quick Mode",
+    desc: "When the conversation is moving fast, get crisp AI-generated interview suggestions in under 2 seconds - no frameworks, just the essential talking point.",
+    tag: "Speed Mode - Free",
     preview: (
       <div className="w-full h-full flex flex-col gap-3">
         <div className="flex items-center justify-between mb-1">
@@ -151,7 +151,7 @@ const features = [
             <span className="text-[9px] font-mono font-bold text-(--accent) uppercase tracking-widest">Quick Answer</span>
           </div>
           <p className="text-[12px] text-slate-700 leading-relaxed">
-            "I use structured prioritization frameworks like RICE matrix to align stakeholders objectively — removing emotional bias and anchoring decisions on business impact vs. engineering cost."
+            "I use structured prioritization frameworks like RICE matrix to align stakeholders objectively - removing emotional bias and anchoring decisions on business impact vs. engineering cost."
           </p>
         </div>
         <div className="flex gap-2">
@@ -164,17 +164,17 @@ const features = [
             <div className="text-[8px] text-(--accent) font-medium">to deliver</div>
           </div>
         </div>
-        <div className="text-[9px] font-mono text-(--accent) font-bold">✓ Perfect pacing — no over-explaining</div>
+        <div className="text-[9px] font-mono text-(--accent) font-bold">✓ Perfect pacing - no over-explaining</div>
       </div>
     ),
   },
   {
     id: 4,
     icon: BrainCircuit,
-    label: "STAR Framework",
-    title: "Full Structured Answer in STAR Format",
-    desc: "For complex behavioral and situational questions, get a complete STAR (Situation, Task, Action, Result) breakdown — with your real experience woven in.",
-    tag: "Deep Mode",
+    label: "STAR Method AI Guidance",
+    title: "Full AI Interview Guidance in STAR Format - Behavioral Questions",
+    desc: "For behavioral and situational questions, get a complete STAR method outline (Situation, Task, Action, Result) - with your real resume experience woven in automatically.",
+    tag: "STAR Method Deep Mode",
     preview: (
       <div className="w-full h-full flex flex-col gap-3">
         <div className="flex items-center justify-between mb-1">
@@ -185,7 +185,7 @@ const features = [
           {[
             { label: "S", name: "Situation", text: "Redesigning Acme's platform under a 6-week product deadline with competing stakeholder demands." },
             { label: "T", name: "Task", text: "Align PM, design, and engineering on a single prioritized feature scope without delaying launch." },
-            { label: "A", name: "Action", text: "Facilitated a 2-hour RICE matrix workshop — scored 12 features on impact vs. effort objectively." },
+            { label: "A", name: "Action", text: "Facilitated a 2-hour RICE matrix workshop - scored 12 features on impact vs. effort objectively." },
             { label: "R", name: "Result", text: "Shipped on time. Stakeholder satisfaction 94%. Feature adoption hit 67% in the first week." },
           ].map((s) => (
             <div key={s.label} className="bg-white border border-(--border-light) rounded-lg p-3 shadow-sm">
@@ -204,10 +204,10 @@ const features = [
   {
     id: 5,
     icon: ShieldAlert,
-    label: "Confidence Notes",
-    title: "Never Blank Out — Key Reminders Always Visible",
-    desc: "Calm, concise confidence prompts show your top achievements, pacing reminders, and STAR cues so you stay grounded under pressure.",
-    tag: "Mental Anchoring",
+    label: "Calm Interview Anxiety",
+    title: "Never Blank Out - Confidence Reminders Always Visible",
+    desc: "Calm, concise AI prompts show your top achievements, pacing reminders, and STAR cues so you stay grounded under interview anxiety. The free plan includes this feature.",
+    tag: "Calm Interview Anxiety",
     preview: (
       <div className="w-full h-full flex flex-col gap-3">
         <div className="flex items-center justify-between mb-1">
@@ -245,7 +245,7 @@ const features = [
             <span className="text-[10px] text-slate-600">• 94% stakeholder satisfaction score</span>
           </div>
         </div>
-        <div className="text-[9px] font-mono text-(--accent) font-bold">✓ You've got this — your experience is your edge</div>
+        <div className="text-[9px] font-mono text-(--accent) font-bold">✓ You've got this - your experience is your edge</div>
       </div>
     ),
   },
@@ -256,7 +256,7 @@ export default function BentoFeatures() {
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isInView, setIsInView] = useState(false);
-  
+
   const featureLinks = [
     "/features/resume-jd-alignment",
     "/features/resume-jd-alignment",
@@ -265,7 +265,7 @@ export default function BentoFeatures() {
     "/features/resume-jd-alignment",
     "/features/stealth-overlay"
   ];
-  
+
   const sectionRef = useRef<HTMLElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -343,16 +343,16 @@ export default function BentoFeatures() {
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-(--text-primary-dark)"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Six AI Powers, One{" "}
-              <span className="text-gradient-coral">Invisible Copilot</span>
+              The AI Interview Answer Generator{" "}
+              <span className="text-gradient-coral">That Works Live During Calls</span>
             </h2>
             <p className="text-(--text-muted-dark) text-base mt-3 max-w-xl mx-auto leading-relaxed">
-              Every feature works in real time, completely hidden from your interviewer — giving you an unfair, undetectable advantage.
+              Every feature works in real time - completely undetectable by your interviewer. Free to try. The best AI interview helper for Zoom, Teams, and Google Meet.
             </p>
           </div>
         </ScrollReveal>
 
-        {/* Feature Showcase — left tabs + right preview */}
+        {/* Feature Showcase - left tabs + right preview */}
         <div
           className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-6 items-stretch"
           onMouseEnter={() => setIsPaused(true)}
@@ -368,8 +368,8 @@ export default function BentoFeatures() {
                   key={i}
                   onClick={() => { goTo(i); setIsPaused(true); }}
                   className={`group relative w-full text-left rounded-[8px] px-4 py-4 transition-all duration-300 border overflow-hidden ${isActive
-                      ? "bg-white border-(--accent)/30 shadow-md"
-                      : "bg-white/40 border-transparent hover:bg-white/70 hover:border-(--border-light)"
+                    ? "bg-white border-(--accent)/30 shadow-md"
+                    : "bg-white/40 border-transparent hover:bg-white/70 hover:border-(--border-light)"
                     }`}
                 >
                   {/* Progress bar at bottom of active tab */}
@@ -383,8 +383,8 @@ export default function BentoFeatures() {
                   <div className="flex items-center gap-3">
                     {/* Icon */}
                     <div className={`w-9 h-9 rounded-[6px] flex items-center justify-center shrink-0 transition-all duration-300 ${isActive
-                        ? "bg-(--accent) text-white shadow-sm"
-                        : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                      ? "bg-(--accent) text-white shadow-sm"
+                      : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
                       }`}>
                       <Icon className="w-4 h-4" />
                     </div>
@@ -434,8 +434,8 @@ export default function BentoFeatures() {
                     </p>
                     {featureLinks[active] && (
                       <div className="mt-3">
-                        <Link 
-                          href={featureLinks[active]} 
+                        <Link
+                          href={featureLinks[active]}
                           className="inline-flex items-center gap-1 text-xs font-bold text-(--accent) hover:text-[#f06b57] transition cursor-pointer"
                         >
                           Explore feature details <ArrowRight className="w-3.5 h-3.5" />

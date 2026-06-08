@@ -10,7 +10,7 @@ const formats = [
     title: "One Engineer. One Shot.",
     anxiety: "Blanking out mid-answer. Losing structure. Verbal fillers taking over.",
     solution:
-      "STAR framework talking points surface in under 2 seconds. Resume projects mapped to the exact question. You stay composed.",
+      "STAR method AI interview suggestions surface in under 2 seconds. Resume projects mapped to the exact question. Behavioral interview AI keeps you composed and structured.",
     points: [
       "Behavioral answers structured to STAR in real time",
       "Surfaces relevant resume projects automatically",
@@ -25,26 +25,26 @@ const formats = [
     anxiety:
       "Overwhelm. Losing track of who asked what. Forgetting key technical details under pressure.",
     solution:
-      "CrackTheLoop captures each question as it's spoken, structures the answer, and queues context from your resume — so you always have something strong to say.",
+      "CrackTheLoop captures each question as it's spoken, structures the answer, and queues context from your resume - so you always have something strong to say.",
     points: [
       "Captures any speaker's question, regardless of who asks",
       "Fast-switch answer mode for rapid question sequences",
       "Keeps JD keyword alignment across all answers",
     ],
-    stat: { value: "5×", label: "panelists — zero panic" },
+    stat: { value: "5×", label: "panelists - zero panic" },
     featured: true,
   },
   {
     icon: Bot,
-    tag: "AI Screener Bots",
+    tag: "HireVue AI Interview Helper",
     title: "HireVue. Karat. Byteboard.",
     anxiety:
       "Unnatural pace, timer anxiety, robotic scoring rubrics, no room to think.",
     solution:
-      "Captures system audio from any video platform. Structures answers to match the format's scoring rubric — behavioral, competency, or technical.",
+      "Captures system audio from any video platform or AI screener. Generates AI interview suggestions matched to the rubric's scoring format - behavioral, competency, or technical.",
     points: [
       "Works with any AI video screener via system audio capture",
-      "Answers aligned to rubric scoring criteria",
+      "Suggestions aligned to rubric scoring criteria",
       "Handles pre-recorded and live bot question formats",
     ],
     stat: { value: "100%", label: "AI screener compatible" },
@@ -70,11 +70,11 @@ export default function UseCases() {
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-(--text-primary)"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Works for Every Format{" "}
-              <span className="text-gradient-coral">They Throw at You</span>
+              AI Interview Helper for Every Format{" "}
+              <span className="text-gradient-coral">- Live &amp; Undetectable</span>
             </h2>
             <p className="text-(--text-muted) text-base mt-3 max-w-xl mx-auto leading-relaxed">
-              Whether it&apos;s a single recruiter, a five-person panel, or an AI bot — CrackTheLoop handles every interview format without skipping a beat.
+              Whether it&apos;s a single recruiter, a five-person panel, or a HireVue AI screener - CrackTheLoop generates real-time AI interview guidance for every format, completely undetectable.
             </p>
           </div>
         </ScrollReveal>
@@ -91,11 +91,10 @@ export default function UseCases() {
             return (
               <StaggerItem key={i}>
                 <div
-                  className={`group relative rounded-[12px] p-6 md:p-7 flex flex-col gap-5 overflow-hidden h-full transition-all duration-300 hover:-translate-y-1.5 cursor-default ${
-                    isFeatured
+                  className={`group relative rounded-[12px] p-6 md:p-7 flex flex-col gap-5 overflow-hidden h-full transition-all duration-300 hover:-translate-y-1.5 cursor-default ${isFeatured
                       ? "bg-(--accent-soft) border-2 border-(--accent)/30 shadow-md"
                       : "bg-white/70 border border-(--border-light) shadow-xs hover:shadow-md hover:border-(--accent)/20"
-                  }`}
+                    }`}
                 >
                   {/* Glow for featured */}
                   {isFeatured && (
@@ -105,11 +104,10 @@ export default function UseCases() {
                   {/* Tag + Stat */}
                   <div className="flex items-center justify-between flex-wrap gap-2">
                     <span
-                      className={`text-[10px] font-mono font-bold tracking-wider uppercase px-2.5 py-1 rounded-full border ${
-                        isFeatured
+                      className={`text-[10px] font-mono font-bold tracking-wider uppercase px-2.5 py-1 rounded-full border ${isFeatured
                           ? "bg-white/80 text-(--accent) border-(--accent)/20"
                           : "bg-(--accent-soft) text-(--accent) border-(--accent)/20"
-                      }`}
+                        }`}
                     >
                       {fmt.tag}
                     </span>
@@ -126,11 +124,10 @@ export default function UseCases() {
                   {/* Icon + Title */}
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-11 h-11 rounded-[8px] flex items-center justify-center shrink-0 ${
-                        isFeatured
+                      className={`w-11 h-11 rounded-[8px] flex items-center justify-center shrink-0 ${isFeatured
                           ? "bg-white/80 text-(--accent)"
                           : "bg-(--accent-soft) text-(--accent)"
-                      }`}
+                        }`}
                     >
                       <Icon className="w-5 h-5" />
                     </div>
@@ -151,11 +148,10 @@ export default function UseCases() {
 
                   {/* Solution block */}
                   <div
-                    className={`rounded-[8px] px-4 py-3 border ${
-                      isFeatured
+                    className={`rounded-[8px] px-4 py-3 border ${isFeatured
                         ? "bg-white/70 border-white/80"
                         : "bg-(--accent-soft) border-(--accent)/15"
-                    }`}
+                      }`}
                   >
                     <span className="text-[10px] font-mono font-bold uppercase text-(--accent) tracking-wider block mb-1">
                       How CrackTheLoop Helps

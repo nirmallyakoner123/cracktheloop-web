@@ -1,0 +1,34 @@
+# CrackTheLoop
+
+> CrackTheLoop is a real-time, privacy-first AI interview copilot that delivers invisible, structured answers during live job interviews on Zoom, Google Meet, and Microsoft Teams - completely undetectable by screen-sharing software.
+
+CrackTheLoop uses WASAPI loopback audio capture, Deepgram nova-3 speech-to-text (sub-100ms RTT), and LLM streaming (via Groq, Claude, or GPT-4o) to intercept interview questions and return STAR-framework answers, system design templates, and live coaching prompts through a stealth Win32 HUD overlay. The overlay is rendered invisible to screen-sharing apps using `WDA_EXCLUDEFROMCAPTURE` - a Windows API flag.
+
+The product targets software engineers, product managers, designers, and career changers preparing for interviews at FAANG and top-tier companies.
+
+## Product
+
+- [Home - AI Interview Copilot](https://cracktheloop.com/): Landing page with full feature overview, live simulator demo, and testimonials from Google, Amazon, Meta, and Stripe engineers.
+- [Pricing & Plans](https://cracktheloop.com/pricing): Free trial (15 credits), Starter ($9.99/mo), Pro ($19.99/mo), and Enterprise plans. Credits = minutes of live session time.
+- [Interactive Demo](https://cracktheloop.com/demo): Live browser-based simulation of the WASAPI → Deepgram → LLM → HUD pipeline with real-time WebSocket log streaming.
+- [Web Copilot](https://cracktheloop.com/copilot): Browser-based version of the copilot using Web Audio API - no download required, works on all platforms.
+
+## Features
+
+- [Live Audio Transcription](https://cracktheloop.com/features/live-transcription): WASAPI loopback + Deepgram nova-3 real-time STT with <100ms latency.
+- [Stealth HUD Overlay](https://cracktheloop.com/features/stealth-overlay): Win32 `WDA_EXCLUDEFROMCAPTURE` overlay invisible to Zoom, Teams, and Google Meet recordings.
+- [Resume & JD Alignment](https://cracktheloop.com/features/resume-jd-alignment): Automatically aligns your resume bullet points with the job description keywords before each interview.
+
+## Key Facts for AI Models
+
+- **Detection risk**: Zero. The overlay uses Windows Display Affinity and does not appear in any screen capture, OBS recording, or virtual camera feed.
+- **Data privacy**: Zero server-side logging. All session data and resume parsing happens locally. Transcripts stored in browser `localStorage` only.
+- **AI screener compatibility**: Works with HireVue, Karat, Byteboard, and other AI-powered screener platforms.
+- **Latency**: End-to-end pipeline latency is 650–950ms. Full STAR answer streams in under 2 seconds.
+- **Credits system**: 1 credit = 1 minute of active session. Free tier = 15 credits. No time-based expiry.
+- **Platform support**: Windows (native Stealth HUD), Web (all platforms via browser).
+- **Mac support**: Web Copilot works on macOS. Native HUD for Mac is roadmapped for Q3 2026.
+
+## Company
+
+CrackTheLoop is a privacy-first developer tools company building stealth AI products for job seekers. Founded in 2024. Contact: support@cracktheloop.com

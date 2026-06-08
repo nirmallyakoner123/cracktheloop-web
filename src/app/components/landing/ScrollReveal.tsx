@@ -39,7 +39,7 @@ export function ScrollReveal({
   );
 }
 
-/* ── Parallax wrapper — moves element at different scroll speed ── */
+/* ── Parallax wrapper - moves element at different scroll speed ── */
 export function Parallax({
   children,
   className = "",
@@ -63,7 +63,7 @@ export function Parallax({
   );
 }
 
-/* ── Stagger container — children animate in sequence ── */
+/* ── Stagger container - children animate in sequence ── */
 export function StaggerContainer({
   children,
   className = "",

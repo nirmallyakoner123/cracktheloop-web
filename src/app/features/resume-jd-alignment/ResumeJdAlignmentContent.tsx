@@ -120,7 +120,7 @@ export default function ResumeJdAlignmentContent() {
           <span className="text-gradient-coral">Exact Right Moment</span>
         </h1>
         <p className="text-(--text-muted) text-base md:text-lg max-w-2xl leading-relaxed">
-          When interviewers ask about a topic, we surface yourpayment refactoring project — not a generic template. Speak about your actual impact, naturally.
+          When interviewers ask about a topic, we surface yourpayment refactoring project - not a generic template. Speak about your actual impact, naturally.
         </p>
       </section>
 
@@ -140,11 +140,10 @@ export default function ResumeJdAlignmentContent() {
                 <button
                   key={k.id}
                   onClick={() => setSelectedKeyword(k.id)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${
-                    selectedKeyword === k.id
+                  className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${selectedKeyword === k.id
                       ? "bg-(--accent) text-white shadow-sm"
                       : "bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100"
-                  }`}
+                    }`}
                 >
                   {k.label}
                 </button>
@@ -188,7 +187,7 @@ export default function ResumeJdAlignmentContent() {
                   <Briefcase className="w-4 h-4 text-(--accent)" />
                   Live STAR Answer Outline
                 </span>
-                
+
                 <div className="space-y-3.5 font-medium">
                   {[
                     { label: "S", name: "Situation", val: starOutlines[selectedKeyword].s },

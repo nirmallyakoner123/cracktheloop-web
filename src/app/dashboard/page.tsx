@@ -157,7 +157,7 @@ function DashboardHomeContent() {
       // Attempt to request audio permission for high trust rating
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setMicActive(true);
-      
+
       const interval = setInterval(() => {
         setMicVolume(prev => prev.map(() => Math.floor(Math.random() * 32) + 4));
       }, 80);
@@ -222,7 +222,7 @@ function DashboardHomeContent() {
 
   return (
     <main className="flex-1 w-full max-w-[1600px] mx-auto px-6 md:px-10 py-5 md:py-6 flex flex-col gap-6 relative select-none">
-      
+
       {/* Page Title Header */}
       <section className="flex flex-col gap-2">
         <span className="text-[10px] text-(--accent) font-black uppercase tracking-widest">
@@ -241,10 +241,10 @@ function DashboardHomeContent() {
 
       {/* Main Grid split */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
-        
+
         {/* Left column - Unified Launchpad Console */}
         <div className="lg:col-span-2 bg-white border border-slate-200/60 rounded-xl p-5 md:p-6 shadow-sm flex flex-col gap-6">
-          
+
           {/* Header Block inside Left Console */}
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-4">
             <div>
@@ -254,7 +254,7 @@ function DashboardHomeContent() {
               </h3>
               <p className="text-[11px] text-slate-500 font-semibold mt-0.5">Initialize credentials, audio lines, and bypass configurations.</p>
             </div>
-            
+
             <div className="flex items-center gap-3 shrink-0 self-start sm:self-center">
               <span className="text-xs font-bold text-slate-500">Progress:</span>
               <span className="text-xs font-black text-(--accent) bg-(--accent-soft) px-3 py-1 rounded-full border border-(--accent)/15">
@@ -265,8 +265,8 @@ function DashboardHomeContent() {
 
           {/* Checklist Progress Bar */}
           <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden relative -mt-4">
-            <div 
-              className="bg-gradient-to-r from-(--accent) to-indigo-500 h-full rounded-full transition-all duration-500" 
+            <div
+              className="bg-gradient-to-r from-(--accent) to-indigo-500 h-full rounded-full transition-all duration-500"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
@@ -279,7 +279,7 @@ function DashboardHomeContent() {
             {/* Step 1: Safety Playbook */}
             <div className="relative flex items-start gap-4">
               {/* Timeline Node */}
-              <button 
+              <button
                 onClick={() => updateChecklist("readRules", !checklist.readRules)}
                 className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
               >
@@ -301,7 +301,7 @@ function DashboardHomeContent() {
                     Learn how browser layout shares and system windows hide in popular conferencing software.
                   </span>
                 </div>
-                <button 
+                <button
                   onClick={() => setShowPlaybook(true)}
                   className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
                 >
@@ -313,7 +313,7 @@ function DashboardHomeContent() {
             {/* Step 2: Choose Engine */}
             <div className="relative flex items-start gap-4">
               {/* Timeline Node */}
-              <button 
+              <button
                 onClick={() => updateChecklist("chooseEngine", !checklist.chooseEngine)}
                 className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
               >
@@ -332,7 +332,7 @@ function DashboardHomeContent() {
                     Identify if you require browser-only capture (Web HUD) or native overlay display bypasses.
                   </span>
                 </div>
-                <button 
+                <button
                   onClick={() => {
                     updateChecklist("chooseEngine", true);
                     const el = document.getElementById("launcher-section");
@@ -348,7 +348,7 @@ function DashboardHomeContent() {
             {/* Step 3: Test Audio Stream */}
             <div className="relative flex items-start gap-4">
               {/* Timeline Node */}
-              <button 
+              <button
                 onClick={() => updateChecklist("testMic", !checklist.testMic)}
                 className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
               >
@@ -366,13 +366,13 @@ function DashboardHomeContent() {
                   <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
                     Verify browser audio feeds map accurately to the transcript transcription matrices without credit consumption.
                   </span>
-                  
+
                   {micActive && (
                     <div className="flex items-center gap-1 mt-2.5 h-6 bg-slate-50 border border-slate-200/60 rounded-lg px-3 py-1.5 w-fit">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping mr-1"></span>
                       {micVolume.map((val, idx) => (
-                        <div 
-                          key={idx} 
+                        <div
+                          key={idx}
                           className="w-[2px] bg-emerald-500 rounded-full transition-all duration-75 animate-pulse"
                           style={{ height: `${val}px` }}
                         />
@@ -380,8 +380,8 @@ function DashboardHomeContent() {
                     </div>
                   )}
                 </div>
-                
-                <button 
+
+                <button
                   disabled={micTesting}
                   onClick={handleTestMic}
                   className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1.5 shrink-0 self-start sm:self-center disabled:text-slate-400 disabled:cursor-not-allowed"
@@ -404,7 +404,7 @@ function DashboardHomeContent() {
             {/* Step 4: Sandbox Trial */}
             <div className="relative flex items-start gap-4">
               {/* Timeline Node */}
-              <button 
+              <button
                 onClick={() => updateChecklist("runSandbox", !checklist.runSandbox)}
                 className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
               >
@@ -423,7 +423,7 @@ function DashboardHomeContent() {
                     Initiate a simulated speech feed question in the HUD workspace to verify suggestion cards load instantly.
                   </span>
                 </div>
-                <button 
+                <button
                   onClick={handleSandboxTrigger}
                   className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
                 >
@@ -445,7 +445,7 @@ function DashboardHomeContent() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              
+
               {/* Web HUD */}
               <div className="flex flex-col justify-between gap-3.5 p-4.5 rounded-lg border border-slate-200/80 hover:border-(--accent)/35 transition-all">
                 <div className="flex flex-col gap-2">
@@ -482,7 +482,7 @@ function DashboardHomeContent() {
                     Native binary utilizing display bypass rules. Hides the overlay transparent windows completely from screen share software (Zoom/Meet/Teams).
                   </p>
                 </div>
-                
+
                 <div className="flex gap-2">
                   <a
                     href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
@@ -510,7 +510,7 @@ function DashboardHomeContent() {
 
         {/* Right column - Unified Telemetry Console Card */}
         <div className="bg-white border border-slate-200/60 rounded-xl p-5 shadow-sm flex flex-col gap-5 select-none">
-          
+
           {/* Section 1: Fuel Gauge & Status */}
           <div className="flex flex-col gap-3">
             <span className="text-[10px] text-slate-400 uppercase tracking-widest font-black block">
@@ -526,14 +526,13 @@ function DashboardHomeContent() {
                 </span>
               </div>
               <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                <div 
-                  className={`h-full rounded-full transition-all duration-300 ${
-                    (user?.credits ?? 0) < 20 
-                      ? "bg-rose-500" 
-                      : (user?.credits ?? 0) < 100 
-                        ? "bg-amber-500" 
+                <div
+                  className={`h-full rounded-full transition-all duration-300 ${(user?.credits ?? 0) < 20
+                      ? "bg-rose-500"
+                      : (user?.credits ?? 0) < 100
+                        ? "bg-amber-500"
                         : "bg-emerald-500"
-                  }`}
+                    }`}
                   style={{ width: `${Math.min(((user?.credits ?? 0) / 300) * 100, 100)}%` }}
                 />
               </div>
@@ -546,8 +545,8 @@ function DashboardHomeContent() {
                 Tier: {normalizeTier(user?.subscription_tier)}
               </span>
             </div>
-            
-            <Link 
+
+            <Link
               href="/pricing"
               className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 hover:text-slate-800 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1.5"
             >
@@ -564,7 +563,7 @@ function DashboardHomeContent() {
               Referral Rewards Invite
             </h3>
             <p className="text-[11px] text-slate-500 leading-normal font-semibold">
-              Share link with colleagues — both of you earn bonus credits on paid subscriptions.
+              Share link with colleagues - both of you earn bonus credits on paid subscriptions.
             </p>
 
             {refCode ? (
@@ -624,8 +623,8 @@ function DashboardHomeContent() {
             ) : (
               <div className="flex flex-col gap-3.5">
                 {interviews.slice(0, 2).map((session) => (
-                  <div 
-                    key={session._id} 
+                  <div
+                    key={session._id}
                     className="border border-slate-100 hover:border-slate-200 rounded-lg p-3 flex flex-col gap-2 bg-slate-50/20"
                   >
                     <div className="flex justify-between items-start">
@@ -638,7 +637,7 @@ function DashboardHomeContent() {
                         <span className="text-[9px] text-slate-450 italic font-semibold">Not Evaluated</span>
                       )}
                     </div>
-                    
+
                     <div className="flex justify-between items-center text-[9px] text-slate-450 font-bold uppercase tracking-wider">
                       <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(session.created_at).toLocaleDateString([], { month: "short", day: "numeric" })}</span>
                       <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" /> {session.transcript?.length || 0} Turns</span>
@@ -671,7 +670,7 @@ function DashboardHomeContent() {
       {showPlaybook && mounted && createPortal(
         <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex justify-center items-center z-[100] p-6 animate-fade-in">
           <div className="w-full max-w-[520px] bg-white border border-slate-200 rounded-xl p-5 md:p-6 flex flex-col shadow-2xl relative select-none">
-            <button 
+            <button
               onClick={() => setShowPlaybook(false)}
               className="text-slate-400 hover:text-slate-700 transition cursor-pointer font-bold absolute top-5 right-5 text-sm"
             >
@@ -686,12 +685,12 @@ function DashboardHomeContent() {
                 <h3 className="text-base font-black text-rose-950 uppercase tracking-wide">
                   Stealth Safety Protocol
                 </h3>
-                <p className="text-[10px] text-rose-500 font-bold uppercase tracking-wider">CRITICAL DIRECTIVE — READ CAREFULLY</p>
+                <p className="text-[10px] text-rose-500 font-bold uppercase tracking-wider">CRITICAL DIRECTIVE - READ CAREFULLY</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-4 max-h-[320px] overflow-y-auto pr-1">
-              
+
               {/* Critical Rule 1 */}
               <div className="bg-rose-50/60 border border-rose-200/50 p-3 rounded-lg flex gap-2.5">
                 <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5 animate-pulse" />
@@ -736,7 +735,7 @@ function DashboardHomeContent() {
             {/* Force user verification checkmark */}
             <div className="mt-5 border-t border-slate-100 pt-5 flex flex-col gap-4">
               <label className="flex items-start gap-3 p-3 bg-amber-500/5 border border-amber-500/25 rounded-lg cursor-pointer select-none">
-                <input 
+                <input
                   type="checkbox"
                   checked={acknowledged}
                   onChange={(e) => setAcknowledged(e.target.checked)}
@@ -753,11 +752,10 @@ function DashboardHomeContent() {
                   setShowPlaybook(false);
                   updateChecklist("readRules", true);
                 }}
-                className={`w-full py-3 rounded-lg font-bold text-xs uppercase tracking-wider transition duration-200 flex justify-center items-center gap-1.5 ${
-                  acknowledged 
-                    ? "bg-rose-600 hover:bg-rose-700 text-white cursor-pointer shadow-md shadow-rose-600/10 active:scale-95" 
+                className={`w-full py-3 rounded-lg font-bold text-xs uppercase tracking-wider transition duration-200 flex justify-center items-center gap-1.5 ${acknowledged
+                    ? "bg-rose-600 hover:bg-rose-700 text-white cursor-pointer shadow-md shadow-rose-600/10 active:scale-95"
                     : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
-                }`}
+                  }`}
               >
                 {!acknowledged ? "Acknowledge Warning above to proceed" : "Confirm Safety Rules & Unlock Gateway"}
               </button>

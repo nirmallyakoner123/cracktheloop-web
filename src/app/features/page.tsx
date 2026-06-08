@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { 
-  Shield, 
-  Zap, 
-  Volume2, 
-  EyeOff, 
+import {
+  Shield,
+  Zap,
+  Volume2,
+  EyeOff,
   ArrowRight,
   Check,
   Home,
@@ -20,7 +20,7 @@ import Link from "next/link";
 export default function FeaturesPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col relative overflow-hidden pb-16">
-      
+
       {/* Background Radial Glows */}
       <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none"></div>
@@ -38,8 +38,8 @@ export default function FeaturesPage() {
             <Home className="w-4 h-4" /> Home
           </Link>
           <Link href="/pricing" className="text-sm text-slate-400 hover:text-white transition">Pricing</Link>
-          <Link 
-            href="/copilot" 
+          <Link
+            href="/copilot"
             className="text-xs px-5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full font-bold hover:brightness-110 transition active:scale-95 shadow-md shadow-indigo-600/25 flex items-center gap-1.5"
           >
             <Globe className="w-3.5 h-3.5" /> Launch Copilot
@@ -54,7 +54,7 @@ export default function FeaturesPage() {
           Zero-Trace Performance & Privacy Shield
         </div>
         <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-white" id="features-main-heading" style={{ fontFamily: "var(--font-display)" }}>
-          The Invisible Advantage — Built for <span className="text-gradient-coral">Winning Interviews</span>
+          The Invisible Advantage - Built for <span className="text-gradient-coral">Winning Interviews</span>
         </h1>
         <p className="text-slate-400 text-sm md:text-base max-w-2xl leading-relaxed">
           CrackTheLoop processes conversation flow in real-time, delivering instant, custom-tailored suggestions for technical and behavioral questions completely invisibly.
@@ -63,10 +63,10 @@ export default function FeaturesPage() {
 
       {/* Features Grid & Deep Dives */}
       <section className="w-full max-w-6xl mx-auto px-6 pt-16 relative z-20 flex flex-col gap-16">
-        
+
         {/* Core Pillars */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          
+
           <div className="bg-slate-900/60 border border-slate-800 rounded-[20px] p-8 flex flex-col gap-4" id="feature-latency-card">
             <div className="w-10 h-10 rounded-xl bg-sky-500/10 flex justify-center items-center text-sky-400 border border-sky-500/20">
               <Zap className="w-5 h-5" />
@@ -124,8 +124,8 @@ export default function FeaturesPage() {
               </li>
             </ul>
             <div className="pt-2">
-              <Link 
-                href="/features/stealth-overlay" 
+              <Link
+                href="/features/stealth-overlay"
                 className="inline-flex items-center gap-1 text-xs font-bold text-purple-400 hover:text-purple-300 transition cursor-pointer"
               >
                 Explore Stealth Overlay HUD <ArrowRight className="w-3.5 h-3.5" />
@@ -137,7 +137,7 @@ export default function FeaturesPage() {
               <div className="w-3 h-3 rounded-full bg-purple-500 animate-pulse" />
               <span className="text-[10px] text-purple-400 font-mono uppercase tracking-widest font-black">Stealth Verification</span>
             </div>
-            
+
             {/* Visual Indicator of Overlay Exclusion */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-slate-900/80 border border-slate-800 p-4 rounded-xl flex flex-col items-center text-center">
@@ -165,7 +165,7 @@ export default function FeaturesPage() {
               <div className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-[10px] text-emerald-400 font-mono uppercase tracking-widest font-black">Audio Processing Flow</span>
             </div>
-            
+
             <div className="flex flex-col gap-4 font-sans text-xs text-slate-300">
               <div className="flex items-center gap-3 bg-slate-900 p-3.5 rounded-xl border border-slate-800">
                 <div className="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold text-[10px]">1</div>
@@ -190,7 +190,7 @@ export default function FeaturesPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="flex flex-col gap-5">
             <div className="inline-flex w-fit items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full text-[10px] font-bold text-emerald-300 uppercase tracking-widest">
               Intuitive Audio Intake
@@ -200,7 +200,7 @@ export default function FeaturesPage() {
               Technical interviews require both listening to complex questions and answering them articulately. Traditional speech tools require separate configuration files or complex microphone alignments.
             </p>
             <p className="text-sm text-slate-400 leading-relaxed">
-              CrackTheLoop binds speaker output and local mic streams into a single clean audio flow. It processes voices, downsamples background static, and converts speech into instant textual triggers — passing them directly to our context alignment engine.
+              CrackTheLoop binds speaker output and local mic streams into a single clean audio flow. It processes voices, downsamples background static, and converts speech into instant textual triggers - passing them directly to our context alignment engine.
             </p>
             <ul className="flex flex-col gap-2.5 text-xs text-slate-300 font-medium">
               <li className="flex items-center gap-2">
@@ -214,8 +214,8 @@ export default function FeaturesPage() {
               </li>
             </ul>
             <div className="pt-2">
-              <Link 
-                href="/features/live-transcription" 
+              <Link
+                href="/features/live-transcription"
                 className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition cursor-pointer"
               >
                 Explore Live Audio Transcription <ArrowRight className="w-3.5 h-3.5" />
@@ -237,14 +237,14 @@ export default function FeaturesPage() {
             Test the live transcription engine and interactive interface directly in your browser with our evaluation platform.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link 
+            <Link
               href="/pricing"
               className="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition active:scale-95 flex items-center gap-1.5 shadow-lg shadow-purple-950/20"
             >
               Start Free Trial <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link 
-              href="/#platform-picker" 
+            <Link
+              href="/#platform-picker"
               className="px-8 py-4 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl font-bold text-xs uppercase tracking-wider transition active:scale-95"
             >
               View Desktop Platforms
@@ -276,7 +276,7 @@ function CandidateFaqSection() {
     },
     {
       q: "Does it require complex installation?",
-      a: "No. You can run the Web Copilot immediately in your browser on any device. For native screen share bypass protection, download our lightweight desktop application for Windows or macOS — it takes less than 60 seconds to configure.",
+      a: "No. You can run the Web Copilot immediately in your browser on any device. For native screen share bypass protection, download our lightweight desktop application for Windows or macOS - it takes less than 60 seconds to configure.",
     },
     {
       q: "How fast do suggestions appear?",

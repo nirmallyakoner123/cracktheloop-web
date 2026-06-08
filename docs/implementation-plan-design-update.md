@@ -1,4 +1,4 @@
-# Implementation Plan — Pricing & Select Plan Refactoring with Free Trial
+# Implementation Plan - Pricing & Select Plan Refactoring with Free Trial
 
 We will update the `/pricing` and `/select-plan` pages to display all 4 options from `cracktheloop.plans.json`, including the Free Trial ($0). We will also apply the light-gray mist design system (`bg-[var(--bg-mist)]`) to the `/select-plan` page to maintain consistency with the rest of the site, fully preserving checkout, cache update, and cookie logic.
 

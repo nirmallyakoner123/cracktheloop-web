@@ -1,6 +1,6 @@
 /**
  * Backfill script: assigns a unique referral_code to every user that doesn't have one.
- * Safe to run multiple times — only touches users with null/missing referral_code.
+ * Safe to run multiple times - only touches users with null/missing referral_code.
  * Run: node scripts/backfill-referral-codes.js
  */
 

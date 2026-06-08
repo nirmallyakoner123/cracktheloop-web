@@ -18,7 +18,7 @@ export default function PlatformPicker() {
       color: "bg-slate-100 text-slate-700 border border-slate-200",
       description: "Launch instantly in your browser without downloading anything. Evaluates your coding and system design skills on the fly.",
       features: [
-        "Zero setup — starts in under 60 seconds",
+        "Zero setup - starts in under 60 seconds",
         "Works on any device with Chrome, Edge, or Brave",
         "Ideal for quick evaluation and practice sessions",
         "Standard low-latency voice capture"
@@ -79,12 +79,12 @@ export default function PlatformPicker() {
       />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        
+
         {/* Section Title */}
         <ScrollReveal>
           <div className="text-center mb-10 flex flex-col items-center">
-            
-            <h2 
+
+            <h2
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-(--text-primary) max-w-3xl leading-tight"
               style={{ fontFamily: "var(--font-display)" }}
             >
@@ -107,11 +107,10 @@ export default function PlatformPicker() {
                 <div
                   key={platform.id}
                   onClick={() => setActivePlatform(platform.id)}
-                  className={`bg-white/85 backdrop-blur-md border rounded-[12px] p-6 md:p-8 flex flex-col justify-between shadow-xs transition-all duration-300 relative cursor-pointer select-none group ${
-                    isFeatured 
-                      ? "border-(--accent) shadow-md bg-white" 
+                  className={`bg-white/85 backdrop-blur-md border rounded-[12px] p-6 md:p-8 flex flex-col justify-between shadow-xs transition-all duration-300 relative cursor-pointer select-none group ${isFeatured
+                      ? "border-(--accent) shadow-md bg-white"
                       : "border-(--border-light) hover:border-(--accent)/40 hover:-translate-y-1.5 hover:shadow-md"
-                  }`}
+                    }`}
                 >
                   <div>
                     <div className="flex justify-between items-start gap-4 mb-6">
@@ -126,7 +125,7 @@ export default function PlatformPicker() {
                     <h3 className="text-lg font-bold text-(--text-primary) group-hover:text-(--accent) transition-all duration-300" style={{ fontFamily: "var(--font-display)" }}>
                       {platform.name}
                     </h3>
-                    
+
                     <p className="text-xs text-(--text-muted) mt-3 leading-relaxed min-h-[50px]">
                       {platform.description}
                     </p>
@@ -156,11 +155,10 @@ export default function PlatformPicker() {
                           if (el) el.scrollIntoView({ behavior: "smooth" });
                         }
                       }}
-                      className={`w-full py-3 px-5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 select-none ${
-                        isFeatured
+                      className={`w-full py-3 px-5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2 select-none ${isFeatured
                           ? "btn-primary shadow-sm active:scale-97"
                           : "btn-ghost-dark active:scale-97"
-                      }`}
+                        }`}
                     >
                       {platform.isDownload ? (
                         <>
@@ -174,7 +172,7 @@ export default function PlatformPicker() {
                         </>
                       )}
                     </Link>
-                    
+
                     {platform.isDownload && (
                       <p className="text-[10px] text-(--text-muted) text-center mt-3 font-medium">
                         Setup is quick and lightweight. Double-click to install.

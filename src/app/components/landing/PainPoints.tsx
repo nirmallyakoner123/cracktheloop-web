@@ -5,8 +5,8 @@ import { ScrollReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
 
 const painPoints = [
   {
-    title: "Nervous Under Pressure",
-    desc: "Under pressure, speech speed spikes and verbal fillers take over. You lose track of key technical details, leading to rambling answers that miss the core question.",
+    title: "Interview Anxiety & Blanking Out",
+    desc: "Under pressure, speech speed spikes and verbal fillers take over. You lose track of key technical details - every candidate's biggest interview anxiety. AI interview helpers like CrackTheLoop keep you grounded.",
     mockup: (
       <div className="flex-1 p-4 flex flex-col justify-between font-mono text-[10px] select-none bg-white">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -16,7 +16,7 @@ const painPoints = [
           </span>
           <span className="text-slate-400 text-[8px]">CALM: ACTIVE</span>
         </div>
-        
+
         <div className="flex flex-col gap-2.5 my-auto">
           <div className="flex items-center justify-between">
             <span className="text-slate-500">Speech Rate</span>
@@ -44,8 +44,8 @@ const painPoints = [
     ),
   },
   {
-    title: "Generic Answers",
-    desc: "Failing to bridge your direct achievements with the specific requirements of the job description results in generic explanations that fail to impress the hiring team.",
+    title: "Generic AI Interview Responses",
+    desc: "Failing to bridge your real achievements with the job description results in generic answers. You need an AI interview assistant that uses YOUR resume - not the internet.",
     mockup: (
       <div className="flex-1 p-4 flex flex-col justify-between select-none relative overflow-hidden bg-white">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -91,8 +91,8 @@ const painPoints = [
     ),
   },
   {
-    title: "Poor Structure",
-    desc: "Even correct technical content falls flat without a structured narrative. Wandering responses make it hard for interviewers to follow your problem-solving process.",
+    title: "No STAR Method Structure",
+    desc: "Even correct technical content falls flat without structure. Real-time AI interview helpers automatically apply the STAR method - Situation, Task, Action, Result - to every behavioral question.",
     mockup: (
       <div className="flex-1 p-4 flex flex-col justify-between font-mono text-[9px] select-none bg-white">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -139,8 +139,8 @@ const painPoints = [
     ),
   },
   {
-    title: "Missed Resume Points",
-    desc: "In the heat of the moment, key projects, performance metrics, and technical contributions get omitted, leaving interviewers with no tangible proof of your past success.",
+    title: "Forgetting Key Resume Points",
+    desc: "In the heat of the moment, key projects and metrics get forgotten. AI interview suggestions generated from your actual resume surface the right talking points exactly when you need them.",
     mockup: (
       <div className="flex-1 p-4 flex flex-col justify-between font-mono text-[9px] select-none bg-white">
         <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -200,7 +200,7 @@ export default function PainPoints() {
               <span className="text-gradient-coral">Your Mouth Betrays You.</span>
             </h2>
             <p className="text-(--text-muted) text-base mt-3 max-w-xl mx-auto">
-              You prepare for weeks. But the moment the interviewer asks, your mind goes blank, your words scramble, and the answer that was clear in your head disappears.
+              The best AI interview assistant doesn't just prep you - it provides structured guidance in real time. No more blanking out. No more generic answers that miss the mark.
             </p>
           </div>
         </ScrollReveal>

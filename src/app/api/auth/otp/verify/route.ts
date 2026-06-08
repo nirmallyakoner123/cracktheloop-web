@@ -50,15 +50,15 @@ export async function POST(request: Request) {
     // ── Referral Code Safety Net ────────────────────────────────────────────
     // Use lean() to read the raw document and bypass Mongoose schema caching.
     // Without this, a stale schema can make user.referral_code appear null even
-    // when the value IS stored in MongoDB — causing valid codes to be overwritten.
+    // when the value IS stored in MongoDB - causing valid codes to be overwritten.
     if (!user.referral_code) {
       const rawDoc = await User.findOne({ _id: user._id }).lean<any>();
       if (rawDoc?.referral_code) {
-        // Code exists in MongoDB but stale schema hid it — restore to Mongoose doc
+        // Code exists in MongoDB but stale schema hid it - restore to Mongoose doc
         user.referral_code = rawDoc.referral_code;
         console.log(`[AUTH] Restored existing referral code ${rawDoc.referral_code} for ${email}`);
       } else {
-        // Genuinely missing — generate a fresh one
+        // Genuinely missing - generate a fresh one
         try {
           let candidate = "";
           let isUnique = false;

@@ -16,14 +16,14 @@ export default function Hero() {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+
     // Normalize coordinates relative to card center (ranges between -0.5 and 0.5)
     const pctX = (x / rect.width) - 0.5;
     const pctY = (y / rect.height) - 0.5;
-    
+
     // Maximum tilt angle (in degrees)
     const maxTilt = 10;
-    
+
     // Calculate 3D rotations:
     // Mouse on right makes right side go down (negative rotateY)
     // Mouse on bottom makes bottom side go down (positive rotateX)
@@ -93,8 +93,8 @@ export default function Hero() {
   }, [activeQuestion, currentQ.answerParagraph]);
 
   return (
-    <section 
-      id="hero" 
+    <section
+      id="hero"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       className="hero-gradient-mesh relative min-h-screen flex flex-col pt-28 pb-8 overflow-hidden"
@@ -121,7 +121,7 @@ export default function Hero() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full flex-1 flex flex-col justify-between">
         <div className="grid grid-cols-1 lg:grid-cols-[45fr_55fr] gap-12 items-start my-auto py-6">
-          {/* Left — Copy */}
+          {/* Left - Copy */}
           <motion.div
             className="flex flex-col gap-6"
             initial={{ opacity: 0, y: 40 }}
@@ -130,18 +130,18 @@ export default function Hero() {
           >
             <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 uppercase tracking-wider select-none mb-2">
               <Terminal className="w-4 h-4 text-emerald-600" />
-              <span>Full Technical & Non-Technical Interview Support</span>
+              <span>AI Interview Assistant - Real-Time Guidance · Free to Try</span>
             </div>
 
             <h1
               className="font-bold tracking-tight text-slate-900 text-4xl md:text-5xl lg:text-5xl leading-[1]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Your Real-Time <span className="text-gradient-coral">AI</span> Interview Assistant
+              Your Real-Time AI Interview Assistant for <span className="text-gradient-coral">Live Guidance</span>
             </h1>
 
             <p className="text-base md:text-lg leading-relaxed font-normal text-(--text-muted) max-w-xl">
-              Automatically get structured, context-aware answers to every interview question. An AI interview copilot designed to work in real-time, completely private and invisible.
+              Get AI-generated interview answers in real time - live during your Zoom, Teams, or Google Meet call. Completely undetectable. Free to try. Works for technical, behavioral, and system design rounds.
             </p>
 
             <div className="flex flex-col gap-4 mt-2">
@@ -163,7 +163,7 @@ export default function Hero() {
                   Get Our App
                 </Link>
               </div>
-              
+
               {/* Helper & Referral Row */}
               <div className="flex flex-wrap items-center gap-x-8 gap-y-2.5 pl-2 mt-1">
                 <div className="flex flex-col gap-1 text-sm font-medium text-slate-600">
@@ -172,11 +172,11 @@ export default function Hero() {
                     No Credit Card Required
                   </span>
                   <span className="text-emerald-650 font-semibold pl-5.5">
-                    Free Trial Credits Included
+                    Free AI Interview Helper - No Card Needed
                   </span>
                 </div>
-                <Link 
-                  href="#referral-program" 
+                <Link
+                  href="#referral-program"
                   onClick={(e) => {
                     e.preventDefault();
                     const el = document.getElementById("referral-program");
@@ -220,14 +220,14 @@ export default function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Right — Interactive Mock Interview Simulator */}
+          {/* Right - Interactive Mock Interview Simulator */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] }}
             className="perspective-[1200px]"
           >
-            <div 
+            <div
               className="simulator-perspective-card glass-light rounded-[20px] p-3 md:p-4 border border-(--border-light) relative bg-white/80 backdrop-blur-md"
               style={{
                 transform: `perspective(1200px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
@@ -251,7 +251,7 @@ export default function Hero() {
                       /copilot-session
                     </span>
                   </div>
-                  
+
                   {/* Mobile Live Indicator */}
                   <div className="flex sm:hidden items-center gap-1.5">
                     <span className="relative flex h-2 w-2">
@@ -276,11 +276,10 @@ export default function Hero() {
                           setActiveQuestion(q.id);
                           setIsAutoplay(false);
                         }}
-                        className={`px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap ${
-                          isActive
+                        className={`px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-[11px] font-bold flex items-center gap-1 sm:gap-1.5 transition-all cursor-pointer whitespace-nowrap ${isActive
                             ? "bg-white text-(--accent) shadow-xs border border-slate-200/30"
                             : "text-slate-500 hover:text-slate-800"
-                        }`}
+                          }`}
                       >
                         <IconComponent className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         <span>{q.tabLabel}</span>
@@ -356,7 +355,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-12 pt-6 border-t border-(--border-light) flex flex-col items-center gap-4 w-full"
+          className="pt-6 border-t border-(--border-light) flex flex-col items-center gap-4 w-full"
         >
           <span className="text-xs md:text-sm font-bold tracking-widest uppercase text-(--text-secondary) text-center">
             Built for candidates targeting offers at

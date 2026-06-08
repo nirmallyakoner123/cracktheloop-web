@@ -40,7 +40,7 @@ export default function CtaFooter() {
 
   return (
     <section id="cta-footer" className="relative flex flex-col justify-between overflow-hidden">
-      {/* CTA Block — Light Theme */}
+      {/* CTA Block - Light Theme */}
       <div className="section-mist relative overflow-hidden">
         {/* Background orbs */}
         <div className="orb orb-peach w-[600px] h-[600px] -top-40 left-1/4 animate-float-orb" />
@@ -66,7 +66,7 @@ export default function CtaFooter() {
                 <span className="text-gradient-coral">Happen This Week.</span>
               </h2>
               <p className="text-(--text-muted) text-base md:text-lg mb-4 max-w-xl mx-auto leading-relaxed">
-                Get 15 free credits the moment you sign up. No credit card. One full mock session included — set up in under 3 minutes.
+                Get 15 free credits the moment you sign up. No credit card. One full mock session included - set up in under 3 minutes.
               </p>
               <div className="flex flex-wrap justify-center gap-4 mb-6">
                 <Link
@@ -93,7 +93,7 @@ export default function CtaFooter() {
         </div>
       </div>
 
-      {/* Footer — remains light */}
+      {/* Footer - remains light */}
       <footer className="border-t border-(--border-light) py-16 bg-(--bg-mist)/90 backdrop-blur-md relative z-10">
         <div className="max-w-7xl mx-auto px-6">
           {/* Main Footer Content Grid */}
@@ -201,7 +201,7 @@ export default function CtaFooter() {
                 Privacy Engine: Active & Secured
               </span> */}
             </div>
-            
+
             {/* <div className="bg-slate-50/60 border border-slate-200/50 rounded-xl p-4.5 text-left">
               <p className="text-xs text-(--text-muted) max-w-4xl leading-relaxed">
                 <strong className="text-slate-700 font-semibold">Disclaimer & Responsible Use:</strong> CrackTheLoop is designed exclusively for interview prep, mock simulations, coding confidence, and communication practice. All users are expected to verify rules, policies, and honor codes of their target recruiting environments before utilization during live examinations.

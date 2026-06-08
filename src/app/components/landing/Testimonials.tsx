@@ -14,7 +14,7 @@ const testimonials = [
       "Got my Google L5 offer after three failed loops. Set up CrackTheLoop the night before. The STAR framework appeared within 1.5 seconds of the question. Interviewer had zero idea. 10/10.",
     likes: 847,
     comments: 203,
-    tag: "Technical Loop",
+    tag: "Google Technical Interview",
   },
   {
     company: "S",
@@ -26,7 +26,7 @@ const testimonials = [
       "Panel with 4 people asking simultaneously. Normally I freeze. The copilot surfaced my Redis clustering project exactly when the system design question hit. 40-minute round felt like 5.",
     likes: 612,
     comments: 97,
-    tag: "Panel Round",
+    tag: "Stripe Panel Interview",
   },
   {
     company: "A",
@@ -38,7 +38,7 @@ const testimonials = [
       "HireVue felt robotic and timed. CrackTheLoop structured the answer to the rubric format. Passed the AI screen and got the recruiter call the next morning.",
     likes: 1103,
     comments: 312,
-    tag: "AI Screener",
+    tag: "HireVue AI Interview Screener",
   },
   {
     company: "M",
@@ -50,7 +50,7 @@ const testimonials = [
       "I switched from marketing. CrackTheLoop mapped my campaign metrics to product thinking frameworks. The behavioral round was the first interview where I felt 100% in control.",
     likes: 489,
     comments: 76,
-    tag: "Career Switch",
+    tag: "Career Change Interview",
   },
 ];
 
@@ -74,11 +74,11 @@ export default function Testimonials() {
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-(--text-primary)"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Engineers from Top Companies{" "}
-              <span className="text-gradient-coral">Are Winning With This</span>
+              Google, Amazon &amp; Meta Engineers Used This{" "}
+              <span className="text-gradient-coral">AI Interview Helper to Get Offers</span>
             </h2>
             <p className="text-(--text-muted) text-base mt-3 max-w-xl mx-auto">
-              Real stories from candidates who used CrackTheLoop to walk into their interview with the right answer, every time.
+              Real results from candidates who used CrackTheLoop's free AI interview helper to walk into their interview with the right answer, every time.
             </p>
           </div>
         </ScrollReveal>

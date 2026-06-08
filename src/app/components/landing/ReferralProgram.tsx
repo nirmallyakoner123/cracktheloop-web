@@ -16,7 +16,7 @@ export default function ReferralProgram() {
       id: 2,
       icon: UserPlus,
       title: "Friend Joins & Subscribes",
-      desc: "They sign up and purchase any paid pass — and instantly receive +20% bonus credits."
+      desc: "They sign up and purchase any paid pass - and instantly receive +20% bonus credits."
     },
     {
       id: 3,
@@ -42,11 +42,11 @@ export default function ReferralProgram() {
       />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-        
+
         {/* Header */}
         <ScrollReveal>
           <div className="text-center mb-8 flex flex-col items-center">
-            <h2 
+            <h2
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-(--text-primary) max-w-3xl leading-tight"
               style={{ fontFamily: "var(--font-display)" }}
             >
@@ -61,7 +61,7 @@ export default function ReferralProgram() {
         {/* 2-Side Reward Showdown Cards */}
         <ScrollReveal>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto mb-6">
-            
+
             {/* Card 1: Your Friend's Reward */}
             <div className="bg-white/85 backdrop-blur-md border border-(--border-light) rounded-[12px] p-6 md:p-8 flex flex-col justify-between shadow-xs hover:border-(--accent)/40 hover:-translate-y-1 hover:shadow-sm transition-all duration-300">
               <div>
@@ -74,7 +74,7 @@ export default function ReferralProgram() {
                     <h3 className="text-base font-bold text-(--text-primary) leading-tight" style={{ fontFamily: "var(--font-display)" }}>Your Friend Receives</h3>
                   </div>
                 </div>
-                
+
                 <p className="text-xs text-(--text-muted) leading-relaxed mb-6 font-medium">
                   When someone registers using your invitation link, they get an automatic <span className="text-(--accent) font-bold">+20% bonus credits</span> on their initial purchase.
                 </p>
@@ -152,7 +152,7 @@ export default function ReferralProgram() {
               <h3 className="text-center font-bold text-xs tracking-widest text-(--text-muted) uppercase mb-6 font-mono">
                 Three Steps To Unlimited Fuel
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
                 {/* Connector lines (Desktop) */}
                 <div className="hidden md:block absolute top-7 left-[15%] right-[15%] h-[1px] bg-slate-200 -z-10" />
@@ -189,7 +189,7 @@ export default function ReferralProgram() {
                 Every successful referral adds free interview credits directly to your active loop profile.
               </p>
             </div>
-            
+
             <Link
               href="/login?redirect=/dashboard/referrals"
               className="btn-primary w-full md:w-auto text-center justify-center cursor-pointer !text-xs uppercase tracking-wider !py-3.5 !px-6"

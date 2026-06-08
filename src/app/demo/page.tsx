@@ -38,7 +38,7 @@ const PIPELINE_NODES = [
     color: "#0284c7", // Sky 600
     glow: "rgba(2,132,199,0.2)",
     detail:
-      "The Windows WASAPI driver captures all speaker output and mic input simultaneously at 48kHz stereo — no virtual audio cables or admin rights required.",
+      "The Windows WASAPI driver captures all speaker output and mic input simultaneously at 48kHz stereo - no virtual audio cables or admin rights required.",
   },
   {
     id: "merger",
@@ -58,7 +58,7 @@ const PIPELINE_NODES = [
     color: "#7c3aed", // Violet 600
     glow: "rgba(124,58,237,0.2)",
     detail:
-      "A ScriptProcessorNode decimates the 48kHz stream to 16kHz mono PCM with a 300ms VAD silence debounce — the exact format Deepgram nova-3 expects over WebSocket.",
+      "A ScriptProcessorNode decimates the 48kHz stream to 16kHz mono PCM with a 300ms VAD silence debounce - the exact format Deepgram nova-3 expects over WebSocket.",
   },
   {
     id: "deepgram",
@@ -187,8 +187,8 @@ function PipelineDiagram() {
                     background: isActive
                       ? `radial-gradient(circle at 50% 50%, ${n.glow}, transparent 70%)`
                       : isPast
-                      ? `${n.color}12`
-                      : "#ffffff",
+                        ? `${n.color}12`
+                        : "#ffffff",
                     borderColor: isActive ? n.color : isPast ? n.color + "70" : "var(--border-light)",
                     boxShadow: isActive ? `0 0 20px 2px ${n.glow}, 0 4px 12px rgba(15,23,42,0.03)` : undefined,
                     transform: isActive ? "scale(1.06)" : undefined,
@@ -267,8 +267,8 @@ function PipelineDiagram() {
         className="rounded-xl border p-5 min-h-[88px] transition-all duration-500 flex items-start gap-4 shadow-xs"
         style={{
           borderColor: node ? node.color + "40" : "rgba(15,23,42,0.08)",
-          background: node 
-            ? `linear-gradient(135deg, ${node.glow.replace("0.2", "0.06")}, rgba(255, 255, 255, 0.92))` 
+          background: node
+            ? `linear-gradient(135deg, ${node.glow.replace("0.2", "0.06")}, rgba(255, 255, 255, 0.92))`
             : "rgba(255, 255, 255, 0.65)",
           backdropFilter: "blur(8px)",
           WebkitBackdropFilter: "blur(8px)",
@@ -301,11 +301,10 @@ function PipelineDiagram() {
           onClick={startAnimation}
           disabled={running}
           id="run-pipeline-btn"
-          className={`flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all duration-300 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer ${
-            running 
-              ? "bg-slate-500 text-white cursor-not-allowed" 
+          className={`flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-sm transition-all duration-300 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer ${running
+              ? "bg-slate-500 text-white cursor-not-allowed"
               : "btn-primary-glow text-white"
-          }`}
+            }`}
           style={running ? { background: "#64748b" } : undefined}
         >
           {running ? (
@@ -341,9 +340,9 @@ function LatencyBar() {
           <div
             key={i}
             className="h-full flex items-center justify-center text-[8px] font-bold text-white transition-all"
-            style={{ 
-              width: `${(seg.ms / TOTAL_MS) * 100}%`, 
-              background: `linear-gradient(180deg, ${seg.color}dd, ${seg.color})` 
+            style={{
+              width: `${(seg.ms / TOTAL_MS) * 100}%`,
+              background: `linear-gradient(180deg, ${seg.color}dd, ${seg.color})`
             }}
             title={`${seg.label}: ${seg.ms}ms`}
           />
@@ -421,7 +420,7 @@ export default function DemoPage() {
     setTimeout(() => {
       setSimState("answering");
       addLog("WebSocket state: OPEN");
-      addLog("Deepgram VAD active — endpointing threshold: 300ms");
+      addLog("Deepgram VAD active - endpointing threshold: 300ms");
       addLog(`Utterance finalized: "${question}"`);
       addLog("Forwarding transcript → POST /api/completion");
       addLog("LLM: Groq/llama-3.1-8b-instant | streaming SSE...");

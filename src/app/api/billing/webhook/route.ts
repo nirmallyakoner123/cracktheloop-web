@@ -13,13 +13,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
 // Plan map: base credits & tier names
 const PLAN_MAP: Record<string, { tier: string; credits: number }> = {
   "price_1TeCnyEkHwm1l3fZV45CSLvV": { tier: "starter", credits: 100 },
-  "price_1TeCpEEkHwm1l3fZej0zzJhb": { tier: "pro",     credits: 300 },
-  "price_1TeCpaEkHwm1l3fZj9f7Gh31": { tier: "elite",   credits: 1000 },
+  "price_1TeCpEEkHwm1l3fZej0zzJhb": { tier: "pro", credits: 300 },
+  "price_1TeCpaEkHwm1l3fZj9f7Gh31": { tier: "elite", credits: 1000 },
 };
 
 // Referral multipliers (from plans.md)
 const REFERRED_USER_MULTIPLIER = 1.2;  // +20% credits for referred buyer
-const REFERRER_BONUS_RATIO     = 0.5;  // +50% of base credits for referrer
+const REFERRER_BONUS_RATIO = 0.5;  // +50% of base credits for referrer
 
 export async function POST(request: Request) {
   try {
@@ -299,9 +299,9 @@ export async function POST(request: Request) {
       case "invoice.payment_succeeded": {
         const invoice = event.data.object as any;
         const subscriptionId = invoice.subscription as string;
-        const customerId     = invoice.customer as string;
+        const customerId = invoice.customer as string;
 
-        // Find the user — prioritise email lookup
+        // Find the user - prioritise email lookup
         let user = null;
         if (invoice.customer_email) {
           user = await User.findOne({ email: invoice.customer_email });
@@ -343,8 +343,8 @@ export async function POST(request: Request) {
           const amount = invoice.amount_paid ?? 0;
           if (amount <= 0) break;
           else if (amount < 2500) plan = { tier: "starter", credits: 100 };
-          else if (amount < 5000) plan = { tier: "pro",     credits: 300 };
-          else                    plan = { tier: "elite",   credits: 1000 };
+          else if (amount < 5000) plan = { tier: "pro", credits: 300 };
+          else plan = { tier: "elite", credits: 1000 };
           console.log(`[WEBHOOK WARNING] No priceId match. Used amount_paid fallback → tier: ${plan.tier}`);
         }
 
@@ -361,12 +361,12 @@ export async function POST(request: Request) {
           if (!referral.purchase_bonus_paid) {
             // This is their first purchase! Pay out the bonus.
             const referrer = await User.findById(referral.referrer);
-            
+
             // Referred user gets +20% on top of base credits
             const bonusCredits = Math.ceil(plan.credits * REFERRED_USER_MULTIPLIER);
             user.credits = bonusCredits;
             user.total_gain_credits = (user.total_gain_credits || 0) + bonusCredits;
-            
+
             let referrerBonus = 0;
             if (referrer) {
               referrerBonus = Math.ceil(plan.credits * REFERRER_BONUS_RATIO);

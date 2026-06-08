@@ -1,0 +1,72 @@
+# ─────────────────────────────────────────────────────────
+#  robots.txt - CrackTheLoop (https://cracktheloop.com)
+#  Updated: 2025-06
+# ─────────────────────────────────────────────────────────
+
+# Allow all standard search engine crawlers
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /dashboard/*
+Disallow: /api/
+Disallow: /api/*
+Disallow: /login
+Disallow: /select-plan
+Disallow: /_next/
+Disallow: /copilot/session/
+
+# ─── AI / LLM Crawlers ────────────────────────────────────
+
+# OpenAI - allow GPTBot to crawl public pages for AI search
+User-agent: GPTBot
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+Disallow: /login
+
+# Anthropic - allow for Claude AI training / AEO
+User-agent: anthropic-ai
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+
+# Perplexity AI
+User-agent: PerplexityBot
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+
+# You.com
+User-agent: YouBot
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+
+# Google Bard / Gemini
+User-agent: Google-Extended
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+
+# Common Crawl (used for training many LLMs)
+User-agent: CCBot
+Allow: /
+Disallow: /dashboard/
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+
+# Bytespider (TikTok crawler)
+User-agent: Bytespider
+Allow: /
+Disallow: /dashboard/
+Disallow: /api/
+
+# ─── Sitemap Reference ────────────────────────────────────
+Sitemap: https://cracktheloop.com/sitemap.xml
+
+# ─── Crawl Delay (be gentle on origin) ───────────────────
+Crawl-delay: 2

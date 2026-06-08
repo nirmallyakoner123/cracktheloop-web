@@ -1,4 +1,4 @@
-# CrackTheLoop Landing Page — UI/UX Design Audit & Improvement Plan
+# CrackTheLoop Landing Page - UI/UX Design Audit & Improvement Plan
 
 ## Executive Summary
 
@@ -11,36 +11,36 @@ However, the page currently suffers from **visual monotony**, **section fatigue*
 ## Current State Screenshots
 
 ````carousel
-![Hero section — clean but flat](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/hero_section_1780666537840.png)
+![Hero section - clean but flat](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/hero_section_1780666537840.png)
 <!-- slide -->
-![Pain points & How It Works — strong content, monotone backgrounds](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/pain_points_how_it_works_1780666547378.png)
+![Pain points & How It Works - strong content, monotone backgrounds](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/pain_points_how_it_works_1780666547378.png)
 <!-- slide -->
-![Product Demo & Bento Features — excellent interaction, visually dense](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/demo_and_bento_features_1780666553135.png)
+![Product Demo & Bento Features - excellent interaction, visually dense](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/demo_and_bento_features_1780666553135.png)
 <!-- slide -->
-![Use Cases & Comparison — good info architecture, low contrast variation](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/use_cases_and_comparison_1780666566469.png)
+![Use Cases & Comparison - good info architecture, low contrast variation](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/use_cases_and_comparison_1780666566469.png)
 <!-- slide -->
-![Trust, Testimonials, FAQ — solid content, needs visual energy](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/trust_testimonials_faq_1780666572994.png)
+![Trust, Testimonials, FAQ - solid content, needs visual energy](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/trust_testimonials_faq_1780666572994.png)
 <!-- slide -->
-![CTA Footer — conversion section needs more punch](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/cta_footer_1780666578796.png)
+![CTA Footer - conversion section needs more punch](C:/Users/Nirmallya Koner/.gemini/antigravity-ide/brain/c808c9f4-49df-496d-b0cf-920c9a388d37/cta_footer_1780666578796.png)
 ````
 
 ---
 
 ## 🔍 Critical Issues Identified
 
-### Issue 1: Visual Monotony — "Wall of White"
+### Issue 1: Visual Monotony - "Wall of White"
 > [!CAUTION]
 > Every section uses nearly the same white/off-white background (`#FFFFFF`, `#F8F9FB`, `#F1F3F7`). These are only ~2-3% apart in lightness, making the page feel like one endless white scroll with no visual rhythm or breathing room.
 
 **Impact**: Users lose their sense of position on the page. Sections blur together, reducing engagement and increasing bounce rate.
 
-**Fix**: Introduce **bold background contrast breaks** — use a dark section (slate-900/950) for the Comparison or CTA sections, use your accent color as a full-width banner for social proof numbers, and use subtle gradient meshes to create visual texture variety.
+**Fix**: Introduce **bold background contrast breaks** - use a dark section (slate-900/950) for the Comparison or CTA sections, use your accent color as a full-width banner for social proof numbers, and use subtle gradient meshes to create visual texture variety.
 
 ---
 
-### Issue 2: Section Overload — 12 Sections Is Too Many
+### Issue 2: Section Overload - 12 Sections Is Too Many
 > [!WARNING]
-> The page has **12 distinct sections** (Navbar → Hero → PainPoints → HowItWorks → ProductDemo → BentoFeatures → UseCases → Comparison → TrustEthics → Testimonials → FAQ → CtaFooter). This creates **scroll fatigue** — users must scroll through ~12+ viewport heights to reach the bottom.
+> The page has **12 distinct sections** (Navbar → Hero → PainPoints → HowItWorks → ProductDemo → BentoFeatures → UseCases → Comparison → TrustEthics → Testimonials → FAQ → CtaFooter). This creates **scroll fatigue** - users must scroll through ~12+ viewport heights to reach the bottom.
 
 **Impact**: Key conversion content (pricing CTA, testimonials, trust signals) is buried far below the fold. Most users won't reach it.
 
@@ -81,13 +81,13 @@ However, the page currently suffers from **visual monotony**, **section fatigue*
 
 **Fix**: Pick ONE approach and apply it consistently:
 - **Option A**: All sections full-width with alternating background colors (recommended for premium SaaS)
-- **Option B**: All content sections in rounded cards (current partial approach — but apply consistently)
+- **Option B**: All content sections in rounded cards (current partial approach - but apply consistently)
 
 ---
 
 ### Issue 6: Comparison Table Is Underwhelming
 > [!NOTE]
-> The comparison table shows all ✗ for "Generic AI" and all ✓ for "CrackTheLoop" — which makes it feel one-sided and not credible. The visual treatment is also plain (just a basic table).
+> The comparison table shows all ✗ for "Generic AI" and all ✓ for "CrackTheLoop" - which makes it feel one-sided and not credible. The visual treatment is also plain (just a basic table).
 
 **Fix**:
 - Give Generic AI at least **1-2 partial checks** (e.g., "Gives general interview tips" ✓) to feel honest
@@ -115,7 +115,7 @@ However, the page currently suffers from **visual monotony**, **section fatigue*
 
 ---
 
-## 📋 Proposed Changes — Priority Order
+## 📋 Proposed Changes - Priority Order
 
 ### Tier 1: High-Impact Visual Fixes (Immediate)
 
@@ -182,7 +182,7 @@ However, the page currently suffers from **visual monotony**, **section fatigue*
 - Add subtle icon animation when a step becomes active
 
 #### [MODIFY] [BentoFeatures.tsx](file:///c:/Users/Nirmallya%20Koner/Desktop/cracktheloop/src/app/components/landing/BentoFeatures.tsx)
-- Fix missing `tagColor` and `accentColor` properties (lines 389, 400-401) — these are referenced but undefined, likely causing runtime errors
+- Fix missing `tagColor` and `accentColor` properties (lines 389, 400-401) - these are referenced but undefined, likely causing runtime errors
 - Add per-feature accent color variations for visual interest
 
 ---
@@ -203,7 +203,7 @@ However, the page currently suffers from **visual monotony**, **section fatigue*
 ## 🐛 Code Bug Found
 
 > [!CAUTION]
-> In [BentoFeatures.tsx](file:///c:/Users/Nirmallya%20Koner/Desktop/cracktheloop/src/app/components/landing/BentoFeatures.tsx), lines 389 and 399-401 reference `activeFeature.tagColor` and `activeFeature.accentColor` — but these properties are **never defined** in the `features` array. This likely causes the tag badge to render with empty/broken classes and the icon container to have an invalid inline style.
+> In [BentoFeatures.tsx](file:///c:/Users/Nirmallya%20Koner/Desktop/cracktheloop/src/app/components/landing/BentoFeatures.tsx), lines 389 and 399-401 reference `activeFeature.tagColor` and `activeFeature.accentColor` - but these properties are **never defined** in the `features` array. This likely causes the tag badge to render with empty/broken classes and the icon container to have an invalid inline style.
 
 ```diff
 // Line 389
@@ -248,7 +248,7 @@ Ensure clean build with no TypeScript errors after fixing the `tagColor`/`accent
 > **Dark Sections**: Would you like me to introduce dark-themed sections (slate-950 background) for the Comparison and CTA blocks? This is the single highest-impact visual change.
 
 > [!IMPORTANT]
-> **Social Proof**: Do you have real user numbers/testimonial data, or should I keep the current placeholder stats? Adding a logo bar ("Preparing for roles at Google, Amazon, Meta..." style) would significantly boost credibility — should I add one?
+> **Social Proof**: Do you have real user numbers/testimonial data, or should I keep the current placeholder stats? Adding a logo bar ("Preparing for roles at Google, Amazon, Meta..." style) would significantly boost credibility - should I add one?
 
 > [!IMPORTANT]
 > **Scope**: Would you like me to implement all 5 tiers, or start with Tier 1 + Tier 2 (highest impact) first?

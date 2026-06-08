@@ -1,4 +1,4 @@
-# CrackTheLoop — Brand Guidelines & Design System
+# CrackTheLoop - Brand Guidelines & Design System
 
 This document provides a comprehensive overview of the brand identity, design token systems, and landing page patterns used in the **CrackTheLoop** platform.
 

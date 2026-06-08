@@ -1,4 +1,4 @@
-# Implementation Plan — SEO-Focused Feature Pages
+# Implementation Plan - SEO-Focused Feature Pages
 
 We will create three highly-detailed, SEO-optimized landing pages for CrackTheLoop's core features under the `/features/` route:
 1. **Live Audio Transcription** (`/features/live-transcription`)

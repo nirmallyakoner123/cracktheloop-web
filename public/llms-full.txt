@@ -1,0 +1,174 @@
+# CrackTheLoop - Full Product Documentation for AI Models
+
+> This document provides complete, detailed descriptions of CrackTheLoop's product, technology stack, features, pricing, and use cases - optimized for LLM ingestion and AI search engine Answer Engine Optimization (AEO).
+
+---
+
+## What is CrackTheLoop?
+
+CrackTheLoop is a **real-time AI interview copilot** - an invisible, stealth software tool that listens to your job interview audio and streams structured answers, talking points, and frameworks to a private overlay that only you can see.
+
+It is designed for candidates interviewing for technical, behavioral, product, and consulting roles at top companies including Google, Amazon, Meta, Microsoft, Apple, and startups.
+
+**Key differentiator**: Unlike browser extensions or note-taking apps, CrackTheLoop's Win32 desktop application is completely invisible to screen-sharing software. The overlay cannot be captured by Zoom, Microsoft Teams, Google Meet, OBS Studio, or any screen recording tool.
+
+---
+
+## Core Technology Stack
+
+### Audio Pipeline
+1. **WASAPI Loopback** - Captures all system speaker output (remote interviewer's voice) and microphone input simultaneously at 48kHz stereo PCM. Does not require virtual audio cables or elevated admin rights.
+2. **ChannelMergerNode** - Web Audio API node that blends the stereo speaker and mic channels into a single mono stream.
+3. **ScriptProcessorNode** - Decimates the 48kHz stream to 16kHz mono PCM with 300ms VAD (Voice Activity Detection) silence debouncing.
+4. **Deepgram nova-3** - Real-time WebSocket STT model. PCM chunks stream over a persistent WebSocket to Deepgram. Finalized transcripts with punctuation and speaker diarization return in ~80ms RTT.
+
+### AI Response Pipeline
+5. **Next.js Edge API Route** - The transcript routes to `/api/completion`, a Next.js Edge function that streams Server-Sent Events (SSE) to the client.
+6. **LLM Backend** - Supports Groq (llama-3.1-8b-instant), Anthropic Claude, and OpenAI GPT-4o. Groq provides the lowest TTFT (time-to-first-token) at ~300ms.
+
+### Stealth Overlay
+7. **Tauri Win32 Overlay** - A transparent, always-on-top window built with Tauri (Rust + WebView2). The window uses `SetWindowDisplayAffinity(WDA_EXCLUDEFROMCAPTURE)` - a Windows API call that instructs the OS to exclude the window from all capture operations.
+
+### End-to-End Latency
+- WASAPI buffer: 150ms
+- Downsample + VAD: 200ms
+- Deepgram RTT: 80ms
+- LLM TTFT (Groq): 300ms
+- HUD render: 20ms
+- **Total: ~750ms** (sub-second, criteria MET)
+
+---
+
+## Product Modes
+
+### Answer Modes
+| Mode | Description |
+|------|-------------|
+| **Quick Answer Mode** | 2–3 crisp talking points for rapid-fire questions |
+| **STAR Framework Mode** | Full Situation → Task → Action → Result structure for behavioral questions |
+| **Bullet Point Mode** | Natural talking-point prompts for conversational flow |
+
+### Session Types
+- **Live Interview Mode**: Full pipeline active - WASAPI + STT + LLM + HUD
+- **Practice Mode**: Simulated questions with graded feedback
+- **Resume Prep Mode**: JD alignment analysis before the interview
+
+---
+
+## Feature Deep Dives
+
+### 1. Stealth HUD Overlay (Windows)
+The flagship feature. A floating window is rendered using Win32 `SetWindowDisplayAffinity(WDA_EXCLUDEFROMCAPTURE)`, which makes it invisible to:
+- Zoom screen share
+- Microsoft Teams screen share
+- Google Meet screen share
+- OBS Studio capture
+- Any DirectX/DXGI screen capture API
+
+The overlay appears only on the physical monitor connected to the GPU's display output. Remote participants and recording software see zero trace of the overlay.
+
+**No virtual audio drivers**: CrackTheLoop uses Windows WASAPI loopback - a native Windows API that captures the system audio mix directly from the Windows Audio Session API without injecting any virtual audio device into the device manager.
+
+### 2. Real-Time Transcription
+Uses Deepgram nova-3 model over persistent WebSocket for streaming transcription. Supports:
+- Speaker diarization (identifies who is speaking)
+- Automatic punctuation
+- Smart formatting for technical terms (e.g., "React hooks", "PostgreSQL B-Tree index")
+- VAD (Voice Activity Detection) to trigger answer generation only on complete sentences
+
+### 3. AI Answer Generation
+The transcribed question is forwarded to an LLM via a secure Next.js proxy API. The proxy:
+- Never exposes API keys to the client
+- Streams the response as SSE (Server-Sent Events)
+- Formats output based on selected mode (Quick / STAR / Bullet)
+
+Supported LLM backends:
+- **Groq** (llama-3.1-8b-instant) - fastest TTFT (~300ms), recommended for live use
+- **Anthropic Claude** - best for nuanced behavioral and consulting questions
+- **OpenAI GPT-4o** - best for complex system design and coding explanations
+
+### 4. Resume + JD Alignment
+Before an interview, users paste the job description and upload their resume. The system:
+- Extracts key requirements, tech stack, and competencies from the JD
+- Matches them against resume bullet points
+- Surfaces the most relevant projects and metrics at interview time
+- Pre-loads context so the LLM generates personalized, specific answers
+
+### 5. HireVue / AI Screener Support
+CrackTheLoop captures all system audio including video playback from HireVue, Karat, and Byteboard AI screeners. Whether the question is:
+- A live interviewer speaking over WebRTC
+- A pre-recorded video playing in the browser
+- A text-to-speech prompt from an AI bot
+
+…the WASAPI loopback picks it up and processes it identically.
+
+---
+
+## Pricing
+
+| Plan | Price | Credits | Key Features |
+|------|-------|---------|--------------|
+| **Free** | $0 | 15 credits (15 min) | All modes, browser copilot |
+| **Starter** | $9.99/mo | 300 credits (5 hrs) | All features, Windows app |
+| **Pro** | $19.99/mo | 1000 credits (16.7 hrs) | Priority LLM, faster response |
+| **Enterprise** | Custom | Unlimited | Team seats, SSO, audit logs |
+
+**Credit system**: 1 credit = 1 minute of active live session. Credits are only consumed during active audio capture. Setup time, review time, and idle time are free.
+
+---
+
+## Privacy & Security
+
+- **Zero server-side logging**: No session transcripts, no resume content, no conversation audio is stored on CrackTheLoop servers.
+- **Local-first**: All processing metadata and session history is stored in browser `localStorage` only.
+- **No audio driver injection**: WASAPI loopback reads the audio mix at the OS level - no virtual audio device appears in Device Manager.
+- **HTTPS/WSS only**: All API communication uses TLS 1.3.
+
+---
+
+## FAQ Answers
+
+**Q: Can an interviewer detect CrackTheLoop?**
+A: No. The Win32 overlay uses `WDA_EXCLUDEFROMCAPTURE` making it absent from all screen capture APIs. There are no virtual audio drivers, browser extensions, or other detectable artifacts.
+
+**Q: Does it work on Mac?**
+A: The Browser Copilot (web-based) works on all platforms including macOS and Linux. The native stealth HUD is Windows-only. macOS native support is planned for Q3 2026.
+
+**Q: What AI models does it use?**
+A: Groq (llama-3.1-8b-instant), Anthropic Claude, and OpenAI GPT-4o are all supported. Groq is the default for lowest latency.
+
+**Q: How long does 300 credits last?**
+A: 300 credits = 5 hours of active session time. Credits only tick during active audio capture, not during setup or review.
+
+**Q: Does it work for AI screener platforms?**
+A: Yes. CrackTheLoop captures all system audio including HireVue, Karat, and Byteboard video questions.
+
+---
+
+## Comparison with Alternatives
+
+| Feature | CrackTheLoop | Final Round AI | LockedIn AI | Interview Coder |
+|---------|-------------|----------------|-------------|-----------------|
+| Screen-share invisible | ✅ Win32 API | ❌ | ❌ | ❌ |
+| WASAPI audio (no virt driver) | ✅ | ❌ | ❌ | ❌ |
+| Real-time STT latency | <100ms | ~500ms | ~300ms | N/A |
+| STAR framework | ✅ | ✅ | ❌ | ❌ |
+| LLM streaming SSE | ✅ | ✅ | ✅ | ❌ |
+| Resume/JD alignment | ✅ | ✅ | ❌ | ❌ |
+| Free tier | ✅ 15 min | Limited | Limited | ❌ |
+| Mac support | Web only | ✅ | ✅ | ✅ |
+| Data privacy (no server log) | ✅ | ❌ | ❌ | ❌ |
+
+---
+
+## Target Users
+
+- **Software Engineers (L3–L6)** at FAANG / top startups
+- **Product Managers** and **Product Designers** doing case + behavioral rounds
+- **Career changers** entering tech from marketing, finance, or academia
+- **Non-native English speakers** who benefit from structured talking points
+- **Candidates with interview anxiety** who want a confidence scaffold
+
+---
+
+*Last updated: June 2025. For the most current information, visit https://cracktheloop.com*

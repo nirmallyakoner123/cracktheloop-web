@@ -1,4 +1,4 @@
-# CrackTheLoop — Brand & Design System Guidelines
+# CrackTheLoop - Brand & Design System Guidelines
 
 This document outlines the visual identity and design system for **CrackTheLoop**, ensuring a unified, premium developer tool aesthetic across the Desktop (Tauri) and Web (Next.js) environments.
 
@@ -49,11 +49,11 @@ The following core assets are available in the `/public` folder of both the web 
 - **Visuals**: High-contrast outline version in Slate.
 - **Best For**: Low-opacity watermark placements, navbar stamps, minimal stealth view layouts.
 
-### 3. Horizontal Web Header — Light Mode (`logo-horizontal-light.svg`)
+### 3. Horizontal Web Header - Light Mode (`logo-horizontal-light.svg`)
 - **Visuals**: Flat horizontal lockup containing the gradient mark and dark text `#0f172a`.
 - **Best For**: Marketing landing pages, white documents, billing screens.
 
-### 4. Horizontal Web Header — Dark Mode (`logo-horizontal-dark.svg`)
+### 4. Horizontal Web Header - Dark Mode (`logo-horizontal-dark.svg`)
 - **Visuals**: Horizontal lockup containing the gradient mark and white text over a `#0B0D19` dark banner.
 - **Best For**: Desktop setups, black header cards, web app dashboards.
 

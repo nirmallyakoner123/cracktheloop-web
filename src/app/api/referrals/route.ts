@@ -29,7 +29,7 @@ export async function GET(req: Request) {
     const decoded: any = jwt.verify(jwtToken, NEXTAUTH_SECRET);
     await connectToDatabase();
 
-    // .lean() returns a plain JS object — bypasses Mongoose doc caching that hides fields
+    // .lean() returns a plain JS object - bypasses Mongoose doc caching that hides fields
     const userDoc = await User.findById(decoded.user_id).lean<any>();
     if (!userDoc) {
       return NextResponse.json({ error: "User not found." }, { status: 404 });
@@ -47,7 +47,7 @@ export async function GET(req: Request) {
         if (clash) continue;
 
         try {
-          // Update directly in DB — lean doc has no .save()
+          // Update directly in DB - lean doc has no .save()
           await User.updateOne(
             { _id: userDoc._id, $or: [{ referral_code: null }, { referral_code: { $exists: false } }] },
             { $set: { referral_code: candidate } }
@@ -59,7 +59,7 @@ export async function GET(req: Request) {
             console.log(`[REFERRALS] Assigned new code to ${userDoc.email}: ${code}`);
           }
         } catch (saveErr: any) {
-          // Duplicate key: another concurrent request beat us — re-fetch
+          // Duplicate key: another concurrent request beat us - re-fetch
           const fresh = await User.findById(userDoc._id).lean<any>();
           if (fresh?.referral_code) code = fresh.referral_code;
         }

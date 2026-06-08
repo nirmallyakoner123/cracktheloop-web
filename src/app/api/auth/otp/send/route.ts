@@ -45,7 +45,7 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
-      
+
       const hashedPassword = hashPassword(password);
       if (user.password && user.password !== hashedPassword) {
         return NextResponse.json(
@@ -57,9 +57,9 @@ export async function POST(request: Request) {
       // New user registration: name and password are required
       if (!name || !name.trim() || !password || password.trim().length < 6) {
         return NextResponse.json(
-          { 
-            error: "registration_required", 
-            message: "Full Name and a password (min 6 characters) are required to create an account" 
+          {
+            error: "registration_required",
+            message: "Full Name and a password (min 6 characters) are required to create an account"
           },
           { status: 400 }
         );
@@ -76,14 +76,14 @@ export async function POST(request: Request) {
         generatedRefCode = await generateUniqueReferralCode();
       } catch (codeErr) {
         console.error("[AUTH] Failed to generate referral code during signup:", codeErr);
-        // Fall through — code will be generated on first dashboard load via /api/referrals
+        // Fall through - code will be generated on first dashboard load via /api/referrals
       }
 
       let referredByCode: string | null = null;
       if (referralCode && referralCode.trim()) {
         const referrer = await User.findOne({ referral_code: referralCode.trim() });
         if (referrer) {
-          // Use the input code directly — don't read referrer.referral_code back from
+          // Use the input code directly - don't read referrer.referral_code back from
           // the document, as a stale Mongoose schema cache can return it as null
           // even though the query found the referrer by that exact value.
           referredByCode = referralCode.trim();
@@ -103,7 +103,7 @@ export async function POST(request: Request) {
         subscription_tier: "free",
         credits: 0,
       });
-      console.log(`[AUTH] Creating new user: ${email}, ref_code: ${generatedRefCode || "(none — will backfill)"}`);
+      console.log(`[AUTH] Creating new user: ${email}, ref_code: ${generatedRefCode || "(none - will backfill)"}`);
     } else {
       // Handle password migration if user existed without password
       if (!user.password && password) {

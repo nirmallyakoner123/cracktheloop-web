@@ -24,7 +24,7 @@ export default function PricingPage() {
 
   return (
     <div className="min-h-screen bg-(--bg-mist) text-(--text-primary) flex flex-col pt-20">
-      
+
       {/* Background orbs */}
       <div className="orb orb-peach w-[600px] h-[600px] -top-40 left-1/4 animate-float-orb opacity-40 pointer-events-none" />
       <div className="orb orb-slate w-[400px] h-[400px] bottom-0 -right-20 animate-float-orb-slow opacity-40 pointer-events-none" />
@@ -49,7 +49,7 @@ export default function PricingPage() {
       {/* Pricing Cards Section */}
       <section className="w-full max-w-7xl mx-auto px-6 pt-16 relative z-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
-          
+
           {/* Free Trial */}
           <div className="bg-white/85 backdrop-blur-md border border-(--border-light) rounded-[12px] p-6 md:p-8 flex flex-col justify-between shadow-xs hover:border-(--accent)/40 hover:-translate-y-1 hover:shadow-sm transition-all duration-300 min-h-[420px]">
             <div>
@@ -228,7 +228,7 @@ export default function PricingPage() {
               Referral Rewards Program
             </h2>
             <p className="text-xs text-(--text-muted) leading-relaxed max-w-xl font-medium">
-              Share CrackTheLoop with friends and colleagues — both of you earn bonus credits when they subscribe.
+              Share CrackTheLoop with friends and colleagues - both of you earn bonus credits when they subscribe.
             </p>
           </div>
 

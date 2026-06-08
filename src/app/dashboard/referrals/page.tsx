@@ -236,14 +236,14 @@ function ReferralsHubContent() {
                   </label>
                   <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2.5">
                     <span className="flex-1 font-mono text-sm font-bold text-purple-700 tracking-widest select-all">
-                      {referralData?.referral_code || user?.referral_code || "—"}
+                      {referralData?.referral_code || user?.referral_code || "-"}
                     </span>
                     <button
                       onClick={() =>
                         copyToClipboard(
                           referralData?.referral_code ||
-                            user?.referral_code ||
-                            "",
+                          user?.referral_code ||
+                          "",
                           "code"
                         )
                       }
@@ -268,7 +268,7 @@ function ReferralsHubContent() {
                     <span className="flex-1 text-xs text-slate-700 truncate font-mono font-semibold select-all">
                       {referralData?.referral_link
                         ? referralData.referral_link.replace(/^https?:\/\//, "")
-                        : "—"}
+                        : "-"}
                     </span>
                     <button
                       onClick={() =>
@@ -365,11 +365,10 @@ function ReferralsHubContent() {
                     </td>
                     <td className="py-4 px-5">
                       <span
-                        className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${
-                          ru.is_subscribed
+                        className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border ${ru.is_subscribed
                             ? "text-emerald-600 bg-emerald-50 border-emerald-200/80"
                             : "text-slate-500 bg-slate-50 border-slate-200"
-                        }`}
+                          }`}
                       >
                         {ru.is_subscribed
                           ? normalizeTier(ru.subscription_tier)
@@ -382,7 +381,7 @@ function ReferralsHubContent() {
                           +{ru.bonus_earned} <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
                         </span>
                       ) : (
-                        "—"
+                        "-"
                       )}
                     </td>
                   </tr>

@@ -1,6 +1,6 @@
 /**
  * Backfill script: populates the new `referrals` collection based on existing users' `referred_by` field.
- * Safe to run multiple times — will not create duplicate referral relationships.
+ * Safe to run multiple times - will not create duplicate referral relationships.
  * Run: node scripts/backfill-referrals.js
  */
 
