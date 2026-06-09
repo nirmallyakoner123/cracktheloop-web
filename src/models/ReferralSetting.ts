@@ -16,15 +16,15 @@ const ReferralSettingSchema = new Schema<IReferralSetting>(
   {
     trial_base_credits: {
       type: Number,
-      default: 15,
+      default: 50,
     },
     trial_referred_bonus: {
       type: Number,
-      default: 3,
+      default: 0,
     },
     trial_referrer_bonus: {
       type: Number,
-      default: 8,
+      default: 50,
     },
     trial_expiry_days: {
       type: Number,

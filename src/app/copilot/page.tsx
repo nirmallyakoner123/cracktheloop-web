@@ -756,13 +756,7 @@ export default function CopilotPage() {
           ]);
         }
 
-        // Deduct 1 credit locally for instant updates
-        if (user) {
-          const updatedUser = { ...user, credits: Math.max(0, user.credits - 1) };
-          setUser(updatedUser);
-          localStorage.setItem("ctl_user", JSON.stringify(updatedUser));
-          document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(updatedUser))}; path=/; max-age=604800; SameSite=Lax`;
-        }
+        // Credits will be updated from backend once session saves
       }
     } catch (err: any) {
       console.error(err);
@@ -972,6 +966,24 @@ export default function CopilotPage() {
       if (!res.ok) throw new Error(data.message || data.error || "Failed to save session");
 
       setStatus("Session Saved");
+
+      // Fetch fresh profile to get exact remaining credits
+      try {
+        const profileRes = await fetch("/api/auth/me", {
+          headers: { "Authorization": `Bearer ${savedToken}` }
+        });
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          if (profileData.user) {
+            setUser(profileData.user);
+            localStorage.setItem("ctl_user", JSON.stringify(profileData.user));
+            setCookie("ctl_user", JSON.stringify(profileData.user));
+          }
+        }
+      } catch (profileErr) {
+        console.error("Failed to sync profile after save:", profileErr);
+      }
+
       setTimeout(() => {
         setStatus(prev => prev === "Session Saved" ? "" : prev);
       }, 3000);
