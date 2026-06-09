@@ -20,11 +20,11 @@ export default function CtaFooter() {
     { label: "Demo Simulator", href: "/demo" },
     { label: "Live Audio Transcription", href: "/features/live-transcription" },
     { label: "Resume & JD Alignment", href: "/features/resume-jd-alignment" },
-    { label: "Stealth Overlay HUD", href: "/features/stealth-overlay" },
+    { label: "Desktop HUD Overlay", href: "/features/stealth-overlay" },
   ];
 
   const platformLinks = [
-    { label: "Web Copilot", href: "/pricing" },
+    { label: "Web Copilot", href: "/login?mode=signup&plan=Free%20Trial" },
     { label: "Windows Desktop App (.exe)", href: "#platform-picker" },
     { label: "macOS Desktop App (.dmg)", href: "#platform-picker" },
     { label: "Referral Program (Give 20%, Get 50%)", href: "#referral-program" },
@@ -70,10 +70,10 @@ export default function CtaFooter() {
               </p>
               <div className="flex flex-wrap justify-center gap-4 mb-6">
                 <Link
-                  href="/pricing"
+                  href="/login?mode=signup&plan=Free%20Trial"
                   className="btn-primary-glow cursor-pointer !py-4 !px-8 !rounded-lg !text-base"
                 >
-                  Start Free (15 Credits Included)
+                  Try Live Interview Copilot (Free)
                   <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link

@@ -77,6 +77,11 @@ function LoginContent() {
       return;
     }
 
+    const modeParam = searchParams.get("mode");
+    if (modeParam === "signup") {
+      setMode("signup");
+    }
+
     const urlRef = searchParams.get("ref");
     if (urlRef) {
       localStorage.setItem("ctl_ref", urlRef);
@@ -119,23 +124,10 @@ function LoginContent() {
       document.cookie = `ctl_token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
       document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(data.user))}; path=/; max-age=604800; SameSite=Lax`;
 
-      const tier = data.user.subscription_tier;
-      const planParam = searchParams.get("plan");
-      if (tier === "free" || !tier || planParam) {
-        setMessage(mode === "signup" ? "Account created successfully! Loading plans..." : "Sign in successful! Loading plans...");
-        setTimeout(() => {
-          const queryParams = [];
-          if (planParam) queryParams.push(`plan=${encodeURIComponent(planParam)}`);
-          if (referralCode) queryParams.push(`ref=${referralCode}`);
-          const queryString = queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
-          router.push(`/select-plan${queryString}`);
-        }, 1000);
-      } else {
-        setMessage("Authentication successful! Redirecting to dashboard...");
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 1000);
-      }
+      setMessage(mode === "signup" ? "Account created successfully! Redirecting to dashboard..." : "Sign in successful! Redirecting to dashboard...");
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1000);
     } catch (err: any) {
       setMessage(err.message);
     } finally {
@@ -168,15 +160,15 @@ function LoginContent() {
           
           <div className="flex flex-col gap-2 text-left select-none">
             <h2 className="text-2xl lg:text-3xl font-black tracking-tight text-slate-850 mt-1 animate-slide-in" style={{ fontFamily: "var(--font-display)" }}>
-              {mode === "signin" ? "Access Stealth Gateway" : "Initialize Stealth Copilot"}
+              {mode === "signin" ? "Access Live Copilot Dashboard" : "Join CrackTheLoop Beta"}
             </h2>
             <div className="flex items-center gap-1.5 text-xs text-slate-500 font-bold -mt-0.5">
               <span>Trusted by 3.4k+ developers</span>
             </div>
             <p className="text-slate-500 text-xs leading-relaxed font-semibold mt-1">
               {mode === "signin" 
-                ? "Enter your credentials to authorize and launch your HUD dashboard." 
-                : "Get started with 15 free credits. Zero risk, 100% money-back guarantee."}
+                ? "Enter your credentials to authorize and launch your copilot dashboard." 
+                : "Get started with 15 free credits to use during your live sessions. Zero risk, 100% free."}
             </p>
           </div>
 
@@ -197,10 +189,10 @@ function LoginContent() {
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[9px] font-black uppercase tracking-widest text-(--accent) flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-(--accent) animate-pulse"></span>
-                    Stealth Audio Trial Pass
+                    Live AI Response Copilot Onboarding Pass
                   </span>
                   <span className="text-sm font-black text-slate-800 tracking-tight">
-                    15 FREE COPILOT CREDITS
+                    15 FREE LIVE CREDITS
                   </span>
                 </div>
                 <div className="text-[8.5px] text-slate-500 font-bold uppercase tracking-wide">
@@ -426,7 +418,7 @@ function LoginContent() {
             </span>
           </Link>
           <span className="text-[9px] font-black bg-white/10 text-white/90 border border-white/10 px-2.5 py-1 rounded-full tracking-widest uppercase">
-            100% Undetectable
+            Privacy-First Overlay
           </span>
         </div>
 
@@ -437,14 +429,14 @@ function LoginContent() {
           <div className="flex flex-col gap-6">
             <div className="flex flex-col gap-3">
               <span className="text-[10px] text-(--accent) font-black uppercase tracking-widest pl-0.5">
-                STEALTH AUDIO COPILOT
+                LIVE INTERVIEW COPILOT
               </span>
               <h3 className="text-3xl lg:text-4xl xl:text-5xl font-black tracking-tight text-slate-100 leading-tight">
-                The Hidden Edge to Crack <br />
-                Any Technical Interview.
+                Answer with Clarity <br />
+                Under Pressure.
               </h3>
               <p className="text-slate-400 text-xs xl:text-sm font-semibold leading-relaxed mt-1">
-                CrackTheLoop runs inside an isolated web-audio sandbox. It intercepts system loopback streams directly in your browser, generating real-time suggestions completely undetectable by video call software.
+                CrackTheLoop runs locally on your desktop to serve as your communication assistant. It listens to the live call and displays response outlines and talking points to help you communicate clearly and avoid blank mind moments.
               </p>
             </div>
 
@@ -511,10 +503,10 @@ function LoginContent() {
                 <div className="flex flex-col gap-1.5">
                   <span className="text-[9.5px] font-black uppercase tracking-widest text-emerald-450 flex items-center gap-1.5">
                     <Terminal className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                    Stealth Copilot HUD Suggestion
+                    Live Response HUD Suggestions
                   </span>
                   <div className="bg-emerald-950/20 border border-emerald-500/15 p-3.5 rounded-xl text-xs lg:text-[13px] text-emerald-200 font-bold leading-relaxed font-mono relative transition-all duration-500">
-                    <span className="text-emerald-450 font-black block text-[8px] uppercase tracking-widest mb-1">// {scenario.topic} Focus Suggestion</span>
+                    <span className="text-emerald-450 font-black block text-[8px] uppercase tracking-widest mb-1">// {scenario.topic} Focus Outline</span>
                     {scenario.suggestion}
                   </div>
                 </div>
@@ -525,7 +517,7 @@ function LoginContent() {
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center gap-2.5 bg-white/3 border border-white/5 px-3.5 py-2.5 rounded-xl hover:bg-white/5 transition-all">
                 <EyeOff className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="text-xs font-bold text-slate-350 uppercase tracking-wide">100% Undetectable</span>
+                <span className="text-xs font-bold text-slate-350 uppercase tracking-wide">Privacy-First HUD</span>
               </div>
               <div className="flex items-center gap-2.5 bg-white/3 border border-white/5 px-3.5 py-2.5 rounded-xl hover:bg-white/5 transition-all">
                 <Zap className="w-4 h-4 text-amber-400 shrink-0 animate-pulse" />

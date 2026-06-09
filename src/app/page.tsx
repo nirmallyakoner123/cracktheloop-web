@@ -2,6 +2,7 @@ import Navbar from "./components/landing/Navbar";
 import Hero from "./components/landing/Hero";
 import PainPoints from "./components/landing/PainPoints";
 import HowItWorks from "./components/landing/HowItWorks";
+import TrustEthics from "./components/landing/TrustEthics";
 import PlatformPicker from "./components/landing/PlatformPicker";
 import ProductDemo from "./components/landing/ProductDemo";
 import BentoFeatures from "./components/landing/BentoFeatures";
@@ -19,6 +20,7 @@ export default function Home() {
       <Hero />
       <PainPoints />
       <HowItWorks />
+      <TrustEthics />
       <PlatformPicker />
       <ProductDemo />
       <Testimonials />

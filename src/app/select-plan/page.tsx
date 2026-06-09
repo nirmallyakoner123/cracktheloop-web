@@ -368,7 +368,7 @@ function SelectPlanContent() {
                 </li>
                 <li className="flex items-center gap-2">
                   <EyeOff className="w-4 h-4 text-emerald-450 shrink-0" />
-                  Screen sharing evasion (Zoom & Meet)
+                  Interactive Desktop Practice HUD
                 </li>
                 <li className="flex items-center gap-2">
                   <Zap className="w-4 h-4 text-emerald-450 shrink-0" />

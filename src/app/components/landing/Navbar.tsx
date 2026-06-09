@@ -32,7 +32,7 @@ export default function Navbar() {
       dropdown: [
         { label: "Live Audio Transcription", href: "/features/live-transcription", desc: "Understands questions in real-time." },
         { label: "Resume & JD Alignment", href: "/features/resume-jd-alignment", desc: "Tailor answers to target roles." },
-        { label: "Stealth Overlay HUD", href: "/features/stealth-overlay", desc: "Zoom-invisible desktop window." },
+        { label: "Desktop HUD Overlay", href: "/features/stealth-overlay", desc: "Local response guides overlay." },
       ]
     },
     { label: "How It Works", href: "#how-it-works" },
