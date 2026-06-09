@@ -132,7 +132,7 @@ export default function Hero() {
       id="hero"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="hero-gradient-mesh relative min-h-screen flex flex-col pt-28 pb-8 overflow-hidden"
+      className="hero-gradient-mesh relative min-h-screen flex flex-col pt-36 md:pt-35 pb-12 overflow-hidden"
     >
       {/* Subtle grid pattern overlay */}
       <div
@@ -175,43 +175,20 @@ export default function Hero() {
               Never let your mind go blank. Sits on your desktop, listens to the interview, and provides structured response outlines and memory prompts in real-time during live sessions.
             </p>
 
-            <div className="flex flex-col gap-4 mt-2">
-              {/* Action + Compatibility Row */}
-              <div className="flex flex-wrap items-center gap-6">
-                <Link href="/login?mode=signup&plan=Free%20Trial" className="btn-primary-glow cursor-pointer !py-4 !px-8 shrink-0">
+            <div className="flex flex-col gap-6 mt-4 max-w-xl">
+              {/* Action Button */}
+              <div>
+                <Link href="/login?mode=signup&plan=Free%20Trial" className="btn-primary-glow inline-flex cursor-pointer !py-4 !px-8">
                   Try Live Interview Copilot
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-
-                {/* Compatibility Highlights */}
-                <div className="flex flex-col gap-1.5 select-none">
-                  <span className="text-[10px] font-mono font-black uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-400 select-none flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-                    Compatible with online interviews
-                  </span>
-                  <div className="flex items-center gap-4.5 pl-0.5">
-                    {[
-                      { name: "Google Meet", src: "https://cdn.svgporn.com/logos/google-meet.svg" },
-                      { name: "Zoom", src: "https://cdn.svgporn.com/logos/zoom-icon.svg" },
-                      { name: "Microsoft Teams", src: "https://cdn.svgporn.com/logos/microsoft-teams.svg" }
-                    ].map((plat, i) => (
-                      <img 
-                        key={i} 
-                        src={plat.src} 
-                        alt={plat.name} 
-                        title={plat.name}
-                        className="w-6 h-6 object-contain transition-all duration-300 hover:scale-115 filter hover:drop-shadow-xs cursor-default select-none opacity-85 hover:opacity-100" 
-                      />
-                    ))}
-                  </div>
-                </div>
               </div>
 
               {/* Trust Details & Referral Link */}
-              <div className="flex flex-col gap-1.5 pl-1 mt-1">
+              <div className="flex flex-col gap-1.5 pl-1">
                 <span className="flex items-center gap-1.5 text-sm font-semibold text-slate-600">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  50 Free Credits Loaded Instantly · No Credit Card Required
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  50 Free Credits · No Credit Card Required
                 </span>
                 <Link
                   href="#referral-program"
@@ -225,6 +202,28 @@ export default function Hero() {
                   <span>🎁 Share with friends: Earn up to 500 bonus credits</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
+              </div>
+
+              {/* Divider and Platforms Row */}
+              <div className="border-t border-slate-200/80 pt-5 mt-1 flex flex-col sm:flex-row sm:items-center gap-4 pl-1">
+                <span className="text-xs font-bold text-slate-500 select-none tracking-wide shrink-0">
+                  Runs alongside live interviews on:
+                </span>
+                <div className="flex items-center gap-5">
+                  {[
+                    { name: "Google Meet", src: "https://cdn.svgporn.com/logos/google-meet.svg" },
+                    { name: "Zoom", src: "https://cdn.svgporn.com/logos/zoom.svg" },
+                    { name: "Microsoft Teams", src: "https://cdn.svgporn.com/logos/microsoft-teams.svg" }
+                  ].map((plat, i) => (
+                    <img 
+                      key={i} 
+                      src={plat.src} 
+                      alt={plat.name} 
+                      title={plat.name}
+                      className="h-6.5 w-auto object-contain transition-all duration-300 hover:scale-110 filter hover:drop-shadow-2xs cursor-default select-none opacity-85 hover:opacity-100" 
+                    />
+                  ))}
+                </div>
               </div>
             </div>
 
