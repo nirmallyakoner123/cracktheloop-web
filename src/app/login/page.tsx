@@ -83,7 +83,12 @@ function LoginContent() {
   // Check URL ref query or local storage
   useEffect(() => {
     if (getCookie("ctl_token")) {
-      window.location.replace("/dashboard");
+      const plan = searchParams.get("plan");
+      if (plan && plan !== "Free Trial") {
+        window.location.replace(`/select-plan?plan=${encodeURIComponent(plan)}`);
+      } else {
+        window.location.replace("/dashboard");
+      }
       return;
     }
 
@@ -130,9 +135,19 @@ function LoginContent() {
       setCookie("ctl_token", data.token);
       setCookie("ctl_user", JSON.stringify(data.user));
 
-      setMessage(mode === "signup" ? "Account created successfully! Redirecting to dashboard..." : "Sign in successful! Redirecting to dashboard...");
+      const plan = searchParams.get("plan");
+      const isPaidUpgrade = plan && plan !== "Free Trial";
+      const redirectUrl = isPaidUpgrade
+        ? `/select-plan?plan=${encodeURIComponent(plan)}`
+        : "/dashboard";
+      
+      const successMsg = mode === "signup"
+        ? (isPaidUpgrade ? "Account created! Redirecting to checkout..." : "Account created successfully! Redirecting to dashboard...")
+        : (isPaidUpgrade ? "Sign in successful! Redirecting to checkout..." : "Sign in successful! Redirecting to dashboard...");
+
+      setMessage(successMsg);
       setTimeout(() => {
-        window.location.replace("/dashboard");
+        window.location.replace(redirectUrl);
       }, 1000);
     } catch (err: any) {
       setMessage(err.message);
