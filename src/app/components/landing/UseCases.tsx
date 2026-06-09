@@ -6,48 +6,48 @@ import { ScrollReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
 const formats = [
   {
     icon: User,
-    tag: "1-on-1 Technical Round",
-    title: "One Engineer. One Shot.",
-    anxiety: "Blanking out mid-answer. Losing structure. Verbal fillers taking over.",
+    tag: "1-on-1 Interviews",
+    title: "Stay Calm & Structured",
+    anxiety: "Getting nervous, losing your train of thought mid-sentence, or struggling to recall the right projects from your resume when asked.",
     solution:
-      "STAR method AI interview suggestions surface in under 2 seconds. Resume projects mapped to the exact question. Behavioral interview AI keeps you composed and structured.",
+      "The Copilot listens to the interviewer's question and instantly outlines a structured, professional response. It automatically highlights matching projects from your resume so you always speak with confidence.",
     points: [
-      "Behavioral answers structured to STAR in real time",
-      "Surfaces relevant resume projects automatically",
-      "Speech pace alerts keep delivery natural",
+      "Structures answers into a clear Situation-Action-Result format",
+      "Pulls relevant details from your resume in real time",
+      "Monitors your speech pace to keep your delivery natural",
     ],
-    stat: { value: "1.5s", label: "avg. first answer point" },
+    stat: { value: "1.5s", label: "average outline speed" },
   },
   {
     icon: Users,
-    tag: "Multi-Interviewer Panel",
-    title: "Five People. Rapid-Fire Questions.",
+    tag: "Panel Interviews",
+    title: "Handle Rapid-Fire Questions",
     anxiety:
-      "Overwhelm. Losing track of who asked what. Forgetting key technical details under pressure.",
+      "Feeling overwhelmed when multiple interviewers ask questions back-to-back, making it easy to lose track of who asked what.",
     solution:
-      "CrackTheLoop captures each question as it's spoken, structures the answer, and queues context from your resume - so you always have something strong to say.",
+      "The Copilot tracks the conversation across different speakers and generates quick outlines, allowing you to address each panelist's question without missing a beat.",
     points: [
-      "Captures any speaker's question, regardless of who asks",
-      "Fast-switch answer mode for rapid question sequences",
-      "Keeps JD keyword alignment across all answers",
+      "Identifies and tracks questions from multiple interviewers",
+      "Generates fast, scrollable outlines for follow-up questions",
+      "Helps align your answers with the specific job description",
     ],
-    stat: { value: "5×", label: "panelists - zero panic" },
+    stat: { value: "5+", label: "panelists supported" },
     featured: true,
   },
   {
     icon: Bot,
-    tag: "HireVue AI Interview Helper",
-    title: "HireVue. Karat. Byteboard.",
+    tag: "Automated Screeners",
+    title: "Ace Robotic & Timer Tests",
     anxiety:
-      "Unnatural pace, timer anxiety, robotic scoring rubrics, no room to think.",
+      "Struggling with rigid timers, robotic scoring systems (like HireVue or Karat), and pre-recorded questions that give you no room to think.",
     solution:
-      "Captures system audio from any video platform or AI screener. Generates AI interview suggestions matched to the rubric's scoring format - behavioral, competency, or technical.",
+      "The Copilot analyzes the system audio and provides helpful bullet points tailored to the exact rubrics and scoring patterns used by AI grading bots.",
     points: [
-      "Works with any AI video screener via system audio capture",
-      "Suggestions aligned to rubric scoring criteria",
-      "Handles pre-recorded and live bot question formats",
+      "Compatible with HireVue, Karat, and Byteboard",
+      "Tailors suggestions to match automated scoring criteria",
+      "Supports pre-recorded and live video test formats",
     ],
-    stat: { value: "100%", label: "AI screener compatible" },
+    stat: { value: "100%", label: "screener platform coverage" },
   },
 ];
 
@@ -70,11 +70,11 @@ export default function UseCases() {
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-(--text-primary)"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              AI Interview Helper for Every Format{" "}
-              <span className="text-gradient-coral">- Live &amp; Undetectable</span>
+              Real-Time Interview Guidance{" "}
+              <span className="text-gradient-coral">for Any Format</span>
             </h2>
             <p className="text-(--text-muted) text-base mt-3 max-w-xl mx-auto leading-relaxed">
-              Whether it&apos;s a single recruiter, a five-person panel, or a HireVue AI screener - CrackTheLoop generates real-time AI interview guidance for every format, completely undetectable.
+              From 1-on-1 technical discussions and rapid-fire panel interviews to automated AI video screeners—get instant, on-screen memory cues and structured outlines to communicate with absolute clarity.
             </p>
           </div>
         </ScrollReveal>
@@ -139,7 +139,7 @@ export default function UseCases() {
                   {/* Anxiety block */}
                   <div className="rounded-[8px] bg-red-50 border border-red-100 px-4 py-3">
                     <span className="text-[10px] font-mono font-bold uppercase text-red-400 tracking-wider block mb-1">
-                      Candidate Anxiety
+                      The Challenge
                     </span>
                     <p className="text-sm text-red-700 leading-relaxed font-medium">
                       {fmt.anxiety}
@@ -154,7 +154,7 @@ export default function UseCases() {
                       }`}
                   >
                     <span className="text-[10px] font-mono font-bold uppercase text-(--accent) tracking-wider block mb-1">
-                      How CrackTheLoop Helps
+                      How Copilot Helps
                     </span>
                     <p className="text-sm text-(--text-secondary) leading-relaxed">
                       {fmt.solution}
