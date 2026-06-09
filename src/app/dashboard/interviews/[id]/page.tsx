@@ -29,8 +29,16 @@ export default function InterviewDetailPage({ params }: { params: Promise<{ id: 
   const [generatingReport, setGeneratingReport] = useState(false);
   const [token, setToken] = useState<string | null>(null);
 
+  function getCookie(name: string): string | null {
+    if (typeof document === "undefined") return null;
+    const matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : null;
+  }
+
   useEffect(() => {
-    const savedToken = localStorage.getItem("ctl_token");
+    const savedToken = getCookie("ctl_token");
 
     if (!savedToken) {
       router.push("/login");

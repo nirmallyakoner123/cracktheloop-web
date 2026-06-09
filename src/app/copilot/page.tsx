@@ -44,6 +44,26 @@ interface ITranscriptTurn {
 }
 
 export default function CopilotPage() {
+  function getCookie(name: string): string | null {
+    if (typeof document === "undefined") return null;
+    const matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : null;
+  }
+
+  function setCookie(name: string, value: string, days = 7) {
+    if (typeof document === "undefined") return;
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+  }
+
+  function deleteCookie(name: string) {
+    if (typeof document === "undefined") return;
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax`;
+  }
+
   // Credentials and Config (persisted locally)
   const [deepgramKey, setDeepgramKey] = useState("");
   const [llmKey, setLlmKey] = useState("");
@@ -182,15 +202,15 @@ export default function CopilotPage() {
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [loadingLogin, setLoadingLogin] = useState(false);
 
-  // Load configuration from localStorage
+  // Load configuration from cookies
   useEffect(() => {
-    setInterviewRole(localStorage.getItem("ctl_interview_role") || "");
-    setJobDescription(localStorage.getItem("ctl_job_description") || "");
-    setCandidateResume(localStorage.getItem("ctl_candidate_resume") || "");
-    setResumeFileName(localStorage.getItem("ctl_resume_file_name") || "");
+    setInterviewRole(getCookie("ctl_interview_role") || "");
+    setJobDescription(getCookie("ctl_job_description") || "");
+    setCandidateResume(getCookie("ctl_candidate_resume") || "");
+    setResumeFileName(getCookie("ctl_resume_file_name") || "");
 
-    const storedToken = localStorage.getItem("ctl_token");
-    const storedUser = localStorage.getItem("ctl_user");
+    const storedToken = getCookie("ctl_token");
+    const storedUser = getCookie("ctl_user");
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
@@ -219,7 +239,7 @@ export default function CopilotPage() {
           }
           if (data.user) {
             setUser(data.user);
-            localStorage.setItem("ctl_user", JSON.stringify(data.user));
+            setCookie("ctl_user", JSON.stringify(data.user));
           }
         })
         .catch(() => { });
@@ -233,19 +253,19 @@ export default function CopilotPage() {
 
   // Save configurations on changes
   useEffect(() => {
-    localStorage.setItem("ctl_interview_role", interviewRole);
+    setCookie("ctl_interview_role", interviewRole);
   }, [interviewRole]);
 
   useEffect(() => {
-    localStorage.setItem("ctl_job_description", jobDescription);
+    setCookie("ctl_job_description", jobDescription);
   }, [jobDescription]);
 
   useEffect(() => {
-    localStorage.setItem("ctl_candidate_resume", candidateResume);
+    setCookie("ctl_candidate_resume", candidateResume);
   }, [candidateResume]);
 
   useEffect(() => {
-    localStorage.setItem("ctl_resume_file_name", resumeFileName);
+    setCookie("ctl_resume_file_name", resumeFileName);
   }, [resumeFileName]);
 
   // Handle resume parsing
@@ -602,7 +622,7 @@ export default function CopilotPage() {
     requestType: 'normal' | 'screen_capture' | 'regeneration' = 'normal',
     previousAnswer?: string
   ) {
-    const authHeaderToken = localStorage.getItem("ctl_token");
+    const authHeaderToken = getCookie("ctl_token");
     if (!authHeaderToken) {
       setStatus("Error: Authentication Required");
       alert("Please log in to authorize Copilot completions and credit checks.");
@@ -912,13 +932,12 @@ export default function CopilotPage() {
     }
   }
 
-  // Save conversation session to MongoDB
   async function saveInterviewSession() {
     if (historyRef.current.length === 0 || historyRef.current.length === lastSavedHistoryLengthRef.current) {
       return;
     }
 
-    const savedToken = localStorage.getItem("ctl_token") || tokenRef.current;
+    const savedToken = getCookie("ctl_token") || tokenRef.current;
     if (!savedToken) {
       return;
     }
@@ -981,10 +1000,8 @@ export default function CopilotPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || data.error || "Authentication failed");
 
-      localStorage.setItem("ctl_token", data.token);
-      localStorage.setItem("ctl_user", JSON.stringify(data.user));
-      document.cookie = `ctl_token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
-      document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(data.user))}; path=/; max-age=604800; SameSite=Lax`;
+      setCookie("ctl_token", data.token);
+      setCookie("ctl_user", JSON.stringify(data.user));
       setToken(data.token);
       setUser(data.user);
       setShowLoginModal(false);
@@ -998,8 +1015,8 @@ export default function CopilotPage() {
 
   // Handle Logout
   function handleLogout() {
-    localStorage.removeItem("ctl_token");
-    localStorage.removeItem("ctl_user");
+    deleteCookie("ctl_token");
+    deleteCookie("ctl_user");
     setToken(null);
     setUser(null);
     alert("Logged out successfully.");

@@ -57,9 +57,24 @@ function ReferralsHubContent() {
   const [copiedCode, setCopiedCode] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
+  function getCookie(name: string): string | null {
+    if (typeof document === "undefined") return null;
+    const matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : null;
+  }
+
+  function setCookie(name: string, value: string, days = 7) {
+    if (typeof document === "undefined") return;
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+  }
+
   useEffect(() => {
-    const savedToken = localStorage.getItem("ctl_token");
-    const savedUser = localStorage.getItem("ctl_user");
+    const savedToken = getCookie("ctl_token");
+    const savedUser = getCookie("ctl_user");
 
     if (!savedToken) {
       router.push("/login");
@@ -81,7 +96,7 @@ function ReferralsHubContent() {
         const data = await res.json();
         if (res.ok && data.user) {
           setUser(data.user);
-          localStorage.setItem("ctl_user", JSON.stringify(data.user));
+          setCookie("ctl_user", JSON.stringify(data.user));
         }
       } catch (err) {
         console.error("Failed to load user profile", err);

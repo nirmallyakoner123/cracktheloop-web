@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "Does CrackTheLoop store my data? Is it private and safe?",
-    a: "Your data never leaves your device. Resume parsing and session transcripts are processed and stored in localStorage only. We have no server-side logging of your resume content or conversation audio. Zero.",
+    a: "Your data never leaves your device. Resume parsing and session transcripts are processed and stored in secure browser cookies only. We have no server-side logging of your resume content or conversation audio. Zero.",
   },
   {
     q: "Does it work with AI screener bots like HireVue, Karat, or Byteboard?",

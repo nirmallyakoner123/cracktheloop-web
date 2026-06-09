@@ -57,6 +57,21 @@ function normalizeTier(raw?: string): string {
 function DashboardHomeContent() {
   const router = useRouter();
 
+  function getCookie(name: string): string | null {
+    if (typeof document === "undefined") return null;
+    const matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : null;
+  }
+
+  function setCookie(name: string, value: string, days = 7) {
+    if (typeof document === "undefined") return;
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+  }
+
   const [user, setUser] = useState<any | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -91,8 +106,8 @@ function DashboardHomeContent() {
 
   useEffect(() => {
     setMounted(true);
-    const savedToken = localStorage.getItem("ctl_token");
-    const savedUser = localStorage.getItem("ctl_user");
+    const savedToken = getCookie("ctl_token");
+    const savedUser = getCookie("ctl_user");
 
     if (!savedToken) {
       router.push("/login");
@@ -107,7 +122,7 @@ function DashboardHomeContent() {
     }
 
     // Load saved checklist progress
-    const savedChecklist = localStorage.getItem("ctl_onboarding_checklist");
+    const savedChecklist = getCookie("ctl_onboarding_checklist");
     if (savedChecklist) {
       try {
         const parsed = JSON.parse(savedChecklist);
@@ -145,8 +160,7 @@ function DashboardHomeContent() {
             }
           }
           setUser(updatedUser);
-          localStorage.setItem("ctl_user", JSON.stringify(updatedUser));
-          document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(updatedUser))}; path=/; max-age=604800; SameSite=Lax`;
+          setCookie("ctl_user", JSON.stringify(updatedUser));
         }
 
         // Fetch user interviews
@@ -172,7 +186,7 @@ function DashboardHomeContent() {
   function updateChecklist(key: keyof typeof checklist, value: boolean) {
     const updated = { ...checklist, [key]: value };
     setChecklist(updated);
-    localStorage.setItem("ctl_onboarding_checklist", JSON.stringify(updated));
+    setCookie("ctl_onboarding_checklist", JSON.stringify(updated));
   }
 
   // Micro-interactions: Mic testing simulation or active feed

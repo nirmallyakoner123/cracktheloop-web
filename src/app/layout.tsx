@@ -329,7 +329,7 @@ const faqSchema = {
       name: "Does CrackTheLoop store my data? Is it private and safe?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Your data never leaves your device. Resume parsing and session transcripts are processed and stored in localStorage only. We have no server-side logging of your resume content or conversation audio. Zero.",
+        text: "Your data never leaves your device. Resume parsing and session transcripts are processed and stored in secure browser cookies only. We have no server-side logging of your resume content or conversation audio. Zero.",
       },
     },
     {

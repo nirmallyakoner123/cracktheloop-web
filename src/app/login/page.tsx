@@ -9,6 +9,21 @@ function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  function getCookie(name: string): string | null {
+    if (typeof document === "undefined") return null;
+    const matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : null;
+  }
+
+  function setCookie(name: string, value: string, days = 7) {
+    if (typeof document === "undefined") return;
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
+  }
+
   // Auth / Form mode: "signin" or "signup"
   const [mode, setMode] = useState<"signin" | "signup">("signin");
 
@@ -67,13 +82,8 @@ function LoginContent() {
 
   // Check URL ref query or local storage
   useEffect(() => {
-    if (localStorage.getItem("ctl_token")) {
-      const planParam = searchParams.get("plan");
-      if (planParam) {
-        router.push(`/select-plan?plan=${encodeURIComponent(planParam)}`);
-      } else {
-        router.push("/dashboard");
-      }
+    if (getCookie("ctl_token")) {
+      window.location.replace("/dashboard");
       return;
     }
 
@@ -84,11 +94,11 @@ function LoginContent() {
 
     const urlRef = searchParams.get("ref");
     if (urlRef) {
-      localStorage.setItem("ctl_ref", urlRef);
+      setCookie("ctl_ref", urlRef);
       setReferralCode(urlRef);
       setMode("signup"); // Auto-toggle to signup if referred
     } else {
-      const savedRef = localStorage.getItem("ctl_ref");
+      const savedRef = getCookie("ctl_ref");
       if (savedRef) {
         setReferralCode(savedRef);
       }
@@ -117,16 +127,12 @@ function LoginContent() {
         throw new Error(data.message || data.error || "Authentication failed");
       }
 
-      localStorage.setItem("ctl_token", data.token);
-      localStorage.setItem("ctl_user", JSON.stringify(data.user));
-      
-      // Mirror in cookies for path=/
-      document.cookie = `ctl_token=${data.token}; path=/; max-age=604800; SameSite=Lax`;
-      document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(data.user))}; path=/; max-age=604800; SameSite=Lax`;
+      setCookie("ctl_token", data.token);
+      setCookie("ctl_user", JSON.stringify(data.user));
 
       setMessage(mode === "signup" ? "Account created successfully! Redirecting to dashboard..." : "Sign in successful! Redirecting to dashboard...");
       setTimeout(() => {
-        router.push("/dashboard");
+        window.location.replace("/dashboard");
       }, 1000);
     } catch (err: any) {
       setMessage(err.message);
