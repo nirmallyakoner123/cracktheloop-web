@@ -69,10 +69,15 @@ function DashboardHomeContent() {
 
   // Onboarding Checklist state
   const [checklist, setChecklist] = useState({
-    readRules: false,
-    chooseEngine: false,
-    testMic: false,
-    runSandbox: false
+    completeProfile: false,
+    selectGoal: false,
+    uploadResumeJD: false,
+    chooseFormat: false,
+    runWebDemo: false,
+    downloadHUD: false,
+    soundCheck: false,
+    startCopilot: false,
+    submitFeedback: false
   });
 
   // Interactive UI modals/testers states
@@ -105,7 +110,8 @@ function DashboardHomeContent() {
     const savedChecklist = localStorage.getItem("ctl_onboarding_checklist");
     if (savedChecklist) {
       try {
-        setChecklist(JSON.parse(savedChecklist));
+        const parsed = JSON.parse(savedChecklist);
+        setChecklist(prev => ({ ...prev, ...parsed }));
       } catch (e) {
         // Ignored
       }
@@ -119,9 +125,28 @@ function DashboardHomeContent() {
         });
         const profileData = await profileRes.json();
         if (profileRes.ok && profileData.user) {
-          setUser(profileData.user);
-          localStorage.setItem("ctl_user", JSON.stringify(profileData.user));
-          document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(profileData.user))}; path=/; max-age=604800; SameSite=Lax`;
+          let updatedUser = profileData.user;
+          // Auto-provision trial if tier is empty or free and has 0 credits (New User)
+          if ((!updatedUser.subscription_tier || updatedUser.subscription_tier === "free") && updatedUser.credits === 0) {
+            try {
+              const trialRes = await fetch("/api/billing/trial", {
+                method: "POST",
+                headers: { 
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${savedToken}`
+                }
+              });
+              const trialData = await trialRes.json();
+              if (trialRes.ok && trialData.user) {
+                updatedUser = trialData.user;
+              }
+            } catch (trialErr) {
+              console.error("Auto-provision trial failed", trialErr);
+            }
+          }
+          setUser(updatedUser);
+          localStorage.setItem("ctl_user", JSON.stringify(updatedUser));
+          document.cookie = `ctl_user=${encodeURIComponent(JSON.stringify(updatedUser))}; path=/; max-age=604800; SameSite=Lax`;
         }
 
         // Fetch user interviews
@@ -167,7 +192,7 @@ function DashboardHomeContent() {
         stream.getTracks().forEach(track => track.stop());
         setMicActive(false);
         setMicTesting(false);
-        updateChecklist("testMic", true);
+        updateChecklist("soundCheck", true);
       }, 4500);
 
     } catch (err) {
@@ -181,14 +206,14 @@ function DashboardHomeContent() {
         clearInterval(interval);
         setMicActive(false);
         setMicTesting(false);
-        updateChecklist("testMic", true);
+        updateChecklist("soundCheck", true);
       }, 4000);
     }
   }
 
   // Simulator helper: Quick Sandbox Test
   function handleSandboxTrigger() {
-    updateChecklist("runSandbox", true);
+    updateChecklist("runWebDemo", true);
     router.push("/copilot?demo=true");
   }
 
@@ -215,7 +240,7 @@ function DashboardHomeContent() {
 
   // Onboarding metrics calculation
   const completedSteps = Object.values(checklist).filter(Boolean).length;
-  const progressPercent = Math.round((completedSteps / 4) * 100);
+  const progressPercent = Math.round((completedSteps / 9) * 100);
 
   const refCode = user?.referral_code || "";
   const refLink = refCode ? `localhost:3000/login?ref=${refCode}` : "";
@@ -226,16 +251,16 @@ function DashboardHomeContent() {
       {/* Page Title Header */}
       <section className="flex flex-col gap-2">
         <span className="text-[10px] text-(--accent) font-black uppercase tracking-widest">
-          Stealth Command Center
+          Interview Practice & Live Copilot Console
         </span>
         <h1 className="text-3xl font-black tracking-tight text-slate-800 flex items-center gap-2" style={{ fontFamily: "var(--font-display)" }}>
-          Initialize Access,{" "}
+          Welcome,{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8503A] to-indigo-600">
             {user?.email?.split("@")[0]}
           </span>
         </h1>
         <p className="text-xs text-slate-500 font-medium animate-fade-in">
-          Follow the system setup below to configure your audio loopback feeds and run undetection tests.
+          Configure your copilot targets, test your audio line, and initialize your live interactive overlay.
         </p>
       </section>
 
@@ -258,7 +283,7 @@ function DashboardHomeContent() {
             <div className="flex items-center gap-3 shrink-0 self-start sm:self-center">
               <span className="text-xs font-bold text-slate-500">Progress:</span>
               <span className="text-xs font-black text-(--accent) bg-(--accent-soft) px-3 py-1 rounded-full border border-(--accent)/15">
-                {completedSteps} / 4 Steps Complete
+                {completedSteps} / 9 Steps Complete
               </span>
             </div>
           </div>
@@ -272,18 +297,17 @@ function DashboardHomeContent() {
           </div>
 
           {/* Onboarding Timeline list */}
-          <div className="relative flex flex-col gap-5 pl-2 select-none">
+          <div className="relative flex flex-col gap-6 pl-2 select-none">
             {/* Vertical timeline line */}
             <div className="absolute left-[21px] top-3.5 bottom-3.5 w-0.5 bg-slate-100" />
 
-            {/* Step 1: Safety Playbook */}
+            {/* Step 1: Complete Profile */}
             <div className="relative flex items-start gap-4">
-              {/* Timeline Node */}
               <button
-                onClick={() => updateChecklist("readRules", !checklist.readRules)}
+                onClick={() => updateChecklist("completeProfile", !checklist.completeProfile)}
                 className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
               >
-                {checklist.readRules ? (
+                {checklist.completeProfile ? (
                   <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
                 ) : (
                   <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
@@ -291,33 +315,29 @@ function DashboardHomeContent() {
               </button>
               <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
                 <div className="flex flex-col gap-0.5">
-                  <div className="flex items-center gap-2">
-                    <span className={`text-xs md:text-sm font-bold ${checklist.readRules ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                      1. Review Stealth Safety Rules
-                    </span>
-                    <span className="bg-amber-50 text-amber-800 border border-amber-200/50 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">Crucial</span>
-                  </div>
+                  <span className={`text-xs md:text-sm font-bold ${checklist.completeProfile ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    1. Set Your Career Path
+                  </span>
                   <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Learn how browser layout shares and system windows hide in popular conferencing software.
+                    Configure your target industry level and job title settings.
                   </span>
                 </div>
                 <button
-                  onClick={() => setShowPlaybook(true)}
+                  onClick={() => updateChecklist("completeProfile", !checklist.completeProfile)}
                   className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
                 >
-                  Open Rules Playbook <ArrowRight className="w-3.5 h-3.5" />
+                  Set Career Path <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
-            {/* Step 2: Choose Engine */}
+            {/* Step 2: Select Interview Goal */}
             <div className="relative flex items-start gap-4">
-              {/* Timeline Node */}
               <button
-                onClick={() => updateChecklist("chooseEngine", !checklist.chooseEngine)}
+                onClick={() => updateChecklist("selectGoal", !checklist.selectGoal)}
                 className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
               >
-                {checklist.chooseEngine ? (
+                {checklist.selectGoal ? (
                   <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
                 ) : (
                   <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
@@ -325,34 +345,156 @@ function DashboardHomeContent() {
               </button>
               <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
                 <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.chooseEngine ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    2. Configure Client Application Setup
+                  <span className={`text-xs md:text-sm font-bold ${checklist.selectGoal ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    2. Choose Onboarding Goals
                   </span>
                   <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Identify if you require browser-only capture (Web HUD) or native overlay display bypasses.
+                    Specify focus areas: answer structuring, confidence, or reducing fillers.
+                  </span>
+                </div>
+                <button
+                  onClick={() => updateChecklist("selectGoal", !checklist.selectGoal)}
+                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
+                >
+                  Select Goals <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Step 3: Resume & JD Upload */}
+            <div className="relative flex items-start gap-4">
+              <button
+                onClick={() => updateChecklist("uploadResumeJD", !checklist.uploadResumeJD)}
+                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
+              >
+                {checklist.uploadResumeJD ? (
+                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
+                )}
+              </button>
+              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
+                <div className="flex flex-col gap-0.5">
+                  <span className={`text-xs md:text-sm font-bold ${checklist.uploadResumeJD ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    3. Add Target Job details
+                  </span>
+                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                    Paste your job description and accomplishments context.
+                  </span>
+                </div>
+                <button
+                  onClick={() => updateChecklist("uploadResumeJD", !checklist.uploadResumeJD)}
+                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
+                >
+                  Add Job Details <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Step 4: Choose Interview Format */}
+            <div className="relative flex items-start gap-4">
+              <button
+                onClick={() => updateChecklist("chooseFormat", !checklist.chooseFormat)}
+                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
+              >
+                {checklist.chooseFormat ? (
+                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
+                )}
+              </button>
+              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
+                <div className="flex flex-col gap-0.5">
+                  <span className={`text-xs md:text-sm font-bold ${checklist.chooseFormat ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    4. Select Session Format
+                  </span>
+                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                    Choose formatting: Coding, System Design, or Behavioral (STAR).
+                  </span>
+                </div>
+                <button
+                  onClick={() => updateChecklist("chooseFormat", !checklist.chooseFormat)}
+                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
+                >
+                  Select Format <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Step 5: Test Demo Mode */}
+            <div className="relative flex items-start gap-4">
+              <button
+                onClick={() => updateChecklist("runWebDemo", !checklist.runWebDemo)}
+                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
+              >
+                {checklist.runWebDemo ? (
+                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
+                )}
+              </button>
+              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
+                <div className="flex flex-col gap-0.5">
+                  <span className={`text-xs md:text-sm font-bold ${checklist.runWebDemo ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    5. Try Demo Mode Simulation
+                  </span>
+                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                    Watch a simulated voice feedback suggest response cards in real time.
                   </span>
                 </div>
                 <button
                   onClick={() => {
-                    updateChecklist("chooseEngine", true);
+                    updateChecklist("runWebDemo", true);
+                    router.push("/copilot?demo=true");
+                  }}
+                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
+                >
+                  Test Demo Mode <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Step 6: Download Desktop HUD */}
+            <div className="relative flex items-start gap-4">
+              <button
+                onClick={() => updateChecklist("downloadHUD", !checklist.downloadHUD)}
+                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
+              >
+                {checklist.downloadHUD ? (
+                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
+                )}
+              </button>
+              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
+                <div className="flex flex-col gap-0.5">
+                  <span className={`text-xs md:text-sm font-bold ${checklist.downloadHUD ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    6. Download Desktop HUD Client
+                  </span>
+                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                    Get the lightweight desktop overlay companion for live meetings.
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    updateChecklist("downloadHUD", true);
                     const el = document.getElementById("launcher-section");
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }}
                   className="text-xs text-indigo-600 hover:text-indigo-700 font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
                 >
-                  Compare Launch Options <ArrowRight className="w-3.5 h-3.5" />
+                  Get Desktop Client <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
 
-            {/* Step 3: Test Audio Stream */}
+            {/* Step 7: Sound & Mic Check */}
             <div className="relative flex items-start gap-4">
-              {/* Timeline Node */}
               <button
-                onClick={() => updateChecklist("testMic", !checklist.testMic)}
+                onClick={() => updateChecklist("soundCheck", !checklist.soundCheck)}
                 className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
               >
-                {checklist.testMic ? (
+                {checklist.soundCheck ? (
                   <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
                 ) : (
                   <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
@@ -360,13 +502,12 @@ function DashboardHomeContent() {
               </button>
               <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
                 <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.testMic ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    3. Perform Mic & System Loopback Check
+                  <span className={`text-xs md:text-sm font-bold ${checklist.soundCheck ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    7. Run Audio & Microphone Check
                   </span>
                   <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Verify browser audio feeds map accurately to the transcript transcription matrices without credit consumption.
+                    Verify browser audio lines capture speech accurately.
                   </span>
-
                   {micActive && (
                     <div className="flex items-center gap-1 mt-2.5 h-6 bg-slate-50 border border-slate-200/60 rounded-lg px-3 py-1.5 w-fit">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping mr-1"></span>
@@ -380,10 +521,12 @@ function DashboardHomeContent() {
                     </div>
                   )}
                 </div>
-
                 <button
                   disabled={micTesting}
-                  onClick={handleTestMic}
+                  onClick={async () => {
+                    await handleTestMic();
+                    updateChecklist("soundCheck", true);
+                  }}
                   className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1.5 shrink-0 self-start sm:self-center disabled:text-slate-400 disabled:cursor-not-allowed"
                 >
                   {micTesting ? (
@@ -394,21 +537,20 @@ function DashboardHomeContent() {
                   ) : (
                     <>
                       <Volume2 className="w-4 h-4" />
-                      <span>Run 5-Sec Audio Test</span>
+                      <span>Run Mic Test</span>
                     </>
                   )}
                 </button>
               </div>
             </div>
 
-            {/* Step 4: Sandbox Trial */}
+            {/* Step 8: Start Live Copilot Mode */}
             <div className="relative flex items-start gap-4">
-              {/* Timeline Node */}
               <button
-                onClick={() => updateChecklist("runSandbox", !checklist.runSandbox)}
+                onClick={() => updateChecklist("startCopilot", !checklist.startCopilot)}
                 className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
               >
-                {checklist.runSandbox ? (
+                {checklist.startCopilot ? (
                   <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
                 ) : (
                   <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
@@ -416,18 +558,49 @@ function DashboardHomeContent() {
               </button>
               <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
                 <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.runSandbox ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    4. Initialize Mock Practice Sandbox
+                  <span className={`text-xs md:text-sm font-bold ${checklist.startCopilot ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    8. Launch Live Copilot Mode
                   </span>
                   <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Initiate a simulated speech feed question in the HUD workspace to verify suggestion cards load instantly.
+                    Initiate your real-time interview suggestions dashboard.
+                  </span>
+                </div>
+                <Link
+                  href="/copilot"
+                  onClick={() => updateChecklist("startCopilot", true)}
+                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
+                >
+                  Launch HUD <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Step 9: Submit Beta Feedback */}
+            <div className="relative flex items-start gap-4">
+              <button
+                onClick={() => updateChecklist("submitFeedback", !checklist.submitFeedback)}
+                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
+              >
+                {checklist.submitFeedback ? (
+                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
+                ) : (
+                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
+                )}
+              </button>
+              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
+                <div className="flex flex-col gap-0.5">
+                  <span className={`text-xs md:text-sm font-bold ${checklist.submitFeedback ? "text-slate-450 line-through" : "text-slate-800"}`}>
+                    9. Submit Early Beta Feedback
+                  </span>
+                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                    Share suggestion quality rating to earn 5 bonus credits.
                   </span>
                 </div>
                 <button
-                  onClick={handleSandboxTrigger}
+                  onClick={() => updateChecklist("submitFeedback", !checklist.submitFeedback)}
                   className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
                 >
-                  Launch Demo Sandbox <ArrowRight className="w-3.5 h-3.5" />
+                  Submit Feedback <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -474,12 +647,12 @@ function DashboardHomeContent() {
                   <div className="flex justify-between items-center">
                     <span className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                       <Lock className="w-4 h-4 text-indigo-500" />
-                      Stealth Desktop Client
+                      Desktop HUD Companion Client
                     </span>
-                    <span className="text-[9px] font-black text-indigo-700 bg-indigo-50 border border-indigo-200/40 px-2 py-0.5 rounded">100% Secure</span>
+                    <span className="text-[9px] font-black text-indigo-700 bg-indigo-50 border border-indigo-200/40 px-2 py-0.5 rounded">Local HUD</span>
                   </div>
                   <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Native binary utilizing display bypass rules. Hides the overlay transparent windows completely from screen share software (Zoom/Meet/Teams).
+                    Native desktop client that provides local display overlay HUD integration. Focuses on placing visual bullet points and structured guidelines directly over your workspace.
                   </p>
                 </div>
 
@@ -677,42 +850,42 @@ function DashboardHomeContent() {
               ✕
             </button>
 
-            <div className="flex items-center gap-3 border-b border-rose-100 pb-4 mb-5">
-              <div className="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center animate-pulse shrink-0">
-                <AlertOctagon className="w-5 h-5 text-rose-600" />
+            <div className="flex items-center gap-3 border-b border-indigo-100 pb-4 mb-5">
+              <div className="w-10 h-10 rounded-full bg-indigo-50 border border-indigo-200 flex items-center justify-center animate-pulse shrink-0">
+                <Shield className="w-5 h-5 text-indigo-600" />
               </div>
               <div>
-                <h3 className="text-base font-black text-rose-950 uppercase tracking-wide">
-                  Stealth Safety Protocol
+                <h3 className="text-base font-black text-indigo-950 uppercase tracking-wide">
+                  Ethics & Responsible Practice Guidelines
                 </h3>
-                <p className="text-[10px] text-rose-500 font-bold uppercase tracking-wider">CRITICAL DIRECTIVE - READ CAREFULLY</p>
+                <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider">COMPLIANCE & PREPARATION STANDARDS</p>
               </div>
             </div>
 
             <div className="flex flex-col gap-4 max-h-[320px] overflow-y-auto pr-1">
 
               {/* Critical Rule 1 */}
-              <div className="bg-rose-50/60 border border-rose-200/50 p-3 rounded-lg flex gap-2.5">
-                <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5 animate-pulse" />
+              <div className="bg-indigo-50/60 border border-indigo-200/50 p-3 rounded-lg flex gap-2.5">
+                <Shield className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5 animate-pulse" />
                 <div className="flex-1 flex flex-col gap-0.5">
-                  <strong className="text-xs font-black text-rose-900 uppercase tracking-wider">
-                    Rule #1: NEVER Share Your HUD Window
+                  <strong className="text-xs font-black text-indigo-900 uppercase tracking-wider">
+                    Rule #1: Focus on Clarity & Answer Structure
                   </strong>
-                  <p className="text-[11px] text-rose-700 leading-relaxed font-semibold">
-                    Do not share the browser tab or screen displaying this Web HUD. Sharing the wrong tab instantly displays the AI overlay to the interviewer. <strong className="text-rose-950">Only share your IDE or code editor.</strong>
+                  <p className="text-[11px] text-indigo-750 leading-relaxed font-semibold">
+                    The Copilot HUD provides real-time response guides and STAR method templates to help you structure answers. Sits next to your meeting windows locally. Only share your IDE or editor during technical rounds.
                   </p>
                 </div>
               </div>
 
               {/* Rule 2 */}
               <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-lg flex gap-2.5">
-                <Shield className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
+                <Sparkles className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
                 <div className="flex-1 flex flex-col gap-0.5">
                   <strong className="text-xs font-bold text-slate-800">
-                    Rule #2: Use Desktop Client for Full Bypass
+                    Rule #2: Distraction-Free Desktop HUD Overlay
                   </strong>
                   <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    For 100% video call isolation, install our Desktop client. It applies OS-level graphic affinity rules, making the overlay mathematically invisible to Zoom, Teams, and Google Meet captures.
+                    For distraction-free local practice and session alignment, launch the Desktop HUD client. It displays visual talking points directly over your desktop locally.
                   </p>
                 </div>
               </div>
@@ -722,10 +895,10 @@ function DashboardHomeContent() {
                 <Volume2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                 <div className="flex-1 flex flex-col gap-0.5">
                   <strong className="text-xs font-bold text-slate-800">
-                    Rule #3: Map Loopback Speakers Early
+                    Rule #3: Set Up Target Role Configurations
                   </strong>
                   <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    The AI generates suggestions by capturing speaker streams. Run the 5-sec Audio Test on the dashboard before your live call to verify input loopback mapping works correctly.
+                    Set your target role and goals before your live mock session so that the AI response recommendations map accurately to the job description targets.
                   </p>
                 </div>
               </div>
@@ -734,15 +907,15 @@ function DashboardHomeContent() {
 
             {/* Force user verification checkmark */}
             <div className="mt-5 border-t border-slate-100 pt-5 flex flex-col gap-4">
-              <label className="flex items-start gap-3 p-3 bg-amber-500/5 border border-amber-500/25 rounded-lg cursor-pointer select-none">
+              <label className="flex items-start gap-3 p-3 bg-indigo-500/5 border border-indigo-500/25 rounded-lg cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={acknowledged}
                   onChange={(e) => setAcknowledged(e.target.checked)}
-                  className="mt-1 accent-amber-600 h-4.5 w-4.5 shrink-0 rounded cursor-pointer"
+                  className="mt-1 accent-indigo-600 h-4.5 w-4.5 shrink-0 rounded cursor-pointer"
                 />
-                <span className="text-[11px] text-amber-900 leading-normal font-bold">
-                  I acknowledge that sharing the screen or browser tab displaying the Web HUD is a critical security violation that will expose suggestions to the interviewer.
+                <span className="text-[11px] text-indigo-900 leading-normal font-bold">
+                  I acknowledge that this copilot functions as a local response coach and speech guide to help me communicate clearly during my practice mock trials and live sessions.
                 </span>
               </label>
 
@@ -750,14 +923,14 @@ function DashboardHomeContent() {
                 disabled={!acknowledged}
                 onClick={() => {
                   setShowPlaybook(false);
-                  updateChecklist("readRules", true);
+                  updateChecklist("completeProfile", true);
                 }}
                 className={`w-full py-3 rounded-lg font-bold text-xs uppercase tracking-wider transition duration-200 flex justify-center items-center gap-1.5 ${acknowledged
-                    ? "bg-rose-600 hover:bg-rose-700 text-white cursor-pointer shadow-md shadow-rose-600/10 active:scale-95"
+                    ? "bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer shadow-md shadow-indigo-600/10 active:scale-95"
                     : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
                   }`}
               >
-                {!acknowledged ? "Acknowledge Warning above to proceed" : "Confirm Safety Rules & Unlock Gateway"}
+                {!acknowledged ? "Acknowledge Guidelines above to proceed" : "Confirm Guidelines & Unlock Onboarding"}
               </button>
             </div>
 

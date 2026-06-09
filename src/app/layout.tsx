@@ -28,20 +28,19 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: "CrackTheLoop - Real-Time AI Interview Copilot | Stealth & Undetectable",
+    default: "CrackTheLoop - Real-Time AI Live Interview Copilot & Response Assistant",
     template: `%s | ${SITE_NAME}`,
   },
   description:
-    "CrackTheLoop is an AI-powered, invisible interview copilot that delivers real-time guidance during Zoom, Teams, and Google Meet - completely undetectable. Ace technical, behavioral, and system design interviews with live WASAPI audio capture and Deepgram AI transcription.",
+    "CrackTheLoop is a real-time AI live interview copilot that provides instant answer suggestions, structured frameworks, and talking points to help candidates communicate with clarity and avoid blank mind moments under pressure.",
 
   keywords: [
     // Core product
     "AI interview copilot",
     "real-time interview AI",
     "AI interview assistant",
-    "undetectable AI interview tool",
-    "stealth AI interview",
-    "invisible interview assistant",
+    "live interview response coach",
+    "live response assistant",
     "interview AI overlay",
     // Technical interviews
     "AI coding interview helper",
@@ -56,12 +55,10 @@ export const metadata: Metadata = {
     "Zoom interview AI",
     "Google Meet interview copilot",
     "Teams interview assistant",
-    "HireVue AI assistant",
-    "Karat AI helper",
-    // Stealth / detection-proof
-    "screen share invisible AI",
-    "WDA_EXCLUDEFROMCAPTURE overlay",
-    "Win32 stealth overlay",
+    // Privacy / Local processing
+    "privacy-first interview HUD",
+    "desktop interview HUD",
+    "low latency live overlay",
     "WASAPI audio capture interview",
     // Use cases
     "interview preparation AI",
@@ -70,14 +67,14 @@ export const metadata: Metadata = {
     "live interview prompts",
     "AI interview coaching",
     // Comparison
-    "best AI interview tool 2025",
+    "best AI interview tool 2026",
     "Final Round AI alternative",
     "LockedIn AI alternative",
     "Interview Coder alternative",
     // Long-tail
     "how to use AI in a job interview",
-    "stealth interview tool for Zoom",
-    "invisible AI overlay for interviews",
+    "AI interview coach for Zoom",
+    "real-time response coach",
   ],
 
   authors: [{ name: "CrackTheLoop", url: SITE_URL }],
@@ -113,9 +110,9 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "CrackTheLoop - Real-Time AI Interview Copilot | Stealth & Undetectable",
+    title: "CrackTheLoop - Real-Time AI Live Interview Copilot & Response Assistant",
     description:
-      "Invisible AI overlay that listens to your interview in real-time and delivers structured answers - undetectable on Zoom, Teams, and Google Meet. Built on WASAPI + Deepgram + Groq.",
+      "Real-time AI live interview copilot that listens to your session and provides structured talking points and answer templates. Built on local audio capture + Deepgram + Groq.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "en_US",
@@ -125,7 +122,7 @@ export const metadata: Metadata = {
         url: OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "CrackTheLoop - AI Interview Copilot with Stealth Overlay",
+        alt: "CrackTheLoop - AI Live Interview Copilot & Response HUD",
         type: "image/png",
       },
     ],
@@ -135,9 +132,9 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@cracktheloop",
     creator: "@cracktheloop",
-    title: "CrackTheLoop - Real-Time AI Interview Copilot | Stealth & Undetectable",
+    title: "CrackTheLoop - Real-Time AI Live Interview Copilot & Response Assistant",
     description:
-      "Invisible AI overlay for Zoom/Teams/Meet interviews. Real-time answers, STAR framework, system design hints - completely undetectable. Try free.",
+      "Real-time AI live interview copilot for Zoom/Teams/Meet. Real-time answers, STAR framework, and system design templates. Try free.",
     images: [OG_IMAGE],
   },
 
@@ -166,10 +163,10 @@ const softwareApplicationSchema = {
   "@type": "SoftwareApplication",
   "@id": `${SITE_URL}/#software`,
   name: "CrackTheLoop",
-  alternateName: ["CrackTheLoop AI Copilot", "CrackTheLoop Interview Assistant"],
+  alternateName: ["CrackTheLoop AI Copilot", "CrackTheLoop Live Interview Assistant"],
   url: SITE_URL,
   description:
-    "Real-time AI interview copilot using WASAPI audio capture, Deepgram nova-3 speech-to-text, and LLM streaming to deliver invisible, structured interview guidance during any video call.",
+    "Real-time AI live interview copilot using local audio capture, Deepgram nova-3 speech-to-text, and LLM streaming to deliver structured response guidance and confidence support during video calls.",
   applicationCategory: "EducationalApplication",
   applicationSubCategory: "Career Development",
   operatingSystem: ["Windows", "Web"],
@@ -183,7 +180,7 @@ const softwareApplicationSchema = {
       name: "Free Trial",
       price: "0.00",
       priceCurrency: "USD",
-      description: "15 free credits - a full 15-minute practice session",
+      description: "15 free credits - a full 15-minute live practice session",
     },
     {
       "@type": "Offer",
@@ -206,14 +203,13 @@ const softwareApplicationSchema = {
     worstRating: "1",
   },
   featureList: [
-    "Invisible to screen sharing (WDA_EXCLUDEFROMCAPTURE)",
-    "Real-time WASAPI loopback audio capture",
+    "Privacy-first local desktop HUD overlay",
+    "Real-time loopback audio capture",
     "Deepgram nova-3 speech-to-text in <100ms",
     "LLM streaming answers via Groq / Claude / GPT-4o",
     "STAR framework behavioral answer structure",
     "System design answer templates",
-    "HireVue, Karat, Byteboard AI screener support",
-    "Resume + job description alignment",
+    "Interview goal selection & resume alignment",
     "No virtual audio drivers required",
     "Zero audio footprint on device",
   ],
@@ -239,7 +235,7 @@ const organizationSchema = {
     height: 512,
   },
   description:
-    "CrackTheLoop builds privacy-first, stealth AI tools that give job seekers a real-time edge in technical, behavioral, and system design interviews - completely invisible to screen-sharing software.",
+    "CrackTheLoop builds privacy-first AI live copilots that help job seekers present their skills with clarity and avoid blank mind moments during technical and behavioral interviews.",
   foundingDate: "2024",
   sameAs: [
     "https://twitter.com/cracktheloop",
@@ -263,7 +259,7 @@ const websiteSchema = {
   url: SITE_URL,
   name: "CrackTheLoop",
   description:
-    "AI interview copilot with real-time stealth overlay - invisible to Zoom, Teams, and Google Meet screen shares.",
+    "Real-time AI live interview copilot and response HUD for Zoom, Teams, and Google Meet.",
   publisher: {
     "@id": `${SITE_URL}/#organization`,
   },
@@ -283,7 +279,7 @@ const webPageSchema = {
   "@type": "WebPage",
   "@id": `${SITE_URL}/#webpage`,
   url: SITE_URL,
-  name: "CrackTheLoop - Real-Time AI Interview Copilot",
+  name: "CrackTheLoop - Real-Time AI Live Interview Copilot",
   isPartOf: { "@id": `${SITE_URL}/#website` },
   about: { "@id": `${SITE_URL}/#software` },
   primaryImageOfPage: {
@@ -314,10 +310,10 @@ const faqSchema = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Is CrackTheLoop undetectable? Will the interviewer know?",
+      name: "How does the desktop HUD overlay work? Is it private?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "No. CrackTheLoop uses Win32 Display Affinity to make the overlay invisible to screen-sharing software - it will never appear in Zoom, Teams, or Meet recordings. We also use WASAPI system audio loopback instead of virtual audio drivers, so nothing unusual appears in your device list.",
+        text: "The desktop HUD overlay runs locally on your computer, sitting side-by-side with your video call. Using local display capturing rules, it ensures a distraction-free environment for you. Your audio and data stay 100% private and are processed locally on your hardware.",
       },
     },
     {
@@ -357,7 +353,7 @@ const faqSchema = {
       name: "Does it work on Mac?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "The Browser Copilot (web-based prep mode) works on all platforms including Mac and Linux. The native Stealth HUD Overlay - which uses Win32 Display Affinity for screen share invisibility - is currently Windows-only. Mac support for the native client is on our roadmap for Q3 2026.",
+        text: "The Browser Copilot works on all platforms including Mac and Linux. The native Desktop HUD Overlay is currently Windows-only, with macOS support on our roadmap for Q3 2026.",
       },
     },
     {
@@ -373,7 +369,7 @@ const faqSchema = {
       name: "Is using AI during an interview cheating?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "No, think of CrackTheLoop as a live copilot or prompt card. It doesn't think for you - it simply helps you retrieve your own resume achievements, match job descriptions, and structure answers in real time under pressure using the STAR method.",
+        text: "No. CrackTheLoop functions as a real-time speech coach and visual reminder card. It does not speak or think for you—it helps you recall your achievements, match target role keywords, and structure answers under pressure using the STAR framework.",
       },
     },
     {

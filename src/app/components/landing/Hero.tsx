@@ -162,32 +162,32 @@ export default function Hero() {
           >
             <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 uppercase tracking-wider select-none mb-2">
               <Terminal className="w-4 h-4 text-emerald-600" />
-              <span>AI Interview Assistant - Real-Time Guidance · Free to Try</span>
+              <span>AI Live Interview Copilot - Real-Time Guidance · Free Beta</span>
             </div>
 
             <h1
               className="font-bold tracking-tight text-slate-900 text-4xl md:text-5xl lg:text-5xl leading-[1]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Your Real-Time AI Interview Assistant for <span className="text-gradient-coral">Live Guidance</span>
+              Your Real-Time <span className="text-gradient-coral">AI Live Interview Copilot</span>
             </h1>
 
             <p className="text-base md:text-lg leading-relaxed font-normal text-(--text-muted) max-w-xl">
-              Get real-time AI guidance during your live <span className="font-semibold text-[#2D8CFF]">Zoom</span>, <span className="font-semibold text-[#5B5FC7]">Teams</span>, or <span className="font-semibold text-[#34A853]">Google Meet</span> sessions. Undetectable, free to try, and optimized for technical and behavioral rounds.
+              Never let your mind go blank. Sits on your desktop, listens to the interview, and provides structured response outlines and memory prompts in real-time during live sessions.
             </p>
 
             <div className="flex flex-col gap-4 mt-2">
               {/* Buttons Row */}
               <div className="flex flex-wrap items-center gap-6">
-                <Link href="/pricing" className="btn-primary-glow cursor-pointer !py-4 !px-8">
-                  Try For Free
+                <Link href="/login?mode=signup&plan=Free%20Trial" className="btn-primary-glow cursor-pointer !py-4 !px-8">
+                  Try Live Interview Copilot
                   <ArrowRight className="w-4 h-4" />
                 </Link>
 
                 <div className="flex flex-col gap-1 pl-1">
                   <span className="flex items-center gap-1.5 text-sm font-semibold text-slate-600">
                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    No Credit Card Required · 15 Free Credits
+                    No Credit Card Required · Free Beta Onboarding
                   </span>
                   <Link
                     href="#referral-program"

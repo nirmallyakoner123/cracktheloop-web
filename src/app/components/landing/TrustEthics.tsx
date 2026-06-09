@@ -16,8 +16,8 @@ const trustPoints = [
   },
   {
     icon: <Eye className="w-5 h-5 text-(--accent)" />,
-    title: "Preparation-First Design",
-    desc: "Built to strengthen answer structuring, recall skills, and key talking points during your practice preparation loops.",
+    title: "Real-Time Response Guidance",
+    desc: "Built to strengthen answer structuring, recall skills, and key talking points during your live interview sessions.",
   },
   {
     icon: <HelpCircle className="w-5 h-5 text-(--accent)" />,

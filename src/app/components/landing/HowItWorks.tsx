@@ -30,13 +30,13 @@ const steps = [
   },
   {
     icon: <Terminal className="w-5 h-5" />,
-    title: "Start AI Interview Helper - Invisible to Screen Share",
-    subtitle: "Undetectable Stealth Overlay Activation",
-    desc: "Launch the overlay when your call begins. Works on Zoom, Meet, and Teams - 100% undetectable by screen sharing software. Uses Win32 Display Affinity so it never appears in recordings or screenshots.",
+    title: "Activate Your Live Desktop Practice Overlay",
+    subtitle: "Privacy-First Desktop HUD Overlay",
+    desc: "Launch the local display overlay when your call begins. Sits next to your active IDE or meeting window, capturing local speaker audio to generate real-time visual prompts.",
     points: [
-      "Zero virtual audio drivers - nothing shows in device list.",
-      "Captures system audio via WASAPI loopback - no mic injection.",
-      "Win32 overlay - completely invisible to screen capture & recordings."
+      "Privacy-first display affinity—keeps your desktop clean and professional.",
+      "Captures system audio via local loopback - zero mic interference.",
+      "Low latency stream—delivers answer recommendations to your HUD instantly."
     ]
   },
   {
@@ -84,11 +84,11 @@ export default function HowItWorks() {
               style={{ fontFamily: "var(--font-display)" }}
             >
               How the{" "}
-              <span className="text-gradient-coral">Free AI Interview Helper</span>{" "}
+              <span className="text-gradient-coral">Live AI Interview Copilot</span>{" "}
               Works - Set Up in 3 Minutes
             </h2>
             <p className="text-(--text-muted) text-base mt-3 max-w-2xl mx-auto">
-              Upload your resume, paste the job description, and your free AI interview assistant is ready to provide live guidance the moment the interviewer starts speaking.
+              Set up your career target details, test your browser audio, and launch the desktop overlay HUD to receive live structured recommendations as the session begins.
             </p>
             <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-(--accent-soft) border border-(--accent)/20">
               <span className="w-1.5 h-1.5 rounded-full bg-(--accent) animate-pulse" />
