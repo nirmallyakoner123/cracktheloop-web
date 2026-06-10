@@ -651,15 +651,15 @@ export default function DemoPage() {
                 <WindowsIcon className="w-4 h-4 text-slate-500 shrink-0" />
                 Download for Windows
               </a>
-              <a
-                href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("open-mac-waitlist"));
+                }}
                 className="px-6 py-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-700 rounded-xl font-bold text-xs transition-all duration-300 active:scale-95 flex items-center gap-2 cursor-pointer shadow-2xs"
               >
                 <AppleIcon className="w-4 h-4 text-slate-500 shrink-0" />
                 Download for macOS
-              </a>
+              </button>
               <Link
                 href="/pricing"
                 className="px-6 py-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-700 rounded-xl font-bold text-xs transition-all duration-300 active:scale-95 cursor-pointer text-center shadow-2xs"

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pricing & Plans - CrackTheLoop",
+  title: "Pricing & Plans",
   description:
     "Choose the CrackTheLoop plan that fits your interview timeline. Start free with 50 credits, then upgrade to Starter Pass ($4.99, 100 credits) or Pro Pass ($19.99, 500 credits). No hidden fees - pay only for active session time.",
   alternates: {
-    canonical: "https://cracktheloop.com/pricing",
+    canonical: "/pricing",
   },
   keywords: [
     "AI interview copilot pricing",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: "Pricing & Plans - CrackTheLoop AI Interview Copilot",
     description:
       "Start free. Upgrade when you're ready. 50 free credits, then Starter Pass at $4.99 or Pro Pass at $19.99. Only pay for active interview session time.",
-    url: "https://cracktheloop.com/pricing",
+    url: "/pricing",
     siteName: "CrackTheLoop",
     type: "website",
     images: [

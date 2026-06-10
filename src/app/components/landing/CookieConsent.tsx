@@ -1,9 +1,9 @@
 "use client";
-
+ 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cookie, Lock, Check, X } from "lucide-react";
-
+ 
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -14,7 +14,7 @@ export default function CookieConsent() {
     analytics: false,
     marketing: false,
   });
-
+ 
   function getCookie(name: string): string | null {
     if (typeof document === "undefined") return null;
     const matches = document.cookie.match(new RegExp(
@@ -22,21 +22,21 @@ export default function CookieConsent() {
     ));
     return matches ? decodeURIComponent(matches[1]) : null;
   }
-
+ 
   function setCookie(name: string, value: string, days = 365) {
     if (typeof document === "undefined") return;
     const expires = new Date();
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
     document.cookie = `${name}=${encodeURIComponent(value)}; path=/; expires=${expires.toUTCString()}; SameSite=Lax`;
   }
-
+ 
   useEffect(() => {
     // Check if user already set consent
     const consentSet = getCookie("ctl_cookie_consent");
     if (!consentSet) {
       const timer = setTimeout(() => {
         setVisible(true);
-      }, 1500);
+      }, 2500); // Wait 2.5s before showing
       return () => clearTimeout(timer);
     } else {
       try {
@@ -57,7 +57,7 @@ export default function CookieConsent() {
       }
     }
   }, []);
-
+ 
   const handleAcceptAll = () => {
     const allConsents = { essential: true, analytics: true, marketing: true };
     setConsents(allConsents);
@@ -65,14 +65,14 @@ export default function CookieConsent() {
     loadAnalyticsScripts();
     setVisible(false);
   };
-
+ 
   const handleDeclineOptional = () => {
     const essentialOnly = { essential: true, analytics: false, marketing: false };
     setConsents(essentialOnly);
     setCookie("ctl_cookie_consent", JSON.stringify(essentialOnly));
     setVisible(false);
   };
-
+ 
   const handleSavePreferences = () => {
     setCookie("ctl_cookie_consent", JSON.stringify(consents));
     if (consents.analytics) {
@@ -80,101 +80,125 @@ export default function CookieConsent() {
     }
     setVisible(false);
   };
-
+ 
   const loadAnalyticsScripts = () => {
     if (typeof window === "undefined" || (window as any)._ctl_analytics_loaded) return;
     (window as any)._ctl_analytics_loaded = true;
     console.log("[TRACKING] Initializing Google Analytics and optional telemetry scripts...");
   };
-
+ 
   return (
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 30, scale: 0.95 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
-          className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200/80 z-55 shadow-lg select-none"
+          className="fixed bottom-4 left-4 right-4 md:bottom-6 md:right-6 md:left-auto z-55 w-auto md:w-[350px] bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl shadow-2xl p-5 flex flex-col gap-4 select-none"
         >
-          <div className="max-w-7xl mx-auto px-6 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
-            
-            {/* Left Column: Info & Settings Toggle */}
-            <div className="flex flex-wrap items-center gap-3 text-center md:text-left justify-center md:justify-start">
-              <span className="flex items-center gap-2 text-xs font-semibold text-slate-700">
-                <Cookie className="w-4.5 h-4.5 text-(--accent) shrink-0 animate-bounce" />
-                <span>
-                  We use cookies to enhance your experience, personalize content, and analyze site performance.
-                </span>
-              </span>
-              
-              {!showSettings && (
-                <button
-                  onClick={() => setShowSettings(true)}
-                  className="text-[10px] font-black uppercase tracking-wider text-slate-500 hover:text-(--accent) transition cursor-pointer underline underline-offset-2"
-                >
-                  Manage Settings
-                </button>
-              )}
-            </div>
+          {/* Close button on card */}
+          <button
+            onClick={handleDeclineOptional}
+            className="absolute top-3.5 right-3.5 text-slate-400 hover:text-slate-650 p-1 rounded-full hover:bg-slate-50 transition cursor-pointer"
+            aria-label="Decline cookies"
+          >
+            <X className="w-4 h-4" />
+          </button>
 
-            {/* Middle: Expanded Inline Settings */}
-            {showSettings && (
-              <div className="flex flex-wrap gap-4 items-center justify-center bg-slate-50 border border-slate-200/60 px-3 py-1.5 rounded-lg text-[10px] font-bold text-slate-700 my-1 md:my-0">
-                <label className="flex items-center gap-1.5 opacity-70">
+          {/* Icon & Title */}
+          <div className="flex items-start gap-3 text-left">
+            <div className="w-9 h-9 rounded-full bg-(--accent-soft) flex items-center justify-center border border-(--accent)/15 shrink-0 shadow-xs">
+              <Cookie className="w-4.5 h-4.5 text-(--accent) animate-bounce" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-slate-800" style={{ fontFamily: "var(--font-display)" }}>
+                Cookie Preferences
+              </h3>
+              <p className="text-xs text-slate-500 leading-relaxed mt-1">
+                We use cookies to personalize content, measure performance, and support our referral system.
+              </p>
+            </div>
+          </div>
+ 
+          {/* Settings Section */}
+          {showSettings ? (
+            <div className="flex flex-col gap-3 bg-slate-50 border border-slate-200/60 p-3 rounded-xl">
+              <div className="flex items-center justify-between text-[11px] font-bold text-slate-700">
+                <span className="flex items-center gap-1.5 opacity-70">
                   <Lock className="w-3.5 h-3.5 text-slate-400" /> Essential
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={consents.analytics}
-                    onChange={() => setConsents(c => ({ ...c, analytics: !c.analytics }))}
-                    className="accent-(--accent) cursor-pointer"
-                  />
-                  Analytics
-                </label>
-                <label className="flex items-center gap-1.5 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={consents.marketing}
-                    onChange={() => setConsents(c => ({ ...c, marketing: !c.marketing }))}
-                    className="accent-(--accent) cursor-pointer"
-                  />
-                  Marketing
-                </label>
-                <button
-                  onClick={handleSavePreferences}
-                  className="text-[9px] font-black uppercase tracking-wider bg-slate-900 text-white px-2.5 py-1 rounded cursor-pointer border border-slate-900 hover:bg-slate-800 transition active:scale-95"
-                >
-                  Save Choice
-                </button>
+                </span>
+                <span className="text-[10px] text-slate-400 font-medium">Always Active</span>
+              </div>
+
+              <div className="border-t border-slate-200/60" />
+
+              <label className="flex items-center justify-between text-[11px] font-bold text-slate-750 cursor-pointer">
+                <span>Analytics Cookies</span>
+                <input
+                  type="checkbox"
+                  checked={consents.analytics}
+                  onChange={() => setConsents(c => ({ ...c, analytics: !c.analytics }))}
+                  className="accent-(--accent) cursor-pointer w-4 h-4"
+                />
+              </label>
+
+              <div className="border-t border-slate-200/60" />
+
+              <label className="flex items-center justify-between text-[11px] font-bold text-slate-750 cursor-pointer">
+                <span>Marketing Cookies</span>
+                <input
+                  type="checkbox"
+                  checked={consents.marketing}
+                  onChange={() => setConsents(c => ({ ...c, marketing: !c.marketing }))}
+                  className="accent-(--accent) cursor-pointer w-4 h-4"
+                />
+              </label>
+            </div>
+          ) : (
+            <div className="text-left">
+              <button
+                onClick={() => setShowSettings(true)}
+                className="text-[10px] font-black uppercase tracking-wider text-slate-500 hover:text-(--accent) transition cursor-pointer underline underline-offset-2"
+              >
+                Manage Preferences
+              </button>
+            </div>
+          )}
+ 
+          {/* Actions */}
+          <div className="flex items-center gap-3 pt-2 border-t border-slate-100 mt-1 select-none">
+            {showSettings ? (
+              <>
                 <button
                   onClick={() => setShowSettings(false)}
-                  className="text-slate-400 hover:text-slate-650 p-0.5 cursor-pointer transition"
+                  className="text-[10px] font-black uppercase tracking-wider text-slate-500 hover:text-slate-700 cursor-pointer transition py-2 flex-1 text-center"
                 >
-                  <X className="w-3.5 h-3.5" />
+                  Cancel
                 </button>
-              </div>
-            )}
-
-            {/* Right Column: Quick Action buttons */}
-            {!showSettings && (
-              <div className="flex items-center gap-3 shrink-0">
+                <button
+                  onClick={handleSavePreferences}
+                  className="btn-primary !py-2.5 !px-4 !text-[10px] !font-bold uppercase tracking-wider cursor-pointer shadow-xs flex-1 justify-center"
+                >
+                  Save Choices
+                </button>
+              </>
+            ) : (
+              <>
                 <button
                   onClick={handleDeclineOptional}
-                  className="text-[10px] font-black uppercase tracking-wider text-slate-500 hover:text-slate-800 px-3 py-1.5 cursor-pointer transition"
+                  className="text-[10px] font-black uppercase tracking-wider text-slate-500 hover:text-slate-700 cursor-pointer transition py-2 flex-1 text-center font-bold"
                 >
-                  Essential Only
+                  Decline
                 </button>
                 <button
                   onClick={handleAcceptAll}
-                  className="btn-primary !py-2 !px-4 !text-[10px] !font-bold uppercase tracking-wider cursor-pointer shadow-xs shadow-[#E8503A]/20"
+                  className="btn-primary !py-2.5 !px-4 !text-[10px] !font-bold uppercase tracking-wider cursor-pointer shadow-xs flex-1 justify-center"
                 >
                   Accept All
                 </button>
-              </div>
+              </>
             )}
-            
           </div>
         </motion.div>
       )}

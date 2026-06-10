@@ -79,6 +79,7 @@ export default function ProductDemo() {
   const [answersVisible, setAnswersVisible] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [isAutoplay, setIsAutoplay] = useState(true);
 
   // Autoplay simulation when section is scrolled into view
   useEffect(() => {
@@ -128,10 +129,12 @@ export default function ProductDemo() {
                 stepIndex++;
                 timer = setTimeout(revealSteps, 1250);
               } else {
-                // Loop to the next question after a brief delay
-                timer = setTimeout(() => {
-                  setCurrentIdx((prev) => (prev + 1) % simulationData.length);
-                }, 5000);
+                // Loop to the next question after a brief delay if autoplay is enabled
+                if (isAutoplay) {
+                  timer = setTimeout(() => {
+                    setCurrentIdx((prev) => (prev + 1) % simulationData.length);
+                  }, 5000);
+                }
               }
             };
             revealSteps();
@@ -148,7 +151,7 @@ export default function ProductDemo() {
     }
 
     return () => clearTimeout(timer);
-  }, [isPlaying, currentIdx]);
+  }, [isPlaying, currentIdx, isAutoplay]);
 
   const currentData = simulationData[currentIdx];
   const isQuestionDone = questionText === currentData.question;
@@ -159,16 +162,16 @@ export default function ProductDemo() {
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
         <ScrollReveal>
-          <div className="text-center mb-16">
+          <div className="text-center mb-6">
             <h2
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-(--text-primary)"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              See How Your AI Buddy Helps in{" "}
-              <span className="text-gradient-coral">Real Time</span>
+              See Your Copilot in{" "}
+              <span className="text-gradient-coral">Action</span>
             </h2>
             <p className="text-(--text-muted) text-base mt-3 max-w-xl mx-auto">
-              Observe how the AI captures the question, maps it to context, and suggests structured answer guidelines automatically as you scroll.
+              Select an interview question below to watch the interactive simulator analyze the audio, match context, and stream response outlines.
             </p>
           </div>
         </ScrollReveal>
@@ -185,7 +188,7 @@ export default function ProductDemo() {
               </div>
               
               <span className="text-[11px] font-mono text-slate-400 font-bold">
-                stealth_copilot_session.exe • Auto-Align Feed (Q{currentIdx + 1}/{simulationData.length})
+                stealth_copilot_session.exe • {isAutoplay ? "Auto-Align Feed" : "Interactive Feed"} (Q{currentIdx + 1}/{simulationData.length})
               </span>
 
               {/* Balancer spacer */}

@@ -3,8 +3,19 @@
 import { Gift, Share2, UserPlus, ArrowRight, Sparkles } from "lucide-react";
 import { ScrollReveal } from "./ScrollReveal";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function ReferralProgram() {
+  const router = useRouter();
+
+  function getCookie(name: string): string | null {
+    if (typeof document === "undefined") return null;
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
+    return null;
+  }
+
   const steps = [
     {
       id: 1,
@@ -75,7 +86,7 @@ export default function ReferralProgram() {
                   </div>
                 </div>
 
-                <p className="text-sm md:text-base text-slate-600 leading-relaxed font-semibold">
+                <p className="text-sm md:text-base text-slate-650 leading-relaxed font-semibold">
                   When someone registers using your invitation link, they get <span className="text-(--accent) font-bold">50 free credits</span> instantly on sign-up to start practicing mock interviews.
                 </p>
               </div>
@@ -94,7 +105,7 @@ export default function ReferralProgram() {
                   </div>
                 </div>
 
-                <p className="text-sm md:text-base text-slate-600 leading-relaxed font-semibold">
+                <p className="text-sm md:text-base text-slate-650 leading-relaxed font-semibold">
                   Every time a referred colleague signs up and activates their trial, you instantly receive <span className="text-(--accent) font-bold">+50 free credits</span> loaded into your account.
                 </p>
               </div>
@@ -132,6 +143,29 @@ export default function ReferralProgram() {
                 })}
               </div>
             </div>
+          </div>
+        </ScrollReveal>
+
+        {/* Get Invite Link CTA Button */}
+        <ScrollReveal>
+          <div className="flex flex-col items-center gap-2 mt-8">
+            <button
+              onClick={() => {
+                const token = getCookie("ctl_token");
+                if (token) {
+                  router.push("/dashboard/referrals");
+                } else {
+                  router.push("/login?mode=signup&redirect=/dashboard/referrals");
+                }
+              }}
+              className="btn-primary-glow flex items-center gap-2 !py-4 !px-8 text-xs font-bold uppercase tracking-wider cursor-pointer rounded-lg"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Get My Invite Link</span>
+            </button>
+            <span className="text-[10px] text-slate-400 font-bold italic">
+              *Sign in or create a free account to access your personal referral link.
+            </span>
           </div>
         </ScrollReveal>
 

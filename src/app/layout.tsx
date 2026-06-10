@@ -22,7 +22,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const SITE_URL = "https://cracktheloop.com";
+const SITE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://cracktheloop-web.vercel.app";
 const SITE_NAME = "CrackTheLoop";
 const OG_IMAGE = "/og-image.png";
 
@@ -141,7 +141,7 @@ export const metadata: Metadata = {
   },
 
   verification: {
-    google: "REPLACE_WITH_GOOGLE_VERIFICATION_CODE",
+    google: process.env.GOOGLE_SITE_VERIFICATION || "",
     // bing: "REPLACE_WITH_BING_VERIFICATION_CODE",
   },
 

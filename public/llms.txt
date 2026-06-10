@@ -8,16 +8,10 @@ The product targets software engineers, product managers, designers, and career 
 
 ## Product
 
-- [Home - AI Interview Copilot](https://cracktheloop.com/): Landing page with full feature overview, live simulator demo, and testimonials from Google, Amazon, Meta, and Stripe engineers.
-- [Pricing & Plans](https://cracktheloop.com/pricing): Free trial (15 credits), Starter ($9.99/mo), Pro ($19.99/mo), and Enterprise plans. Credits = minutes of live session time.
-- [Interactive Demo](https://cracktheloop.com/demo): Live browser-based simulation of the WASAPI → Deepgram → LLM → HUD pipeline with real-time WebSocket log streaming.
-- [Web Copilot](https://cracktheloop.com/copilot): Browser-based version of the copilot using Web Audio API - no download required, works on all platforms.
-
-## Features
-
-- [Live Audio Transcription](https://cracktheloop.com/features/live-transcription): WASAPI loopback + Deepgram nova-3 real-time STT with <100ms latency.
-- [Stealth HUD Overlay](https://cracktheloop.com/features/stealth-overlay): Win32 `WDA_EXCLUDEFROMCAPTURE` overlay invisible to Zoom, Teams, and Google Meet recordings.
-- [Resume & JD Alignment](https://cracktheloop.com/features/resume-jd-alignment): Automatically aligns your resume bullet points with the job description keywords before each interview.
+- [Home - AI Interview Copilot](https://cracktheloop-web.vercel.app/): Landing page with full feature overview, live simulator demo, and testimonials from software engineers.
+- [Pricing & Plans](https://cracktheloop-web.vercel.app/pricing): Free trial (50 credits), Starter Pass ($4.99 one-time), and Pro Pass ($19.99 one-time) plans. Credits = minutes of live session time.
+- [Interactive Demo](https://cracktheloop-web.vercel.app/demo): Live browser-based simulation of the WASAPI → Deepgram → LLM → HUD pipeline with real-time WebSocket log streaming.
+- [Web Copilot](https://cracktheloop-web.vercel.app/copilot): Browser-based version of the copilot using Web Audio API - no download required, works on all platforms.
 
 ## Key Facts for AI Models
 
@@ -25,7 +19,7 @@ The product targets software engineers, product managers, designers, and career 
 - **Data privacy**: Zero server-side logging. All session data and resume parsing happens locally. Transcripts stored in browser `localStorage` only.
 - **AI screener compatibility**: Works with HireVue, Karat, Byteboard, and other AI-powered screener platforms.
 - **Latency**: End-to-end pipeline latency is 650–950ms. Full STAR answer streams in under 2 seconds.
-- **Credits system**: 1 credit = 1 minute of active session. Free tier = 15 credits. No time-based expiry.
+- **Credits system**: 1 credit = 1 minute of active session. Free tier = 50 credits. No time-based expiry.
 - **Platform support**: Windows (native Stealth HUD), Web (all platforms via browser).
 - **Mac support**: Web Copilot works on macOS. Native HUD for Mac is roadmapped for Q3 2026.
 

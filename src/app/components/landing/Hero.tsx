@@ -168,13 +168,13 @@ export default function Hero() {
               className="font-bold tracking-tight text-slate-900 text-4xl md:text-5xl lg:text-5xl leading-[1]"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Your Real-Time <span className="text-gradient-coral">AI Live Interview Copilot</span>
+              The Invisible Edge in Every <span className="text-gradient-coral">Technical Interview</span>
             </h1>
-
+ 
             <p className="text-base md:text-lg leading-relaxed font-normal text-(--text-muted) max-w-xl">
               Never let your mind go blank. Sits on your desktop, listens to the interview, and provides structured response outlines and memory prompts in real-time during live sessions.
             </p>
-
+ 
             <div className="flex flex-col gap-6 mt-4 max-w-xl">
               {/* Action Button */}
               <div>
@@ -183,7 +183,7 @@ export default function Hero() {
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-
+ 
               {/* Trust Details & Referral Link */}
               <div className="flex flex-col gap-1.5 pl-1">
                 <span className="flex items-center gap-1.5 text-sm font-semibold text-slate-600">
@@ -203,7 +203,7 @@ export default function Hero() {
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
-
+ 
               {/* Divider and Platforms Row */}
               <div className="border-t border-slate-200/80 pt-5 mt-1 flex flex-col sm:flex-row sm:items-center gap-4 pl-1">
                 <span className="text-xs font-bold text-slate-500 select-none tracking-wide shrink-0">
@@ -226,7 +226,7 @@ export default function Hero() {
                 </div>
               </div>
             </div>
-
+ 
             {/* Social Proof Review Rating & Avatars */}
             <motion.div
               className="flex flex-wrap items-center gap-6 mt-4 pt-6"
@@ -240,7 +240,7 @@ export default function Hero() {
                 <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&h=100&q=80" alt="Candidate" className="w-8 h-8 rounded-full border-2 border-white object-cover shadow-sm" />
                 <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&h=100&q=80" alt="Candidate" className="w-8 h-8 rounded-full border-2 border-white object-cover shadow-sm" />
               </div>
-
+ 
               <div className="flex flex-col gap-0.5">
                 <div className="flex items-center gap-1.5">
                   <div className="flex items-center text-amber-400">
@@ -248,10 +248,10 @@ export default function Hero() {
                       <Star key={i} className="w-4.5 h-4.5 fill-current stroke-current" />
                     ))}
                   </div>
-                  <span className="text-sm font-extrabold text-(--text-primary)">4.9 / 5 early beta rating</span>
+                  <span className="text-sm font-extrabold text-(--text-primary)">4.9 / 5 from 180+ beta testers</span>
                 </div>
                 <div className="text-sm font-medium text-(--text-muted)">
-                  Trusted by <span className="text-(--text-primary) font-extrabold">early beta testers</span> from top tech
+                  Trusted by <span className="text-(--text-primary) font-extrabold">180+ engineers in beta</span> across top tech
                 </div>
               </div>
             </motion.div>

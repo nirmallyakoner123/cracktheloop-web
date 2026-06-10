@@ -90,10 +90,6 @@ export default function HowItWorks() {
             <p className="text-(--text-muted) text-base mt-3 max-w-2xl mx-auto">
               Set up your career target details, test your browser audio, and launch the desktop overlay HUD to receive live structured recommendations as the session begins.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-(--accent-soft) border border-(--accent)/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-(--accent) animate-pulse" />
-              <span className="text-xs font-bold text-(--accent) tracking-wide">⚡ Free to start. Setup in 3 minutes. Live guidance appears in real time during your session.</span>
-            </div>
           </div>
         </ScrollReveal>
 

@@ -1,9 +1,9 @@
 "use client";
-
+ 
 import { useState, useEffect } from "react";
 import { Sparkles, Check, X, Minus } from "lucide-react";
 import { ScrollReveal, StaggerContainer, StaggerItem } from "./ScrollReveal";
-
+ 
 const comparisonPoints = [
   {
     feature: "General interview tips & advice",
@@ -27,7 +27,7 @@ const comparisonPoints = [
     feature: "Gives role-specific talking points",
     generic: "partial",
     cracktheloop: true,
-    detail: "Generic AI gives surface-level tips. CrackTheLoop tailors to title and seniority.",
+    detail: "Final Round AI gives generic, surface-level suggestions. CrackTheLoop tailors to title and seniority.",
   },
   {
     feature: "Assists smoothly during live interview flow",
@@ -66,10 +66,10 @@ const comparisonPoints = [
     detail: "Suggests talking points - not scripts - so answers sound like you.",
   },
 ];
-
+ 
 export default function Comparison() {
   const [currency, setCurrency] = useState("USD");
-
+ 
   useEffect(() => {
     // Detect country location using FreeIPAPI
     fetch("https://freeipapi.com/api/json")
@@ -85,7 +85,7 @@ export default function Comparison() {
         console.warn("FreeIPAPI failed, running fallback timezone detection:", err);
         runTimezoneFallback();
       });
-
+ 
     function runTimezoneFallback() {
       try {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -102,7 +102,7 @@ export default function Comparison() {
       }
     }
   }, []);
-
+ 
   const rows = currency === "INR" ? [
     { label: "Human Mock Interviewer", cost: "₹12,000–₹25,000 / hr", muted: true },
     { label: "Interview Prep Course", cost: "₹80,000–₹4,00,000", muted: true },
@@ -114,13 +114,13 @@ export default function Comparison() {
     { label: "Career Coach (6 weeks)", cost: "$3,000+", muted: true },
     { label: "CrackTheLoop Pro Pass", cost: "$19.99 / one-time", highlight: true },
   ];
-
+ 
   return (
     <section id="comparison" className="section-mist relative py-20 md:py-24 overflow-hidden">
       {/* Background elements */}
       <div className="orb orb-peach w-[500px] h-[500px] -top-40 -left-40 animate-float-orb" />
       <div className="orb orb-slate w-[400px] h-[400px] bottom-0 -right-20 animate-float-orb-slow" />
-
+ 
       {/* Subtle grid */}
       <div
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -129,7 +129,7 @@ export default function Comparison() {
           backgroundSize: '60px 60px',
         }}
       />
-
+ 
       <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
         <ScrollReveal>
           <div className="text-center mb-16">
@@ -137,7 +137,7 @@ export default function Comparison() {
               className="text-3xl md:text-4xl font-extrabold tracking-tight text-(--text-primary)"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Best AI Interview Helper 2025{" "}
+              Best AI Interview Helper 2026{" "}
               <span className="text-gradient-coral">- CrackTheLoop vs the Rest</span>
             </h2>
             <p className="text-(--text-muted) text-base mt-3 max-w-xl mx-auto">
@@ -145,7 +145,7 @@ export default function Comparison() {
             </p>
           </div>
         </ScrollReveal>
-
+ 
         <ScrollReveal className="w-full">
           <div className="text-right mb-2 md:hidden">
             <span className="text-[10px] font-bold uppercase tracking-wider text-(--text-muted) inline-flex items-center gap-1 select-none">
@@ -161,7 +161,7 @@ export default function Comparison() {
                       Comparison Point
                     </th>
                     <th className="px-6 py-4 text-center text-(--text-muted) font-bold uppercase tracking-wider text-xs">
-                      Generic AI
+                      Final Round AI
                     </th>
                     <th className="px-6 py-4 text-center text-(--accent) font-bold uppercase tracking-wider text-xs bg-(--accent-soft)">
                       <div className="flex items-center justify-center gap-1.5">
@@ -205,7 +205,7 @@ export default function Comparison() {
             </div>
           </div>
         </ScrollReveal>
-
+ 
         {/* Price Anchoring Block */}
         <ScrollReveal className="mt-10">
           <div className="bg-white/80 backdrop-blur-md border border-(--border-light) rounded-[12px] p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center shadow-xs">
@@ -237,7 +237,7 @@ export default function Comparison() {
             </div>
           </div>
         </ScrollReveal>
-
+ 
         {/* Trust callout - merged from TrustEthics */}
         <ScrollReveal className="mt-12">
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" staggerDelay={0.06}>

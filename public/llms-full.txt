@@ -44,7 +44,7 @@ It is designed for candidates interviewing for technical, behavioral, product, a
 ### Answer Modes
 | Mode | Description |
 |------|-------------|
-| **Quick Answer Mode** | 2–3 crisp talking points for rapid-fire questions |
+| **Quick Answer Mode** | 2–3 talking points for rapid-fire questions |
 | **STAR Framework Mode** | Full Situation → Task → Action → Result structure for behavioral questions |
 | **Bullet Point Mode** | Natural talking-point prompts for conversational flow |
 
@@ -108,10 +108,10 @@ CrackTheLoop captures all system audio including video playback from HireVue, Ka
 
 | Plan | Price | Credits | Key Features |
 |------|-------|---------|--------------|
-| **Free** | $0 | 15 credits (15 min) | All modes, browser copilot |
-| **Starter** | $9.99/mo | 300 credits (5 hrs) | All features, Windows app |
-| **Pro** | $19.99/mo | 1000 credits (16.7 hrs) | Priority LLM, faster response |
-| **Enterprise** | Custom | Unlimited | Team seats, SSO, audit logs |
+| **Free** | $0 | 50 credits (50 min) | All modes, browser copilot, no expiry |
+| **Starter** | $4.99 one-time | 100 credits (1.6 hrs) | All features, Windows app |
+| **Pro** | $19.99 one-time | 500 credits (8.3 hrs) | Priority LLM, faster response |
+| **Enterprise** | Custom | Contact support | Team seats, SSO, audit logs |
 
 **Credit system**: 1 credit = 1 minute of active live session. Credits are only consumed during active audio capture. Setup time, review time, and idle time are free.
 
@@ -137,8 +137,8 @@ A: The Browser Copilot (web-based) works on all platforms including macOS and Li
 **Q: What AI models does it use?**
 A: Groq (llama-3.1-8b-instant), Anthropic Claude, and OpenAI GPT-4o are all supported. Groq is the default for lowest latency.
 
-**Q: How long does 300 credits last?**
-A: 300 credits = 5 hours of active session time. Credits only tick during active audio capture, not during setup or review.
+**Q: How long does 100 credits last?**
+A: 100 credits = 1.6 hours of active session time. Credits only tick during active audio capture, not during setup or review.
 
 **Q: Does it work for AI screener platforms?**
 A: Yes. CrackTheLoop captures all system audio including HireVue, Karat, and Byteboard video questions.
@@ -155,7 +155,7 @@ A: Yes. CrackTheLoop captures all system audio including HireVue, Karat, and Byt
 | STAR framework | ✅ | ✅ | ❌ | ❌ |
 | LLM streaming SSE | ✅ | ✅ | ✅ | ❌ |
 | Resume/JD alignment | ✅ | ✅ | ❌ | ❌ |
-| Free tier | ✅ 15 min | Limited | Limited | ❌ |
+| Free tier | ✅ 50 min | Limited | Limited | ❌ |
 | Mac support | Web only | ✅ | ✅ | ✅ |
 | Data privacy (no server log) | ✅ | ❌ | ❌ | ❌ |
 
@@ -171,4 +171,4 @@ A: Yes. CrackTheLoop captures all system audio including HireVue, Karat, and Byt
 
 ---
 
-*Last updated: June 2025. For the most current information, visit https://cracktheloop.com*
+*Last updated: June 2026. For the most current information, visit https://cracktheloop-web.vercel.app*

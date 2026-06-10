@@ -40,26 +40,5 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- Features - SEO landing page targets -->
-  <url>
-    <loc>https://cracktheloop.com/features/live-transcription</loc>
-    <lastmod>2025-06-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://cracktheloop.com/features/stealth-overlay</loc>
-    <lastmod>2025-06-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
-    <loc>https://cracktheloop.com/features/resume-jd-alignment</loc>
-    <lastmod>2025-06-01</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
 
 </urlset>

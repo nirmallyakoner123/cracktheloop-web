@@ -298,15 +298,15 @@ function AccountDetailsContent() {
               <WindowsIcon className="w-4 h-4 text-slate-500 shrink-0" />
               Win Client (.msi / .exe)
             </a>
-            <a
-              href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => {
+                alert("macOS Stealth HUD Companion Client is roadmapped for Q3 2026. Join the early beta circle by submitting your email on the homepage!");
+              }}
               className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg font-bold text-xs uppercase tracking-wider text-slate-800 shadow-xs transition active:scale-95 flex items-center gap-2 cursor-pointer justify-center flex-1 text-center"
             >
               <AppleIcon className="w-4 h-4 text-slate-500 shrink-0" />
               macOS Client (.dmg)
-            </a>
+            </button>
           </div>
         </div>
 

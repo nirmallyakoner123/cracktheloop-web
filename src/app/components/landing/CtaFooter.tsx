@@ -18,9 +18,6 @@ export default function CtaFooter() {
   const productLinks = [
     { label: "Pricing & Plans", href: "/pricing" },
     { label: "Demo Simulator", href: "/demo" },
-    { label: "Live Audio Transcription", href: "/features/live-transcription" },
-    { label: "Resume & JD Alignment", href: "/features/resume-jd-alignment" },
-    { label: "Desktop HUD Overlay", href: "/features/stealth-overlay" },
   ];
 
   const platformLinks = [

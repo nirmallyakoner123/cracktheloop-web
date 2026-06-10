@@ -46,15 +46,6 @@ export default function Navbar() {
   }, []);
 
   const menuItems = [
-    {
-      label: "Features",
-      href: "#features",
-      dropdown: [
-        { label: "Live Audio Transcription", href: "/features/live-transcription", desc: "Understands questions in real-time." },
-        { label: "Resume & JD Alignment", href: "/features/resume-jd-alignment", desc: "Tailor answers to target roles." },
-        { label: "Desktop HUD Overlay", href: "/features/stealth-overlay", desc: "Local response guides overlay." },
-      ]
-    },
     { label: "How It Works", href: "#how-it-works" },
     { label: "Referrals", href: "#referral-program" },
     { label: "Pricing", href: "/pricing" },
@@ -138,55 +129,15 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {menuItems.map((item) => {
-            if (item.dropdown) {
-              return (
-                <div
-                  key={item.label}
-                  className="relative group py-2"
-                >
-                  <button className="flex items-center gap-1 text-sm font-medium text-(--text-muted) hover:text-(--text-primary) transition cursor-pointer select-none">
-                    {item.label}
-                    <ChevronDown className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" />
-                  </button>
-                  
-                  {/* Dropdown Wrapper */}
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 w-64 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 transform origin-top scale-95 group-hover:scale-100 flex flex-col z-50">
-                    <div className="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-xl p-3 shadow-lg flex flex-col gap-1.5">
-                      {item.dropdown.map((subItem) => (
-                        <Link
-                          key={subItem.label}
-                          href={subItem.href}
-                          className="flex flex-col px-3 py-2 rounded-lg hover:bg-slate-50 transition cursor-pointer"
-                        >
-                          <span className="text-xs font-bold text-slate-800">{subItem.label}</span>
-                          <span className="text-[10px] text-slate-400 font-medium leading-normal mt-0.5">{subItem.desc}</span>
-                        </Link>
-                      ))}
-                      <div className="border-t border-slate-100 mt-1.5 pt-2">
-                        <Link
-                          href={getHref(item.href)}
-                          className="text-[10px] font-bold text-(--accent) hover:underline px-3 flex items-center gap-1 cursor-pointer"
-                        >
-                          View All Features <ArrowRight className="w-3 h-3" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            }
-
-            return (
-              <Link
-                key={item.label}
-                href={getHref(item.href)}
-                className="text-sm font-medium text-(--text-muted) hover:text-(--text-primary) transition cursor-pointer"
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          {menuItems.map((item) => (
+            <Link
+              key={item.label}
+              href={getHref(item.href)}
+              className="text-sm font-medium text-(--text-muted) hover:text-(--text-primary) transition cursor-pointer"
+            >
+              {item.label}
+            </Link>
+          ))}
           <div className="relative group py-2">
             <button className="btn-primary !py-2 !px-5 !text-sm !rounded-full cursor-pointer flex items-center gap-1.5 select-none">
               <Download className="w-3.5 h-3.5" />
@@ -251,47 +202,16 @@ export default function Navbar() {
           animate={{ opacity: 1, y: 0 }}
           className="md:hidden px-6 pb-6 pt-2 flex flex-col gap-4"
         >
-          {menuItems.map((item) => {
-            if (item.dropdown) {
-              return (
-                <div key={item.label} className="flex flex-col gap-1 py-1">
-                  <span className="text-xs font-mono font-bold tracking-widest uppercase text-slate-400 px-2 mb-1">
-                    {item.label}
-                  </span>
-                  <div className="flex flex-col gap-2 pl-3 border-l border-slate-200">
-                    {item.dropdown.map((subItem) => (
-                      <Link
-                        key={subItem.label}
-                        href={subItem.href}
-                        className="text-sm font-semibold text-slate-700 hover:text-(--accent) py-1.5 cursor-pointer"
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        {subItem.label}
-                      </Link>
-                    ))}
-                    <Link
-                      href={getHref(item.href)}
-                      className="text-xs font-bold text-(--accent) py-1.5 cursor-pointer"
-                      onClick={() => setMobileOpen(false)}
-                    >
-                      View All Features →
-                    </Link>
-                  </div>
-                </div>
-              );
-            }
-
-            return (
-              <Link
-                key={item.label}
-                href={getHref(item.href)}
-                className="text-sm font-medium text-(--text-primary) py-2 cursor-pointer"
-                onClick={() => setMobileOpen(false)}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          {menuItems.map((item) => (
+            <Link
+              key={item.label}
+              href={getHref(item.href)}
+              className="text-sm font-medium text-(--text-primary) py-2 cursor-pointer"
+              onClick={() => setMobileOpen(false)}
+            >
+              {item.label}
+            </Link>
+          ))}
           <div className="flex flex-col gap-2 mt-2 pt-2 border-t border-slate-100">
             <Link
               href={getHref("#platform-picker")}

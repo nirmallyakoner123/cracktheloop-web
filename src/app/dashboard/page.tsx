@@ -683,14 +683,14 @@ function DashboardHomeContent() {
                   >
                     <WindowsIcon className="w-3.5 h-3.5 text-slate-500" /> Windows
                   </a>
-                  <a
-                    href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => {
+                      alert("macOS Stealth HUD Companion Client is roadmapped for Q3 2026. Join the early beta circle by submitting your email on the homepage!");
+                    }}
                     className="flex-1 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <AppleIcon className="w-3.5 h-3.5 text-slate-500" /> macOS
-                  </a>
+                  </button>
                 </div>
               </div>
 

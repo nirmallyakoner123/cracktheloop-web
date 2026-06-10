@@ -11,6 +11,7 @@ import {
   ArrowRight,
   UserPlus,
   Loader2,
+  X,
 } from "lucide-react";
 import Navbar from "../components/landing/Navbar";
 import CtaFooter from "../components/landing/CtaFooter";
@@ -18,10 +19,64 @@ import Link from "next/link";
  
 export default function PricingPage() {
   const router = useRouter();
-  const [plans, setPlans] = useState<any[]>([]);
+  
+  const fallbackPlans = [
+    {
+      name: "Free Trial",
+      price: 0,
+      interval: "one-time",
+      credits: 50,
+      description: "Try it free — no card needed",
+      features: [
+        "50 AI Fuel Credits included",
+        "Limit: 1 Interview session",
+        "Limit: 1 AI Report analysis",
+        "Credits never expire"
+      ]
+    },
+    {
+      name: "Starter Pass",
+      price: 4.99,
+      interval: "one-time",
+      credits: 100,
+      description: "For beginners practicing mock interviews",
+      features: [
+        "100 Fuel Credits included",
+        "Streaming STT voice capturing",
+        "Standard low-latency audio capture",
+        "Advanced AI guidance support"
+      ]
+    },
+    {
+      name: "Pro Pass",
+      price: 19.99,
+      interval: "one-time",
+      credits: 500,
+      description: "Ideal for active interview stages",
+      features: [
+        "500 Fuel Credits included",
+        "Sub-second latency streaming STT",
+        "Screen sharing evasion (Zoom & Meet)",
+        "Unlimited concurrent LLM runs",
+        "Custom API keys integration support"
+      ]
+    }
+  ];
+
+  const [plans, setPlans] = useState<any[]>(fallbackPlans);
   const [trialCredits, setTrialCredits] = useState(50);
   const [trialExpiryDays, setTrialExpiryDays] = useState(-1);
   const [currency, setCurrency] = useState("USD");
+  
+  // No billing cycle or yearly waitlist states needed (one-time plans only)
+
+  function getCookie(name: string): string | null {
+    if (typeof document === "undefined") return null;
+    const matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : null;
+  }
 
   useEffect(() => {
     // Detect country location using FreeIPAPI
@@ -61,7 +116,7 @@ export default function PricingPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          if (data.plans) setPlans(data.plans);
+          if (data.plans && data.plans.length > 0) setPlans(data.plans);
           if (data.settings) {
             setTrialCredits(data.settings.trial_base_credits ?? 50);
             setTrialExpiryDays(data.settings.trial_expiry_days ?? data.settings.trial_expiration_days ?? -1);
@@ -86,7 +141,6 @@ export default function PricingPage() {
     };
   };
 
-  
   // Handle plan purchase selection by routing to secure auth-protected /select-plan
   function handlePlanSelect(planName: string) {
     router.push(`/select-plan?plan=${encodeURIComponent(planName)}&currency=${currency}`);
@@ -105,116 +159,112 @@ export default function PricingPage() {
       {/* Page Title */}
       <section className="w-full max-w-7xl mx-auto px-6 pt-12 text-center flex flex-col items-center gap-4 relative z-20 select-none">
         <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-tight text-slate-800" style={{ fontFamily: "var(--font-display)" }}>
-          Flexible Plans for <span className="text-gradient-coral">Unlimited Access</span>
+          One-Time Passes for <span className="text-gradient-coral">Unlimited Confidence</span>
         </h1>
         <p className="text-(--text-muted) text-sm md:text-base max-w-xl leading-relaxed">
-          Start with our Free Trial to evaluate, or upgrade to a premium plan to obtain full access.
+          Start your free trial in seconds. Buy a one-time pass to load fuel credits — credits never expire and activate instantly.
         </p>
       </section>
 
       {/* Pricing Cards Section */}
-      <section className="w-full max-w-7xl mx-auto px-6 pt-16 relative z-20">
-        {plans.length === 0 ? (
-          <div className="flex justify-center items-center py-24">
-            <Loader2 className="w-8 h-8 text-(--accent) animate-spin" />
-          </div>
-        ) : (
-          <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${plans.length} gap-8 items-stretch max-w-5xl mx-auto`}>
-            {plans.map((plan) => {
-              const isPro = plan.name.toLowerCase().includes("pro");
-              const isFree = plan.price === 0 || plan.name.toLowerCase().includes("free");
-              
-              // Localized price mappings
-              let displayPrice = plan.price;
-              let priceSymbol = "$";
-              
-              if (currency === "INR") {
-                priceSymbol = "₹";
-                if (!isFree) {
-                  if (plan.name.toLowerCase().includes("starter")) {
-                    displayPrice = 399;
-                  } else if (plan.name.toLowerCase().includes("pro")) {
-                    displayPrice = 1499;
-                  } else {
-                    // Fallback conversion (approx 85 INR per USD)
-                    displayPrice = Math.round(plan.price * 85);
-                  }
+      <section className="w-full max-w-7xl mx-auto px-6 pt-12 relative z-20">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${plans.length} gap-8 items-stretch max-w-5xl mx-auto`}>
+          {plans.map((plan) => {
+            const isPro = plan.name.toLowerCase().includes("pro");
+            const isFree = plan.price === 0 || plan.name.toLowerCase().includes("free");
+            
+            // Localized price mappings
+            let displayPrice = plan.price;
+            let priceSymbol = "$";
+            
+            if (currency === "INR") {
+              priceSymbol = "₹";
+              if (!isFree) {
+                if (plan.name.toLowerCase().includes("starter")) {
+                  displayPrice = 399;
+                } else if (plan.name.toLowerCase().includes("pro")) {
+                  displayPrice = 1499;
                 } else {
-                  displayPrice = 0;
+                  // Fallback conversion (approx 85 INR per USD)
+                  displayPrice = Math.round(plan.price * 85);
                 }
+              } else {
+                displayPrice = 0;
               }
-              
-              return (
-                <div 
-                  key={plan._id || plan.name}
-                  className={`backdrop-blur-md rounded-[12px] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 min-h-[420px] relative ${
-                    isPro 
-                      ? "bg-white/95 border-2 border-(--accent) shadow-md z-10 hover:-translate-y-1 hover:shadow-lg" 
-                      : "bg-white/85 border border-(--border-light) shadow-xs hover:border-(--accent)/40 hover:-translate-y-1 hover:shadow-sm"
-                  }`}
-                >
-                  {isPro && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-(--accent) text-white px-4 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm">
-                      Popular
-                    </div>
-                  )}
-                  
-                  <div>
-                    <div className="flex justify-between items-start">
-                      <h3 className="text-xl font-bold text-slate-800" style={{ fontFamily: "var(--font-display)" }}>
-                        {plan.name}
-                      </h3>
-                      {isFree && (
-                        <span className="bg-(--accent-soft) text-(--accent) border border-(--accent)/15 px-2.5 py-0.5 rounded-full font-black text-[9px] uppercase tracking-wider">
-                          Free
-                        </span>
-                      )}
-                    </div>
-                    
-                    <p className="text-xs text-(--text-muted) mt-1 font-medium">
-                      {plan.description}
-                    </p>
-                    
-                    <div className="flex items-baseline gap-1 mt-6">
-                      <span className="text-4xl font-extrabold text-slate-800">{priceSymbol}{displayPrice}</span>
-                      <span className="text-xs text-(--text-muted)">
-                        {isFree 
-                          ? (trialExpiryDays > 0 ? `/ ${trialExpiryDays} days` : '/ one-time') 
-                          : `/ ${plan.interval || 'one-time'}`
-                        }
+            }
+
+            // Override description to remove internal backend leaked terminology
+            const planDesc = isFree ? "Try it free — no card needed" : plan.description;
+            
+            return (
+              <div 
+                key={plan._id || plan.name}
+                className={`backdrop-blur-md rounded-[12px] p-6 md:p-8 flex flex-col justify-between transition-all duration-300 min-h-[420px] relative ${
+                  isPro 
+                    ? "bg-white/95 border-2 border-(--accent) shadow-md z-10 hover:-translate-y-1 hover:shadow-lg" 
+                    : "bg-white/85 border border-(--border-light) shadow-xs hover:border-(--accent)/40 hover:-translate-y-1 hover:shadow-sm"
+                }`}
+              >
+                {isPro && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-(--accent) text-white px-4 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm">
+                    Popular
+                  </div>
+                )}
+                
+                <div>
+                  <div className="flex justify-between items-start">
+                    <h3 className="text-xl font-bold text-slate-800" style={{ fontFamily: "var(--font-display)" }}>
+                      {plan.name}
+                    </h3>
+                    {isFree && (
+                      <span className="bg-(--accent-soft) text-(--accent) border border-(--accent)/15 px-2.5 py-0.5 rounded-full font-black text-[9px] uppercase tracking-wider">
+                        Free
                       </span>
-                    </div>
-                    
-                    <ul className="text-xs text-slate-600 flex flex-col gap-3.5 border-t border-slate-100 pt-6 mt-6">
-                      {plan.features?.map((feat: string, idx: number) => {
-                        const isFirst = idx === 0;
-                        return (
-                          <li key={idx} className={`flex items-center gap-2 ${isFirst ? "font-bold text-(--accent)" : ""}`}>
-                            <Check className={`w-4 h-4 ${isFirst || isPro ? "text-(--accent)" : "text-slate-400"}`} />
-                            {feat}
-                          </li>
-                        );
-                      })}
-                    </ul>
+                    )}
                   </div>
                   
-                  <div className="mt-8">
-                    <button
-                      onClick={() => handlePlanSelect(plan.name)}
-                      className={`w-full text-center justify-center cursor-pointer !py-3.5 !px-6 !text-xs uppercase tracking-wider ${
-                        isPro 
-                          ? "btn-primary shadow-md shadow-[#E8503A]/20" 
-                          : "btn-ghost-dark !font-bold"
-                      }`}
-                    >
-                      {isFree ? "Start Trial" : `Upgrade to ${plan.name.replace(" Pass", "").replace(" Plan", "")}`}
-                    </button>
+                  <p className="text-xs text-(--text-muted) mt-1 font-medium leading-relaxed">
+                    {planDesc}
+                  </p>
+                         <div className="flex items-baseline gap-1 mt-6">
+                    <span className="text-4xl font-extrabold text-slate-800">{priceSymbol}{displayPrice}</span>
+                    <span className="text-xs text-(--text-muted) font-semibold">
+                      {isFree 
+                        ? (trialExpiryDays > 0 ? `/ ${trialExpiryDays} days` : '/ one-time') 
+                        : `/ ${plan.interval || 'one-time'}`
+                      }
+                    </span>
                   </div>
+                  
+                  <ul className="text-xs text-slate-655 flex flex-col gap-3.5 border-t border-slate-100 pt-6 mt-6">
+                    {plan.features?.map((feat: string, idx: number) => {
+                      const isFirst = idx === 0;
+                      return (
+                        <li key={idx} className={`flex items-center gap-2 ${isFirst ? "font-bold text-(--accent)" : ""}`}>
+                          <Check className={`w-4 h-4 ${isFirst || isPro ? "text-(--accent)" : "text-slate-400"}`} />
+                          {feat}
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
-              );
-            })}
-          </div>
-        )}
+                
+                <div className="mt-8">
+                  <button
+                    onClick={() => handlePlanSelect(plan.name)}
+                    className={`w-full text-center justify-center cursor-pointer !py-3.5 !px-6 !text-xs uppercase tracking-wider ${
+                      isPro 
+                        ? "btn-primary shadow-md shadow-[#E8503A]/20" 
+                        : "btn-ghost-dark !font-bold"
+                    }`}
+                  >
+                    {isFree ? "Start Trial" : `Upgrade to ${plan.name.replace(" Pass", "").replace(" Plan", "")}`}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
       {/* Referral Program Section */}
@@ -253,11 +303,32 @@ export default function PricingPage() {
                 </div>
                 <span className="text-xs md:text-sm font-black text-slate-800 uppercase tracking-widest">You Referred Someone</span>
               </div>
-              <p className="text-sm md:text-base text-slate-600 leading-relaxed font-semibold">
+              <p className="text-sm md:text-base text-slate-650 leading-relaxed font-semibold">
                 When a referred friend signs up and activates their trial, <span className="text-(--accent) font-bold">both of you get 50 free credits</span> instantly.
               </p>
             </div>
 
+          </div>
+
+          {/* Get Invite Link CTA */}
+          <div className="flex flex-col items-center gap-2 border-t border-slate-100 pt-6 mt-2">
+            <button
+              onClick={() => {
+                const token = getCookie("ctl_token");
+                if (token) {
+                  router.push("/dashboard/referrals");
+                } else {
+                  router.push("/login?mode=signup&redirect=/dashboard/referrals");
+                }
+              }}
+              className="btn-primary flex items-center gap-2 !py-3.5 !px-6 !text-xs uppercase tracking-wider cursor-pointer"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Get My Invite Link</span>
+            </button>
+            <span className="text-[10px] text-slate-400 font-semibold italic">
+              *Sign in or create a free account to access your personal referral link.
+            </span>
           </div>
 
         </div>
