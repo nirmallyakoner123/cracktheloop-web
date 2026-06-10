@@ -137,7 +137,7 @@ export default function InterviewDetailPage({ params }: { params: Promise<{ id: 
       </div>
 
       {/* Header */}
-      <header className="w-full max-w-[1600px] mx-auto px-6 md:px-10 py-6 flex justify-between items-center relative z-20 no-print">
+      <header className="w-full px-6 md:px-10 py-6 flex justify-between items-center relative z-20 no-print">
         <button 
           onClick={() => router.push("/dashboard/interviews")}
           className="flex items-center gap-2 hover:text-slate-800 transition font-bold text-xs text-slate-500 cursor-pointer"
@@ -155,7 +155,7 @@ export default function InterviewDetailPage({ params }: { params: Promise<{ id: 
         </div>
       </header>
 
-      <main className="w-full max-w-[1600px] mx-auto px-6 md:px-10 pt-4 flex flex-col gap-6 relative z-20 print:pt-0 select-none">
+      <main className="w-full px-6 md:px-10 pt-4 flex flex-col gap-6 relative z-20 print:pt-0 select-none">
         
         {/* Title and metadata block */}
         <section className="border-b border-slate-200 pb-6 flex justify-between items-start print:border-black print:pb-4">
@@ -385,7 +385,7 @@ export default function InterviewDetailPage({ params }: { params: Promise<{ id: 
       </main>
 
       {/* Footer */}
-      <footer className="w-full max-w-[1600px] mx-auto px-6 md:px-10 pt-16 text-center text-xs text-slate-400 mt-auto select-none flex justify-between items-center border-t border-slate-100 no-print">
+      <footer className="w-full px-6 md:px-10 pt-16 text-center text-xs text-slate-400 mt-auto select-none flex justify-between items-center border-t border-slate-100 no-print">
         <span>© 2026 CrackTheLoop. All rights reserved.</span>
         <span className="flex items-center gap-1 text-emerald-600/70 font-semibold uppercase tracking-wider">
           <Shield className="w-3.5 h-3.5 text-emerald-600" />

@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { WindowsIcon, AppleIcon } from "@/app/components/icons/BrandIcons";
+import { getMockResumes, getMockSessions } from "@/lib/mockService";
 
 interface SessionData {
   _id: string;
@@ -104,6 +105,9 @@ function DashboardHomeContent() {
   const [micTesting, setMicTesting] = useState(false);
   const [micActive, setMicActive] = useState(false);
   const [micVolume, setMicVolume] = useState<number[]>([12, 8, 16, 5, 22, 10, 6, 18, 11]);
+
+  const [hasResume, setHasResume] = useState(false);
+  const [hasSession, setHasSession] = useState(false);
 
   const [mounted, setMounted] = useState(false);
   const [acknowledged, setAcknowledged] = useState(false);
@@ -184,6 +188,8 @@ function DashboardHomeContent() {
     }
 
     loadDashboardData();
+    setHasResume(getMockResumes().length > 0);
+    setHasSession(getMockSessions().length > 0);
   }, [router]);
 
   // Save checklist helper
@@ -232,7 +238,7 @@ function DashboardHomeContent() {
   // Simulator helper: Quick Sandbox Test
   function handleSandboxTrigger() {
     updateChecklist("runWebDemo", true);
-    router.push("/copilot?demo=true");
+    router.push("/dashboard/call-sessions");
   }
 
   // Clipboard copy
@@ -257,27 +263,27 @@ function DashboardHomeContent() {
   }
 
   // Onboarding metrics calculation
-  const completedSteps = Object.values(checklist).filter(Boolean).length;
-  const progressPercent = Math.round((completedSteps / 9) * 100);
+  const completedSteps = [hasResume, hasSession, (user?.credits || 0) > 50].filter(Boolean).length;
+  const progressPercent = Math.round((completedSteps / 3) * 100);
 
   const refCode = user?.referral_code || "";
   const refLink = refCode ? `localhost:3000/login?ref=${refCode}` : "";
 
   return (
-    <main className="flex-1 w-full max-w-[1600px] mx-auto px-6 md:px-10 py-5 md:py-6 flex flex-col gap-6 relative select-none">
+    <main className="flex-1 w-full px-6 md:px-10 py-5 md:py-6 flex flex-col gap-6 relative select-none">
 
       {/* Page Title Header */}
       <section className="flex flex-col gap-2">
-        <span className="text-[10px] text-(--accent) font-black uppercase tracking-widest">
+        <span className="text-[11px] text-(--accent) font-semibold uppercase tracking-wider">
           Interview Practice & Live Copilot Console
         </span>
-        <h1 className="text-3xl font-black tracking-tight text-slate-800 flex items-center gap-2" style={{ fontFamily: "var(--font-display)" }}>
+        <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-800 flex items-center gap-2" style={{ fontFamily: "var(--font-display)" }}>
           Welcome,{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8503A] to-indigo-600">
             {user?.email?.split("@")[0]}
           </span>
         </h1>
-        <p className="text-xs text-slate-500 font-medium animate-fade-in">
+        <p className="text-[13px] text-slate-500 font-medium animate-fade-in">
           Configure your copilot targets, test your audio line, and initialize your live interactive overlay.
         </p>
       </section>
@@ -291,17 +297,17 @@ function DashboardHomeContent() {
           {/* Header Block inside Left Console */}
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-100 pb-4">
             <div>
-              <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+              <h2 className="text-base md:text-lg font-semibold tracking-tight text-slate-800 flex items-center gap-2">
                 <Shield className="w-5 h-5 text-(--accent)" />
-                Gateway Setup Timeline
-              </h3>
-              <p className="text-[11px] text-slate-500 font-semibold mt-0.5">Initialize credentials, audio lines, and bypass configurations.</p>
+                Onboarding Journey
+              </h2>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">Complete these setup steps to begin mock interviewing with the AI Copilot.</p>
             </div>
 
             <div className="flex items-center gap-3 shrink-0 self-start sm:self-center">
-              <span className="text-xs font-bold text-slate-500">Progress:</span>
-              <span className="text-xs font-black text-(--accent) bg-(--accent-soft) px-3 py-1 rounded-full border border-(--accent)/15">
-                {completedSteps} / 9 Steps Complete
+              <span className="text-xs font-medium text-slate-500">Progress:</span>
+              <span className="text-xs font-semibold text-(--accent) bg-(--accent-soft) px-3 py-1 rounded-full border border-(--accent)/15">
+                {completedSteps} / 3 Setup Steps
               </span>
             </div>
           </div>
@@ -314,386 +320,136 @@ function DashboardHomeContent() {
             />
           </div>
 
-          {/* Onboarding Timeline list */}
-          <div className="relative flex flex-col gap-6 pl-2 select-none">
-            {/* Vertical timeline line */}
-            <div className="absolute left-[21px] top-3.5 bottom-3.5 w-0.5 bg-slate-100" />
-
-            {/* Step 1: Complete Profile */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("completeProfile", !checklist.completeProfile)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
+          {/* Horizontal User Journey Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 select-none mt-2">
+            {[
+              {
+                id: "resume",
+                title: "1. Add Your Resume",
+                desc: "Upload or type your career accomplishments so the AI tailors answers to your experience.",
+                actionText: "CVs / Resumes",
+                actionHref: "/dashboard/resumes",
+                completed: hasResume,
+              },
+              {
+                id: "free-session",
+                title: "2. Try a Free Session",
+                desc: "Configure a 10-minute trial session in your browser to see the live overlay in action.",
+                actionText: "Start Free Session",
+                actionHref: "/dashboard/call-sessions",
+                completed: hasSession,
+              },
+              {
+                id: "buy-credits",
+                title: "3. Get Fuel Credits",
+                desc: "Purchase a one-time pass to unlock unlimited streaming, custom models, and stealth features.",
+                actionText: "View Pricing",
+                actionHref: "/pricing",
+                completed: (user?.credits || 0) > 50,
+              },
+              {
+                id: "real-interview",
+                title: "4. Start Your Session",
+                desc: "Unlock active loops. Open the desktop app or connect your browser call to crack the loop.",
+                actionText: "Open Sessions",
+                actionHref: "/dashboard/call-sessions",
+                completed: false,
+              }
+            ].map((step, idx) => (
+              <div 
+                key={step.id} 
+                className={`bg-white/80 backdrop-blur-md border rounded-xl p-5 flex flex-col justify-between gap-4 transition-all duration-300 relative ${
+                  step.completed 
+                    ? "border-emerald-500 bg-emerald-50/10" 
+                    : "border-slate-200/80 hover:border-(--accent)/30"
+                }`}
               >
-                {checklist.completeProfile ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.completeProfile ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    1. Set Your Career Path
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Configure your target industry level and job title settings.
-                  </span>
-                </div>
-                <button
-                  onClick={() => updateChecklist("completeProfile", !checklist.completeProfile)}
-                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
-                >
-                  Set Career Path <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Step 2: Select Interview Goal */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("selectGoal", !checklist.selectGoal)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
-              >
-                {checklist.selectGoal ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.selectGoal ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    2. Choose Onboarding Goals
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Specify focus areas: answer structuring, confidence, or reducing fillers.
-                  </span>
-                </div>
-                <button
-                  onClick={() => updateChecklist("selectGoal", !checklist.selectGoal)}
-                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
-                >
-                  Select Goals <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Step 3: Resume & JD Upload */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("uploadResumeJD", !checklist.uploadResumeJD)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
-              >
-                {checklist.uploadResumeJD ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.uploadResumeJD ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    3. Add Target Job details
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Paste your job description and accomplishments context.
-                  </span>
-                </div>
-                <button
-                  onClick={() => updateChecklist("uploadResumeJD", !checklist.uploadResumeJD)}
-                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
-                >
-                  Add Job Details <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Step 4: Choose Interview Format */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("chooseFormat", !checklist.chooseFormat)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
-              >
-                {checklist.chooseFormat ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.chooseFormat ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    4. Select Session Format
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Choose formatting: Coding, System Design, or Behavioral (STAR).
-                  </span>
-                </div>
-                <button
-                  onClick={() => updateChecklist("chooseFormat", !checklist.chooseFormat)}
-                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
-                >
-                  Select Format <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Step 5: Test Demo Mode */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("runWebDemo", !checklist.runWebDemo)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
-              >
-                {checklist.runWebDemo ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.runWebDemo ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    5. Try Demo Mode Simulation
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Watch a simulated voice feedback suggest response cards in real time.
-                  </span>
-                </div>
-                <button
-                  onClick={() => {
-                    updateChecklist("runWebDemo", true);
-                    router.push("/copilot?demo=true");
-                  }}
-                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
-                >
-                  Test Demo Mode <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Step 6: Download Desktop HUD */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("downloadHUD", !checklist.downloadHUD)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
-              >
-                {checklist.downloadHUD ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.downloadHUD ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    6. Download Desktop HUD Client
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Get the lightweight desktop overlay companion for live meetings.
-                  </span>
-                </div>
-                <button
-                  onClick={() => {
-                    updateChecklist("downloadHUD", true);
-                    const el = document.getElementById("launcher-section");
-                    if (el) el.scrollIntoView({ behavior: "smooth" });
-                  }}
-                  className="text-xs text-indigo-600 hover:text-indigo-700 font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
-                >
-                  Get Desktop Client <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Step 7: Sound & Mic Check */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("soundCheck", !checklist.soundCheck)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
-              >
-                {checklist.soundCheck ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.soundCheck ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    7. Run Audio & Microphone Check
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Verify browser audio lines capture speech accurately.
-                  </span>
-                  {micActive && (
-                    <div className="flex items-center gap-1 mt-2.5 h-6 bg-slate-50 border border-slate-200/60 rounded-lg px-3 py-1.5 w-fit">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping mr-1"></span>
-                      {micVolume.map((val, idx) => (
-                        <div
-                          key={idx}
-                          className="w-[2px] bg-emerald-500 rounded-full transition-all duration-75 animate-pulse"
-                          style={{ height: `${val}px` }}
-                        />
-                      ))}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                        Step {idx + 1}
+                      </span>
+                      {step.completed ? (
+                        <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-semibold uppercase px-2 py-0.5 rounded flex items-center gap-1">
+                          ✓ Done
+                        </span>
+                      ) : (
+                        step.id === "resume" && (
+                          <span className="bg-amber-50 text-amber-700 border border-amber-200 text-[9px] font-semibold uppercase px-2 py-0.5 rounded">
+                            Recommended
+                          </span>
+                        )
+                      )}
                     </div>
-                  )}
-                </div>
-                <button
-                  disabled={micTesting}
-                  onClick={async () => {
-                    await handleTestMic();
-                    updateChecklist("soundCheck", true);
-                  }}
-                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1.5 shrink-0 self-start sm:self-center disabled:text-slate-400 disabled:cursor-not-allowed"
-                >
-                  {micTesting ? (
-                    <>
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Testing (4s)...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Volume2 className="w-4 h-4" />
-                      <span>Run Mic Test</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Step 8: Start Live Copilot Mode */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("startCopilot", !checklist.startCopilot)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
-              >
-                {checklist.startCopilot ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.startCopilot ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    8. Launch Live Copilot Mode
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Initiate your real-time interview suggestions dashboard.
-                  </span>
-                </div>
-                <Link
-                  href="/copilot"
-                  onClick={() => updateChecklist("startCopilot", true)}
-                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
-                >
-                  Launch HUD <ArrowRight className="w-3.5 h-3.5" />
+                    
+                    <h3 className="text-sm font-semibold text-slate-800 leading-tight">
+                      {step.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 leading-relaxed font-medium">
+                      {step.desc}
+                    </p>
+                  </div>
+                  
+                  <Link
+                    href={step.actionHref}
+                    className={`w-full py-2.5 rounded-lg text-center font-semibold text-xs uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-1 ${
+                      step.completed 
+                        ? "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200 cursor-pointer" 
+                        : "bg-[#E8503A] hover:bg-[#F06B57] text-white shadow-xs cursor-pointer"
+                    }`}
+                  >
+                  <span>{step.actionText}</span>
+                  <ArrowRight className="w-3 h-3" />
                 </Link>
               </div>
-            </div>
-
-            {/* Step 9: Submit Beta Feedback */}
-            <div className="relative flex items-start gap-4">
-              <button
-                onClick={() => updateChecklist("submitFeedback", !checklist.submitFeedback)}
-                className="z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white transition-all cursor-pointer shadow-xs shrink-0"
-              >
-                {checklist.submitFeedback ? (
-                  <CheckCircle className="w-7 h-7 text-emerald-500 fill-emerald-50 shrink-0" />
-                ) : (
-                  <div className="w-5 h-5 rounded-full border border-slate-350 bg-white hover:border-slate-400 shrink-0" />
-                )}
-              </button>
-              <div className="flex-1 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 -mt-0.5">
-                <div className="flex flex-col gap-0.5">
-                  <span className={`text-xs md:text-sm font-bold ${checklist.submitFeedback ? "text-slate-450 line-through" : "text-slate-800"}`}>
-                    9. Submit Early Beta Feedback
-                  </span>
-                  <span className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Share suggestion quality rating to earn 5 bonus credits.
-                  </span>
-                </div>
-                <button
-                  onClick={() => updateChecklist("submitFeedback", !checklist.submitFeedback)}
-                  className="text-xs text-(--accent) hover:text-(--accent-bright) font-extrabold flex items-center gap-1 shrink-0 self-start sm:self-center"
-                >
-                  Submit Feedback <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
+            ))}
           </div>
 
-          {/* Launch engines section inside Left Console Card */}
-          <div id="launcher-section" className="border-t border-slate-100 pt-6">
-            <div className="mb-5">
-              <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <Zap className="w-4 h-4 text-(--accent)" />
-                Launch Application Engines
-              </h4>
-              <p className="text-[11px] text-slate-500 font-semibold mt-0.5">Run CrackTheLoop directly inside your browser or deploy native display filters.</p>
+          {/* Tutorial Section */}
+          <div className="border-t border-slate-100 pt-6">
+            <div className="mb-4">
+              <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <Play className="w-4 h-4 text-(--accent) fill-current" />
+                Video Walkthrough Guide
+              </h3>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">Watch a 2-minute overview of setting up screen share audio, overlay positioning, and passing AI video screeners.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-              {/* Web HUD */}
-              <div className="flex flex-col justify-between gap-3.5 p-4.5 rounded-lg border border-slate-200/80 hover:border-(--accent)/35 transition-all">
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                      <Terminal className="w-4 h-4 text-emerald-500" />
-                      Browser Web HUD
-                    </span>
-                    <span className="text-[9px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200/40 px-2 py-0.5 rounded">No Install</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Runs sandboxed in a separate browser workspace. Captures incoming system loopbacks. Best for quick testing or multi-monitor setups.
-                  </p>
+            <div className="bg-slate-50/50 border border-slate-200/80 rounded-xl p-4 flex flex-col md:flex-row gap-5 items-center">
+              <div className="w-full md:w-56 h-32 bg-slate-950 rounded-lg relative overflow-hidden flex items-center justify-center shrink-0 shadow-sm group cursor-pointer border border-slate-800">
+                <div className="absolute inset-0 opacity-[0.15]" style={{
+                  backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+                  backgroundSize: '20px 20px',
+                }} />
+                
+                <div className="w-12 h-12 rounded-full bg-white/10 group-hover:bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center shadow-lg transition duration-300 z-10 group-hover:scale-110">
+                  <Play className="w-5 h-5 text-white fill-current translate-x-0.5" />
                 </div>
-                <Link
-                  href="/copilot"
-                  className="w-full py-2.5 bg-[#E8503A] hover:bg-[#F06B57] text-white rounded-lg text-center font-bold text-xs uppercase tracking-wider transition active:scale-95 shadow-sm shadow-[#E8503A]/10 hover:shadow-md cursor-pointer block"
-                >
-                  Launch Web HUD
-                </Link>
+                
+                <span className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-xs text-[9px] font-mono text-white px-1.5 py-0.5 rounded font-bold">
+                  2:14
+                </span>
               </div>
-
-              {/* Desktop Client */}
-              <div className="flex flex-col justify-between gap-3.5 p-4.5 rounded-lg border border-slate-200/80 hover:border-indigo-500/35 transition-all">
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                      <Lock className="w-4 h-4 text-indigo-500" />
-                      Desktop HUD Companion Client
-                    </span>
-                    <span className="text-[9px] font-black text-indigo-700 bg-indigo-50 border border-indigo-200/40 px-2 py-0.5 rounded">Local HUD</span>
-                  </div>
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
-                    Native desktop client that provides local display overlay HUD integration. Focuses on placing visual bullet points and structured guidelines directly over your workspace.
-                  </p>
-                </div>
-
-                <div className="flex gap-2">
-                  <a
-                    href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <WindowsIcon className="w-3.5 h-3.5 text-slate-500" /> Windows
-                  </a>
-                  <button
-                    onClick={() => {
-                      alert("macOS Stealth HUD Companion Client is roadmapped for Q3 2026. Join the early beta circle by submitting your email on the homepage!");
-                    }}
-                    className="flex-1 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <AppleIcon className="w-3.5 h-3.5 text-slate-500" /> macOS
-                  </button>
+              
+              <div className="flex flex-col gap-2.5">
+                <h4 className="text-base font-semibold text-slate-800 leading-snug">
+                  How to setup audio loopback & stealth HUD in 60 seconds
+                </h4>
+                <p className="text-sm text-slate-500 leading-relaxed font-normal">
+                  This walkthrough details how to share your web tab with audio enabled, align the overlay panel cleanly next to Zoom or Google Meet calls, and leverage dynamic cheat sheets without trigger warnings.
+                </p>
+                <div className="flex flex-wrap gap-2 mt-1 select-none">
+                  <span className="px-2 py-0.5 text-[8.5px] font-mono font-bold bg-slate-100 text-slate-655 border border-slate-200 rounded">
+                    Zoom Stealth HUD
+                  </span>
+                  <span className="px-2 py-0.5 text-[8.5px] font-mono font-bold bg-slate-100 text-slate-655 border border-slate-200 rounded">
+                    Audio Permissions
+                  </span>
+                  <span className="px-2 py-0.5 text-[8.5px] font-mono font-bold bg-slate-100 text-slate-655 border border-slate-200 rounded">
+                    Screener Bypass
+                  </span>
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -704,16 +460,16 @@ function DashboardHomeContent() {
 
           {/* Section 1: Fuel Gauge & Status */}
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-black block">
+            <span className="text-[11px] text-slate-400 uppercase tracking-wider font-semibold block">
               Copilot Telemetry
             </span>
 
             {/* Fuel gauge bar */}
             <div className="flex flex-col gap-2">
               <div className="flex justify-between items-baseline">
-                <span className="text-xs font-bold text-slate-500">AI Copilot Fuel</span>
+                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">AI Copilot Fuel</span>
                 <span className="text-lg font-black text-slate-800">
-                  {user?.credits ?? 0} <span className="text-[9px] text-slate-450 font-bold uppercase tracking-wider">Credits</span>
+                  {user?.credits ?? 0} <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Credits</span>
                 </span>
               </div>
               <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
@@ -727,19 +483,19 @@ function DashboardHomeContent() {
                   style={{ width: `${Math.min(((user?.credits ?? 0) / 300) * 100, 100)}%` }}
                 />
               </div>
-              <span className="text-[9.5px] text-slate-450 font-medium">1 credit consumes 1 minute stream duration.</span>
+              <span className="text-xs text-slate-400 font-medium">1 credit consumes 1 minute stream duration.</span>
             </div>
 
             <div className="flex justify-between items-center text-xs mt-1 bg-slate-50 border border-slate-200/60 rounded-lg px-3 py-2">
-              <span className="font-bold text-slate-500">Subscription Status</span>
-              <span className="bg-slate-100 text-slate-700 border border-slate-200 text-[9px] font-black uppercase px-2.5 py-0.5 rounded">
+              <span className="font-medium text-slate-500">Subscription Status</span>
+              <span className="bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-semibold uppercase px-2 py-0.5 rounded">
                 Tier: {normalizeTier(user?.subscription_tier)}
               </span>
             </div>
 
             <Link
               href="/pricing"
-              className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 hover:text-slate-800 rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1.5"
+              className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 hover:text-slate-800 rounded-lg text-center font-semibold text-xs uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-1.5"
             >
               Refill Fuel / Upgrade <ArrowRight className="w-3 h-3" />
             </Link>
@@ -749,18 +505,18 @@ function DashboardHomeContent() {
 
           {/* Section 2: Referral Invitation Link */}
           <div className="flex flex-col gap-3">
-            <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-slate-800 tracking-tight flex items-center gap-2">
               <Gift className="w-4 h-4 text-purple-500 shrink-0" />
               Referral Rewards Invite
             </h3>
-            <p className="text-[11px] text-slate-500 leading-normal font-semibold">
+            <p className="text-xs text-slate-500 leading-normal font-medium">
               Share code - both get 50 free credits on trial activation, plus up to 50% bonus on plan purchases.
             </p>
 
             {refCode ? (
               <div className="flex flex-col gap-2 mt-1">
                 <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-md px-3 py-1.5">
-                  <span className="flex-1 text-[10px] text-slate-650 truncate font-mono font-bold">
+                  <span className="flex-1 text-xs text-slate-650 truncate font-mono font-medium">
                     {refLink}
                   </span>
                   <button
@@ -777,7 +533,7 @@ function DashboardHomeContent() {
                 </div>
                 <Link
                   href="/dashboard/referrals"
-                  className="text-[10px] text-purple-600 hover:underline font-extrabold mt-1.5"
+                  className="text-xs text-purple-600 hover:underline font-semibold mt-1"
                 >
                   Manage referrals & track conversions →
                 </Link>
@@ -796,7 +552,7 @@ function DashboardHomeContent() {
 
           {/* Section 3: Recent transcript sessions */}
           <div className="flex flex-col gap-3">
-            <h3 className="text-xs font-black text-slate-800 uppercase tracking-widest flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-slate-800 tracking-tight flex items-center gap-2">
               <History className="w-4 h-4 text-(--accent)" />
               Recent Transcripts
             </h3>
@@ -807,7 +563,7 @@ function DashboardHomeContent() {
               </div>
             ) : interviews.length === 0 ? (
               <div className="text-center py-6 border border-dashed border-slate-200 rounded-xl">
-                <p className="text-[11px] text-slate-500 font-semibold leading-relaxed px-4">
+                <p className="text-xs text-slate-500 font-medium leading-relaxed px-4">
                   No interview logs found. Launch the Copilot HUD to record a session.
                 </p>
               </div>
@@ -819,24 +575,24 @@ function DashboardHomeContent() {
                     className="border border-slate-100 hover:border-slate-200 rounded-lg p-3 flex flex-col gap-2 bg-slate-50/20"
                   >
                     <div className="flex justify-between items-start">
-                      <span className="text-xs font-bold text-slate-800 truncate max-w-[130px]">{session.role}</span>
+                      <span className="text-xs font-semibold text-slate-800 truncate max-w-[130px]">{session.role}</span>
                       {session.report ? (
-                        <span className="text-[9.5px] bg-emerald-50 text-emerald-700 border border-emerald-200/50 px-1.5 py-0.5 rounded font-black">
+                        <span className="text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200/50 px-1.5 py-0.5 rounded font-semibold">
                           ★ {session.report.overall_score}/100
                         </span>
                       ) : (
-                        <span className="text-[9px] text-slate-450 italic font-semibold">Not Evaluated</span>
+                        <span className="text-xs text-slate-400 italic font-medium">Not Evaluated</span>
                       )}
                     </div>
 
-                    <div className="flex justify-between items-center text-[9px] text-slate-450 font-bold uppercase tracking-wider">
+                    <div className="flex justify-between items-center text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
                       <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {new Date(session.created_at).toLocaleDateString([], { month: "short", day: "numeric" })}</span>
                       <span className="flex items-center gap-1"><MessageSquare className="w-3 h-3" /> {session.transcript?.length || 0} Turns</span>
                     </div>
 
                     <Link
                       href={`/dashboard/interviews/${session._id}`}
-                      className="text-[9.5px] text-(--accent) hover:underline font-extrabold flex items-center gap-0.5 mt-1 border-t border-slate-100/60 pt-2"
+                      className="text-xs text-(--accent) hover:underline font-semibold flex items-center gap-0.5 mt-1 border-t border-slate-100/60 pt-2"
                     >
                       View Session Report <ArrowRight className="w-2.5 h-2.5" />
                     </Link>
@@ -845,7 +601,7 @@ function DashboardHomeContent() {
 
                 <Link
                   href="/dashboard/interviews"
-                  className="w-full text-center text-[10px] text-slate-400 hover:text-slate-600 font-bold uppercase tracking-widest mt-1.5"
+                  className="w-full text-center text-xs text-slate-400 hover:text-slate-600 font-semibold uppercase tracking-wider mt-1"
                 >
                   View All Transcripts ({interviews.length})
                 </Link>
@@ -873,10 +629,10 @@ function DashboardHomeContent() {
                 <Shield className="w-5 h-5 text-indigo-600" />
               </div>
               <div>
-                <h3 className="text-base font-black text-indigo-950 uppercase tracking-wide">
+                <h3 className="text-base font-semibold text-indigo-950 tracking-tight">
                   Ethics & Responsible Practice Guidelines
                 </h3>
-                <p className="text-[10px] text-indigo-500 font-bold uppercase tracking-wider">COMPLIANCE & PREPARATION STANDARDS</p>
+                <p className="text-[11px] text-indigo-500 font-semibold uppercase tracking-wider">COMPLIANCE & PREPARATION STANDARDS</p>
               </div>
             </div>
 
@@ -886,10 +642,10 @@ function DashboardHomeContent() {
               <div className="bg-indigo-50/60 border border-indigo-200/50 p-3 rounded-lg flex gap-2.5">
                 <Shield className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5 animate-pulse" />
                 <div className="flex-1 flex flex-col gap-0.5">
-                  <strong className="text-xs font-black text-indigo-900 uppercase tracking-wider">
+                  <strong className="text-sm font-semibold text-indigo-900 tracking-tight">
                     Rule #1: Focus on Clarity & Answer Structure
                   </strong>
-                  <p className="text-[11px] text-indigo-750 leading-relaxed font-semibold">
+                  <p className="text-xs text-indigo-750 leading-relaxed font-medium">
                     The Copilot HUD provides real-time response guides and STAR method templates to help you structure answers. Sits next to your meeting windows locally. Only share your IDE or editor during technical rounds.
                   </p>
                 </div>
@@ -899,10 +655,10 @@ function DashboardHomeContent() {
               <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-lg flex gap-2.5">
                 <Sparkles className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
                 <div className="flex-1 flex flex-col gap-0.5">
-                  <strong className="text-xs font-bold text-slate-800">
+                  <strong className="text-sm font-semibold text-slate-800">
                     Rule #2: Distraction-Free Desktop HUD Overlay
                   </strong>
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">
                     For distraction-free local practice and session alignment, launch the Desktop HUD client. It displays visual talking points directly over your desktop locally.
                   </p>
                 </div>
@@ -912,10 +668,10 @@ function DashboardHomeContent() {
               <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-lg flex gap-2.5">
                 <Volume2 className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                 <div className="flex-1 flex flex-col gap-0.5">
-                  <strong className="text-xs font-bold text-slate-800">
+                  <strong className="text-sm font-semibold text-slate-800">
                     Rule #3: Set Up Target Role Configurations
                   </strong>
-                  <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                  <p className="text-xs text-slate-500 leading-relaxed font-medium">
                     Set your target role and goals before your live mock session so that the AI response recommendations map accurately to the job description targets.
                   </p>
                 </div>
@@ -932,7 +688,7 @@ function DashboardHomeContent() {
                   onChange={(e) => setAcknowledged(e.target.checked)}
                   className="mt-1 accent-indigo-600 h-4.5 w-4.5 shrink-0 rounded cursor-pointer"
                 />
-                <span className="text-[11px] text-indigo-900 leading-normal font-bold">
+                <span className="text-xs text-indigo-900 leading-normal font-medium">
                   I acknowledge that this copilot functions as a local response coach and speech guide to help me communicate clearly during my practice mock trials and live sessions.
                 </span>
               </label>
@@ -943,7 +699,7 @@ function DashboardHomeContent() {
                   setShowPlaybook(false);
                   updateChecklist("completeProfile", true);
                 }}
-                className={`w-full py-3 rounded-lg font-bold text-xs uppercase tracking-wider transition duration-200 flex justify-center items-center gap-1.5 ${acknowledged
+                className={`w-full py-3 rounded-lg font-semibold text-xs uppercase tracking-wider transition duration-200 flex justify-center items-center gap-1.5 ${acknowledged
                     ? "bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer shadow-md shadow-indigo-600/10 active:scale-95"
                     : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
                   }`}

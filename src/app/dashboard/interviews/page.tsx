@@ -74,7 +74,7 @@ export default function InterviewsListPage() {
   }, [searchQuery, interviews]);
 
   return (
-    <main className="flex-1 w-full max-w-[1600px] mx-auto px-6 md:px-10 py-5 md:py-6 flex flex-col gap-6 relative select-none">
+    <main className="flex-1 w-full px-6 md:px-10 py-5 md:py-6 flex flex-col gap-6 relative select-none">
       
       {/* Background radial glows */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
@@ -134,10 +134,10 @@ export default function InterviewsListPage() {
                   Activate the Web Copilot HUD or Desktop app during your live interview sessions, and click "Save Session" to compile your transcripts here.
                 </p>
                 <Link
-                  href="/copilot"
+                  href="/dashboard/call-sessions"
                   className="mt-3 px-5 py-2.5 bg-[#E8503A] hover:bg-[#F06B57] rounded-lg font-bold text-xs uppercase tracking-wider text-white shadow-md shadow-[#E8503A]/10 hover:brightness-110 transition active:scale-95 cursor-pointer flex items-center gap-1.5"
                 >
-                  Open Copilot HUD <ArrowRight className="w-3.5 h-3.5" />
+                  Start a Session <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </>
             )}

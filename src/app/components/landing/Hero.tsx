@@ -285,7 +285,7 @@ export default function Hero() {
                       <div className="w-2 h-2 rounded-full bg-green-400" />
                     </div>
                     <span className="hidden sm:inline text-[10px] font-mono text-slate-400 select-none">
-                      /copilot-session
+                      /live-session
                     </span>
                   </div>
 

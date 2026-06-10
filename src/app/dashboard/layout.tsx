@@ -68,7 +68,7 @@ export default function DashboardLayout({
       <Sidebar user={user} onLogout={handleLogout} />
 
       {/* Main Dashboard Content Area - scrolls independently */}
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-y-auto relative z-20">
+      <div className="flex-1 flex flex-col min-w-0 md:h-full h-[calc(100vh-72px)] min-h-0 overflow-y-auto relative z-20">
         {children}
       </div>
     </div>

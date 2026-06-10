@@ -13,7 +13,6 @@ Disallow: /api/*
 Disallow: /login
 Disallow: /select-plan
 Disallow: /_next/
-Disallow: /copilot/session/
 
 # ─── AI / LLM Crawlers ────────────────────────────────────
 

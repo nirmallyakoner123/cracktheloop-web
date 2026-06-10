@@ -12,7 +12,9 @@ import {
   User,
   Menu,
   X,
-  Gift
+  Gift,
+  FileText,
+  PhoneCall
 } from "lucide-react";
 
 interface SidebarProps {
@@ -29,6 +31,16 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
       name: "Dashboard Home",
       href: "/dashboard",
       icon: Home,
+    },
+    {
+      name: "Call Sessions",
+      href: "/dashboard/call-sessions",
+      icon: PhoneCall,
+    },
+    {
+      name: "CVs / Resumes",
+      href: "/dashboard/resumes",
+      icon: FileText,
     },
     {
       name: "Saved Interviews",
@@ -50,7 +62,7 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar Navigation */}
-      <aside className="hidden md:flex md:w-64 bg-white border-r border-(--border-light) flex-col p-6 relative z-30 justify-between select-none shadow-xs h-full shrink-0">
+      <aside className="hidden md:flex md:w-64 bg-white border-r border-(--border-light) flex-col p-6 relative z-30 justify-between select-none shadow-xs h-full shrink-0 overflow-y-auto">
         <div className="flex flex-col gap-6">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-90 transition px-2">
@@ -62,7 +74,7 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
 
           {/* Navigation links */}
           <nav className="flex flex-col gap-2">
-            <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-3 mb-2">Portal Pages</span>
+            <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider px-3 mb-2">Portal Pages</span>
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = item.href === "/dashboard" 
@@ -72,7 +84,7 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-bold transition duration-200 group border ${
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg text-xs font-semibold transition duration-200 group border ${
                     isActive 
                       ? "bg-(--accent-soft) text-(--accent) border-(--accent)/15 shadow-xs" 
                       : "text-slate-500 border-transparent hover:text-slate-800 hover:bg-slate-50"
@@ -97,47 +109,41 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
               <div className="p-1.5 rounded-lg bg-(--accent-soft) text-(--accent)">
                 <Sparkles className="w-4 h-4 animate-pulse" />
               </div>
-              <span className="text-[10px] text-indigo-700 font-black uppercase tracking-wider">Out of Fuel?</span>
+              <span className="text-[11px] text-indigo-700 font-semibold uppercase tracking-wider">Out of Fuel?</span>
             </div>
 
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs font-black text-slate-800 leading-tight">Need More AI Replies?</h4>
-              <p className="text-[10.5px] text-slate-500 leading-normal font-semibold">
+              <h4 className="text-sm font-semibold text-slate-800 leading-tight">Need More AI Replies?</h4>
+              <p className="text-xs text-slate-500 leading-normal font-medium">
                 Refill fuel credits to keep your live interview copilot running.
               </p>
             </div>
 
             <Link
               href="/pricing"
-              className="w-full py-2 bg-[#E8503A] hover:bg-[#F06B57] hover:brightness-110 text-white rounded-lg text-center font-bold text-[10px] uppercase tracking-wider transition active:scale-95 shadow-sm shadow-[#E8503A]/10 hover:shadow-[#E8503A]/20"
+              className="w-full py-2 bg-[#E8503A] hover:bg-[#F06B57] hover:brightness-110 text-white rounded-lg text-center font-semibold text-xs uppercase tracking-wider transition active:scale-95 shadow-sm shadow-[#E8503A]/10 hover:shadow-[#E8503A]/20"
             >
               Get Credits
             </Link>
           </div>
 
           <div className="flex flex-col px-3">
-            <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest">Logged In As</span>
-            <span className="text-xs font-bold text-slate-600 truncate mt-1">{user?.email}</span>
+            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Logged In As</span>
+            <span className="text-xs font-medium text-slate-600 truncate mt-1">{user?.email}</span>
           </div>
 
-          <div className="flex flex-col gap-2 font-semibold">
+          <div className="flex flex-col gap-2 font-medium">
             <Link 
               href="/"
-              className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[11px] text-slate-500 hover:text-slate-800 transition hover:bg-slate-50"
+              className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-xs text-slate-500 hover:text-slate-800 transition hover:bg-slate-50"
             >
               <Home className="w-3.5 h-3.5 text-slate-400" />
               Website Home
             </Link>
-            <Link 
-              href="/copilot"
-              className="flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[11px] text-slate-500 hover:text-slate-800 transition hover:bg-slate-50"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-              Open Copilot HUD
-            </Link>
+
             <button
               onClick={onLogout}
-              className="w-full text-left flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-[11px] text-rose-600 hover:bg-rose-50/70 border border-transparent hover:border-rose-100 transition cursor-pointer"
+              className="w-full text-left flex items-center gap-2.5 px-3.5 py-2 rounded-lg text-xs text-rose-600 hover:bg-rose-50/70 border border-transparent hover:border-rose-100 transition cursor-pointer"
             >
               <LogOut className="w-3.5 h-3.5" />
               Log Out
@@ -164,9 +170,9 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-x-0 top-[57px] bottom-0 bg-white/95 backdrop-blur-md z-30 flex flex-col p-6 justify-between select-none animate-fade-in border-b border-(--border-light) shadow-md">
+        <div className="md:hidden fixed inset-x-0 top-[57px] bottom-0 bg-white/95 backdrop-blur-md z-30 flex flex-col p-6 justify-between select-none animate-fade-in border-b border-(--border-light) shadow-md overflow-y-auto">
           <div className="flex flex-col gap-6">
-            <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest px-2">Navigation</span>
+            <span className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider px-2">Navigation</span>
             <nav className="flex flex-col gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon;
@@ -178,7 +184,7 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-xs font-bold transition border ${
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-lg text-xs font-semibold transition border ${
                       isActive 
                         ? "bg-(--accent-soft) text-(--accent) border-(--accent)/15 shadow-xs" 
                         : "text-slate-500 border-transparent hover:text-slate-800"
@@ -196,44 +202,38 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
             {/* Mobile Buy Credits Banner */}
             <div className="mx-2 bg-gradient-to-br from-indigo-50 to-red-50/50 border border-indigo-100/50 p-3 rounded-lg flex items-center justify-between gap-3 shadow-xs select-none">
               <div className="flex flex-col gap-0.5">
-                <span className="text-[9px] text-indigo-700 font-black uppercase tracking-wider">Out of Fuel?</span>
-                <h4 className="text-[11px] font-black text-slate-800">Need More AI Replies?</h4>
+                <span className="text-[11px] text-indigo-700 font-semibold uppercase tracking-wider">Out of Fuel?</span>
+                <h4 className="text-xs font-semibold text-slate-800">Need More AI Replies?</h4>
               </div>
               <Link
                 href="/pricing"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-4 py-2 bg-[#E8503A] hover:bg-[#F06B57] hover:brightness-110 text-white rounded-lg font-bold text-[10px] uppercase tracking-wider shrink-0 transition"
+                className="px-4 py-2 bg-[#E8503A] hover:bg-[#F06B57] hover:brightness-110 text-white rounded-lg font-semibold text-xs uppercase tracking-wider shrink-0 transition"
               >
                 Get Credits
               </Link>
             </div>
 
             <div className="px-2">
-              <span className="text-[9px] text-slate-400 font-black uppercase tracking-widest block">Logged In As</span>
-              <span className="text-xs font-bold text-slate-600 truncate mt-1 block">{user?.email}</span>
+              <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Logged In As</span>
+              <span className="text-xs font-medium text-slate-600 truncate mt-1 block">{user?.email}</span>
             </div>
 
-            <div className="flex flex-col gap-2 font-semibold">
+            <div className="flex flex-col gap-2 font-medium">
               <Link 
                 href="/"
-                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[11px] text-slate-500 hover:text-slate-800"
+                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-slate-500 hover:text-slate-800"
               >
                 <Home className="w-3.5 h-3.5 text-slate-400" />
                 Website Home
               </Link>
-              <Link 
-                href="/copilot"
-                className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-[11px] text-slate-500 hover:text-slate-800"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                Open Copilot HUD
-              </Link>
+
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onLogout();
                 }}
-                className="w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg text-[11px] text-rose-600 hover:bg-rose-50/70 cursor-pointer"
+                className="w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs text-rose-600 hover:bg-rose-50/70 cursor-pointer"
               >
                 <LogOut className="w-3.5 h-3.5" />
                 Log Out

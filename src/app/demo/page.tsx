@@ -637,10 +637,10 @@ export default function DemoPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-4 relative z-10 mt-2">
               <Link
-                href="/copilot"
+                href="/dashboard/call-sessions"
                 className="px-6 py-3.5 bg-linear-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white rounded-xl font-bold text-xs transition-all duration-300 active:scale-95 flex items-center gap-1.5 shadow-md shadow-indigo-500/10 text-center cursor-pointer"
               >
-                Launch Browser Copilot <Globe className="w-4 h-4" />
+                Launch Web Session <Globe className="w-4 h-4" />
               </Link>
               <a
                 href="https://github.com/Souravrooj-klizos/cracktheloop-desktop/releases"
